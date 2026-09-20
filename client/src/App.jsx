@@ -14,6 +14,7 @@ export function App() {
   const [activeNav, setActiveNav] = useState('operations');
   const [incidents, setIncidents] = useState(ARCHITECTURE_DATA.incidents);
   const [overviewMetrics, setOverviewMetrics] = useState(ARCHITECTURE_DATA.telemetry);
+  const [selectedIncident, setSelectedIncident] = useState(null);
 
   // STEP 5: Connect to EXISTING SentinelOps Data from /api/incidents & /api/overview
   useEffect(() => {
