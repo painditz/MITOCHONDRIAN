@@ -1,0 +1,16 @@
+{
+  "name": "microsoft-problem-statement-25",
+  "version": "2.0.0",
+  "description": "3,000 Alerts, One Analyst - Microsoft Innovate 2026 Problem Statement #25",
+  "scripts": {
+    "start": "node start.js",
+    "backend": "python -m uvicorn app:app --host 127.0.0.1 --port 8000 --app-dir backend",
+    "client": "npm --prefix client run dev",
+    "build": "npm --prefix client run build",
+    "test": "python backend/tests/test_pipeline.py",
+    "verify": "python backend/tests/verify_endpoints.py"
+  },
+  "keywords": ["microsoft", "problem-25", "alert-correlation", "asset-criticality", "mitre-attack", "mttt-measurement"],
+  "author": "Winner Team",
+  "license": "MIT"
+}

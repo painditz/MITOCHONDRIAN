@@ -1,0 +1,67 @@
+{
+  "model_name": "RandomForestClassifier",
+  "library": "scikit-learn",
+  "dataset_label": "Synthetic Dataset \u2014 Model Evaluation",
+  "dataset_split": {
+    "train_samples": 3401,
+    "val_samples": 793,
+    "test_samples": 806,
+    "total_samples": 5000
+  },
+  "metrics": {
+    "accuracy": 0.9938,
+    "precision": 1.0,
+    "recall": 0.8333,
+    "f1_score": 0.9091,
+    "roc_auc": 1.0
+  },
+  "confusion_matrix": {
+    "true_negatives": 776,
+    "false_positives": 0,
+    "false_negatives": 5,
+    "true_positives": 25
+  },
+  "top_feature_importances": [
+    {
+      "feature": "severity_Low",
+      "importance": 0.1355
+    },
+    {
+      "feature": "text_telemetry",
+      "importance": 0.1057
+    },
+    {
+      "feature": "severity_High",
+      "importance": 0.0673
+    },
+    {
+      "feature": "is_privileged_user",
+      "importance": 0.0666
+    },
+    {
+      "feature": "asset_criticality_Low",
+      "importance": 0.0396
+    },
+    {
+      "feature": "severity_Critical",
+      "importance": 0.0383
+    },
+    {
+      "feature": "text_completed",
+      "importance": 0.035
+    },
+    {
+      "feature": "text_corp",
+      "importance": 0.0339
+    },
+    {
+      "feature": "text_10",
+      "importance": 0.0275
+    },
+    {
+      "feature": "text_status",
+      "importance": 0.0254
+    }
+  ],
+  "evaluation_timestamp": "2026-09-19T05:18:16.589742+00:00"
+}

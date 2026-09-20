@@ -1,0 +1,1406 @@
+{
+  ".agents/plugins.json": {
+    "mtime": 1789700262.7381425,
+    "seen": 1789777730.037376,
+    "ast_hash": "3f06e02f522c988793eec0f1374a67ee",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.agents/plugins/marketplace.json": {
+    "mtime": 1789700187.7315009,
+    "seen": 1789777730.037376,
+    "ast_hash": "74ca03f20e10a31219b4b894a994f158",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.claude-plugin/marketplace.json": {
+    "mtime": 1789700187.7325022,
+    "seen": 1789777730.037376,
+    "ast_hash": "f3b46e32c685c5e8eb0ce0e0ae2bda31",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.claude-plugin/plugin.json": {
+    "mtime": 1789700187.7335014,
+    "seen": 1789777730.037376,
+    "ast_hash": "2f47e7ecba1da9bfb648fcb53b2f6c13",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.codex-plugin/plugin.json": {
+    "mtime": 1789700187.7385013,
+    "seen": 1789777730.037376,
+    "ast_hash": "546d9c2d5f8bee2b3e2ae86e5a5ded9b",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/api-and-interface-design.json": {
+    "mtime": 1789700187.7615018,
+    "seen": 1789777730.037376,
+    "ast_hash": "ef3ceae1d4476f45eb1a75f2879ade9d",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/browser-testing-with-devtools.json": {
+    "mtime": 1789700187.7615018,
+    "seen": 1789777730.037376,
+    "ast_hash": "2b9a30d3adee722e1b8601fef8b9f78f",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/ci-cd-and-automation.json": {
+    "mtime": 1789700187.7625005,
+    "seen": 1789777730.037376,
+    "ast_hash": "6e2f328117ddb3d73887de97d5a9c4df",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/code-review-and-quality.json": {
+    "mtime": 1789700187.7625005,
+    "seen": 1789777730.037376,
+    "ast_hash": "2008b1dbc80dcd2691636a1688ca900f",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/code-simplification.json": {
+    "mtime": 1789700187.7625005,
+    "seen": 1789777730.037376,
+    "ast_hash": "e1fc4ddefa0f2c5dd6b06452b45eea67",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/constraint-driven-development.json": {
+    "mtime": 1789700187.763503,
+    "seen": 1789777730.037376,
+    "ast_hash": "a8c0f759c37d0d7138dfbc0d9d071589",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/context-engineering.json": {
+    "mtime": 1789700187.763503,
+    "seen": 1789777730.037376,
+    "ast_hash": "31b31265ef1daf1050b09a55d675d1a1",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/debugging-and-error-recovery.json": {
+    "mtime": 1789700187.763503,
+    "seen": 1789777730.037376,
+    "ast_hash": "2332b30d6cba45e632645c5036d61e8b",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/deprecation-and-migration.json": {
+    "mtime": 1789700187.7645013,
+    "seen": 1789777730.037376,
+    "ast_hash": "3cfc52d2a2996180e7ea57f49a8a2f53",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/documentation-and-adrs.json": {
+    "mtime": 1789700187.7645013,
+    "seen": 1789777730.037376,
+    "ast_hash": "19e53f7ef6ea3f954c42b6359e7ca2f3",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/doubt-driven-development.json": {
+    "mtime": 1789700187.7645013,
+    "seen": 1789777730.037376,
+    "ast_hash": "ef17df7546d69837e13575b0c5fc20e9",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/frontend-ui-engineering.json": {
+    "mtime": 1789700187.7655022,
+    "seen": 1789777730.037376,
+    "ast_hash": "7dc49b311dbd096483586f8301650fd6",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/git-workflow-and-versioning.json": {
+    "mtime": 1789700187.7655022,
+    "seen": 1789777730.037376,
+    "ast_hash": "3a9dcb9d5704a687035b0df07b8610be",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/idea-refine.json": {
+    "mtime": 1789700187.7655022,
+    "seen": 1789777730.037376,
+    "ast_hash": "0a5986df92f66bb728392d2b8f9bf419",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/incremental-implementation.json": {
+    "mtime": 1789700187.766502,
+    "seen": 1789777730.037376,
+    "ast_hash": "457f78ef8fbfcd2077accc51e202d841",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/interview-me.json": {
+    "mtime": 1789700187.766502,
+    "seen": 1789777730.037376,
+    "ast_hash": "91527cb2629842eeb1c34cc12db62429",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/observability-and-instrumentation.json": {
+    "mtime": 1789700187.766502,
+    "seen": 1789777730.037376,
+    "ast_hash": "3e95a72ac112f8eab59e98b3a5637774",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/performance-optimization.json": {
+    "mtime": 1789700187.7675023,
+    "seen": 1789777730.037376,
+    "ast_hash": "a2ef661e7a56ccccb316af1a69f60d12",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/planning-and-task-breakdown.json": {
+    "mtime": 1789700187.7675023,
+    "seen": 1789777730.037376,
+    "ast_hash": "4b1952031e95b179c412fd76d5fd1591",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/security-and-hardening.json": {
+    "mtime": 1789700187.7675023,
+    "seen": 1789777730.037376,
+    "ast_hash": "ac2a833997c230a0610e35a044b89187",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/shipping-and-launch.json": {
+    "mtime": 1789700187.7685015,
+    "seen": 1789777730.037376,
+    "ast_hash": "d6cf5903230abfe3dcace82bc4a123ee",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/source-driven-development.json": {
+    "mtime": 1789700187.7685015,
+    "seen": 1789777730.037376,
+    "ast_hash": "1c4018b61937c2fa6d83c73bc22ae37d",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/spec-driven-development.json": {
+    "mtime": 1789700187.7695007,
+    "seen": 1789777730.037376,
+    "ast_hash": "3c42632a1b5ea778efe349a7b50fe1ca",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/test-driven-development.json": {
+    "mtime": 1789700187.7695007,
+    "seen": 1789777730.037376,
+    "ast_hash": "bd8b639b316801af0c611787eb6869f8",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/cases/using-agent-skills.json": {
+    "mtime": 1789700187.770502,
+    "seen": 1789777730.037376,
+    "ast_hash": "23b914e28a3eb9bc9e5bb5d754b87ec0",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/browser-testing-with-devtools/server.js": {
+    "mtime": 1789700187.772502,
+    "seen": 1789777730.037376,
+    "ast_hash": "fda5f9126484bc69d3cb2f7a340162fc",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/ci-cd-and-automation/package.json": {
+    "mtime": 1789700187.772502,
+    "seen": 1789777730.037376,
+    "ast_hash": "e5dea605e80fc29cf26700ed371b4f4c",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/ci-cd-and-automation/src/slug.js": {
+    "mtime": 1789700187.773502,
+    "seen": 1789777730.037376,
+    "ast_hash": "9d99b1b706e72f319d67c5a5843990a3",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/ci-cd-and-automation/test/slug.test.js": {
+    "mtime": 1789700187.7745023,
+    "seen": 1789777730.037376,
+    "ast_hash": "990686fee49585db53d1680952b03ce2",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/code-simplification/config-parser.js": {
+    "mtime": 1789700187.7755022,
+    "seen": 1789777730.037376,
+    "ast_hash": "7c7d6ad8e480ac2bd9c3440f93caaa34",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/code-simplification/config-parser.test.js": {
+    "mtime": 1789700187.7755022,
+    "seen": 1789777730.037376,
+    "ast_hash": "1cf2b4f93a7b60807ea50ef21b0a5155",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/debugging-and-error-recovery/pagination.js": {
+    "mtime": 1789700187.7765021,
+    "seen": 1789777730.037376,
+    "ast_hash": "f5a5671d0d07b06b6b38a1bb2015d732",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/debugging-and-error-recovery/pagination.test.js": {
+    "mtime": 1789700187.7765021,
+    "seen": 1789777730.037376,
+    "ast_hash": "cde4ac47b85da173d9e2757f46e3db25",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/frontend-ui-engineering/Button.tsx": {
+    "mtime": 1789700187.7795024,
+    "seen": 1789777730.037376,
+    "ast_hash": "062cf97f86e9cec92610f434486e4652",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/git-workflow-and-versioning/app.js": {
+    "mtime": 1789700187.780502,
+    "seen": 1789777730.037376,
+    "ast_hash": "2484b1368c2ad8641eb53ee43dd6e331",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/git-workflow-and-versioning/app.test.js": {
+    "mtime": 1789700187.781502,
+    "seen": 1789777730.037376,
+    "ast_hash": "2a5dddb257392c4e888dec203cae4fd4",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/incremental-implementation-pressure/draft-export.js": {
+    "mtime": 1789700187.781502,
+    "seen": 1789777730.037376,
+    "ast_hash": "070e43f197dc477da8b43dc15a295ab7",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/incremental-implementation/reports.js": {
+    "mtime": 1789700187.7825022,
+    "seen": 1789777730.037376,
+    "ast_hash": "f669877f5d684deb9bca2cdc9afc35be",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/incremental-implementation/reports.test.js": {
+    "mtime": 1789700187.7825022,
+    "seen": 1789777730.037376,
+    "ast_hash": "cf90e86869b06c90a03d9248cc8dbb85",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/observability-and-instrumentation/payment-retry.js": {
+    "mtime": 1789700187.7845023,
+    "seen": 1789777730.037376,
+    "ast_hash": "65b58d4361e8468be92ab84c7cf3ea41",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/performance-optimization/benchmark.js": {
+    "mtime": 1789700187.7845023,
+    "seen": 1789777730.037376,
+    "ast_hash": "aaae6d75dc1ba8e979baaa06254d0346",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/performance-optimization/products.js": {
+    "mtime": 1789700187.7845023,
+    "seen": 1789777730.037376,
+    "ast_hash": "05edb64bd02db0d7403f18bea3899e02",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/security-and-hardening/webhook.js": {
+    "mtime": 1789700187.7865005,
+    "seen": 1789777730.037376,
+    "ast_hash": "d39ff8288b0e261a21d972c65ae9ceb5",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/security-and-hardening/webhook.test.js": {
+    "mtime": 1789700187.7865005,
+    "seen": 1789777730.037376,
+    "ast_hash": "f34b9f4f96b8555f81cdbceed85c5a8f",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/test-driven-development-ecosystem/ledger.py": {
+    "mtime": 1789700187.7895021,
+    "seen": 1789777730.037376,
+    "ast_hash": "a27e6f579c266cd39df621bcc03d02eb",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/test-driven-development-ecosystem/test_ledger.py": {
+    "mtime": 1789700187.790502,
+    "seen": 1789777730.037376,
+    "ast_hash": "17de3b0d8034991a3793d88215559609",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/test-driven-development/package.json": {
+    "mtime": 1789700187.791502,
+    "seen": 1789777730.037376,
+    "ast_hash": "445337cf83298c2d8e063f773e442902",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/test-driven-development/src/split.js": {
+    "mtime": 1789700187.791502,
+    "seen": 1789777730.037376,
+    "ast_hash": "fdfca6c49e3c1b2ca77fecb1881946d5",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/test-driven-development/test/split.test.js": {
+    "mtime": 1789700187.792502,
+    "seen": 1789777730.037376,
+    "ast_hash": "c78ce72e7887213e2742d157261a16b1",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/hooks/hooks.json": {
+    "mtime": 1789700187.7945023,
+    "seen": 1789777730.037376,
+    "ast_hash": "0cd41620d730d4e3b642a3b0a42785ad",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/hooks/sdd-cache-post.sh": {
+    "mtime": 1789700187.7945023,
+    "seen": 1789777730.037376,
+    "ast_hash": "34c34eba22ea9094628c6c7f2de22813",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/hooks/sdd-cache-pre.sh": {
+    "mtime": 1789700187.7955017,
+    "seen": 1789777730.037376,
+    "ast_hash": "4f20bfcd9563cf2aa143517b70ec3148",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/hooks/session-start-test.sh": {
+    "mtime": 1789700187.7955017,
+    "seen": 1789777730.037376,
+    "ast_hash": "369866cb24f53a3fb281747e488d992d",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/hooks/session-start.sh": {
+    "mtime": 1789700187.7955017,
+    "seen": 1789777730.037376,
+    "ast_hash": "dc6fc91eb995b80a3e2b0048e81438bd",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/hooks/simplify-ignore-test.sh": {
+    "mtime": 1789700187.796502,
+    "seen": 1789777730.037376,
+    "ast_hash": "652ba63b916b472166643a98935a8227",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/hooks/simplify-ignore.sh": {
+    "mtime": 1789700187.796502,
+    "seen": 1789777730.037376,
+    "ast_hash": "f945777d2d1f3aac6301c7332e59bc39",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/plugin.json": {
+    "mtime": 1789700187.796502,
+    "seen": 1789777730.037376,
+    "ast_hash": "c01c723f4bcb5c11d43ac35bded768f2",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/scripts/lib/skill-lint-test.js": {
+    "mtime": 1789700187.8025022,
+    "seen": 1789777730.037376,
+    "ast_hash": "bb123137b0d0c23259a27d2dd5165c75",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/scripts/lib/skill-lint.js": {
+    "mtime": 1789700187.8025022,
+    "seen": 1789777730.037376,
+    "ast_hash": "119bbb98777ad289b926f76252650b93",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/scripts/run-evals-test.js": {
+    "mtime": 1789700187.8035014,
+    "seen": 1789777730.037376,
+    "ast_hash": "26e865aa3e53db6a517f18e34216ce5c",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/scripts/run-evals.js": {
+    "mtime": 1789700187.8035014,
+    "seen": 1789777730.037376,
+    "ast_hash": "0caf589735e05659cbd24f19f4dbbf6b",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/scripts/validate-artifact-paths-test.js": {
+    "mtime": 1789700187.8045013,
+    "seen": 1789777730.037376,
+    "ast_hash": "e9f91da70c98c9e7615db40c2e147fba",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/scripts/validate-artifact-paths.js": {
+    "mtime": 1789700187.8045013,
+    "seen": 1789777730.037376,
+    "ast_hash": "90fc39b322d5631bf3542ae02cbcf448",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/scripts/validate-commands-test.js": {
+    "mtime": 1789700187.8055015,
+    "seen": 1789777730.037376,
+    "ast_hash": "139b60e6b0b44ea385e60e9bcfc01e6f",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/scripts/validate-commands.js": {
+    "mtime": 1789700187.8055015,
+    "seen": 1789777730.037376,
+    "ast_hash": "13700c53af00e25831e1359f44c383fc",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/scripts/validate-reference-links-test.js": {
+    "mtime": 1789700187.8055015,
+    "seen": 1789777730.037376,
+    "ast_hash": "39558d7d8064ca216223e77a59708f89",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/scripts/validate-reference-links.js": {
+    "mtime": 1789700187.806502,
+    "seen": 1789777730.037376,
+    "ast_hash": "74b189b959868badf8426f830fada03e",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/scripts/validate-skills.js": {
+    "mtime": 1789700187.806502,
+    "seen": 1789777730.037376,
+    "ast_hash": "6d8444c954f2868bf6eb8b44a75c5f20",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/scripts/validate-versions-test.js": {
+    "mtime": 1789700187.8075013,
+    "seen": 1789777730.037376,
+    "ast_hash": "9c9f5220c408369431f0559d2f015d12",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/scripts/validate-versions.js": {
+    "mtime": 1789700187.8075013,
+    "seen": 1789777730.037376,
+    "ast_hash": "8aa569ca17e24f0d79e3e29b032ff0ce",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/idea-refine/scripts/idea-refine.sh": {
+    "mtime": 1789700187.8225017,
+    "seen": 1789777730.037376,
+    "ast_hash": "7d09d06b836527b5261a27027b1d8548",
+    "semantic_hash": ""
+  },
+  ".agents/skills.json": {
+    "mtime": 1789700262.740226,
+    "seen": 1789777730.037376,
+    "ast_hash": "b0a68720c9e2f226bec671cf2d248d0a",
+    "semantic_hash": ""
+  },
+  "client/.oxlintrc.json": {
+    "mtime": 1789777440.8633902,
+    "seen": 1789777730.037376,
+    "ast_hash": "5e6e3cea3e89137071c142dd7835b0ef",
+    "semantic_hash": ""
+  },
+  "client/package.json": {
+    "mtime": 1789797885.2112567,
+    "seen": 1789801019.8106577,
+    "ast_hash": "94850178a7b4a820d171c9469d7e4589",
+    "semantic_hash": ""
+  },
+  "client/src/App.jsx": {
+    "mtime": 1789801084.0144055,
+    "seen": 1789802014.1326072,
+    "ast_hash": "37caff29f0368954ac52894407bcf0f5",
+    "semantic_hash": ""
+  },
+  "client/src/components/IncidentDetail.jsx": {
+    "mtime": 1789801836.1580176,
+    "seen": 1789802014.1336014,
+    "ast_hash": "460ecade9b319aa1cfa05601f2345b4b",
+    "semantic_hash": ""
+  },
+  "client/src/components/Navbar.jsx": {
+    "mtime": 1789780984.5853777,
+    "seen": 1789781207.0269957,
+    "ast_hash": "0916cd15e0c07f2875b47424fa1d7fed",
+    "semantic_hash": ""
+  },
+  "client/src/components/RawAlertsExplorer.jsx": {
+    "mtime": 1789798507.436445,
+    "seen": 1789801019.8106577,
+    "ast_hash": "5e206e08a32210b5ed3f166692140895",
+    "semantic_hash": ""
+  },
+  "client/src/main.jsx": {
+    "mtime": 1789777440.87839,
+    "seen": 1789777730.037376,
+    "ast_hash": "e13723e2574429d9a6d849727e3ff695",
+    "semantic_hash": ""
+  },
+  "client/vite.config.js": {
+    "mtime": 1789777440.87839,
+    "seen": 1789777730.037376,
+    "ast_hash": "5d54447744c19ccd28638a5c668d15ea",
+    "semantic_hash": ""
+  },
+  "package.json": {
+    "mtime": 1789779269.4346995,
+    "seen": 1789781207.0269957,
+    "ast_hash": "1c6c051ea37c169fd086a67d3afcd7ae",
+    "semantic_hash": ""
+  },
+  "start.js": {
+    "mtime": 1789778449.2521615,
+    "seen": 1789778502.0310667,
+    "ast_hash": "b7647e1fcfd6ab9ec89fdc563a743120",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.claude/commands/build.md": {
+    "mtime": 1789700187.7345018,
+    "seen": 1789777730.037376,
+    "ast_hash": "2dd7fdae89a9f7a47435383efb3a9eef",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.claude/commands/code-simplify.md": {
+    "mtime": 1789700187.7345018,
+    "seen": 1789777730.037376,
+    "ast_hash": "503e3b0345b4a52f2ddaf100a5efd4d7",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.claude/commands/constraints.md": {
+    "mtime": 1789700187.735502,
+    "seen": 1789777730.037376,
+    "ast_hash": "6625cb475eb330c9d7cc7aca556bd4ac",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.claude/commands/plan.md": {
+    "mtime": 1789700187.735502,
+    "seen": 1789777730.037376,
+    "ast_hash": "753f429c7cfb092c483837f8d4ce7441",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.claude/commands/review.md": {
+    "mtime": 1789700187.735502,
+    "seen": 1789777730.037376,
+    "ast_hash": "7f302e39a3e3ca080cd547a142a1dde8",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.claude/commands/ship.md": {
+    "mtime": 1789700187.7365022,
+    "seen": 1789777730.037376,
+    "ast_hash": "b18c7ae475edf62fb40e8e010b7cb34a",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.claude/commands/spec.md": {
+    "mtime": 1789700187.7365022,
+    "seen": 1789777730.037376,
+    "ast_hash": "e14602c923fc64f57b3f5aba7d8ae662",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.claude/commands/test.md": {
+    "mtime": 1789700187.7365022,
+    "seen": 1789777730.037376,
+    "ast_hash": "91f1cfda8d02772400b7a5bf65219446",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.claude/commands/webperf.md": {
+    "mtime": 1789700187.737502,
+    "seen": 1789777730.037376,
+    "ast_hash": "862ecfde28e418484b7174aa0fc5edf0",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.claude/rules/skills-contributing.md": {
+    "mtime": 1789700187.7385013,
+    "seen": 1789777730.037376,
+    "ast_hash": "69565292394e69a1ca467ceb63ad4565",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.github/ISSUE_TEMPLATE/skill-gap.yml": {
+    "mtime": 1789700187.7445014,
+    "seen": 1789777730.037376,
+    "ast_hash": "fd38aa7db164546b5b008438bfd9cad8",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/.github/workflows/test-plugin-install.yml": {
+    "mtime": 1789700187.745502,
+    "seen": 1789777730.037376,
+    "ast_hash": "c8290ef47de9af6e8ab753aae5b0aa53",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/AGENTS.md": {
+    "mtime": 1789700187.7475014,
+    "seen": 1789777730.037376,
+    "ast_hash": "2b8d79eed9c4039a8fa586dd807f4e51",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/CLAUDE.md": {
+    "mtime": 1789700187.7475014,
+    "seen": 1789777730.037376,
+    "ast_hash": "b83c5f2ae86b136163f78bf957d41377",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/CONTRIBUTING.md": {
+    "mtime": 1789700187.7475014,
+    "seen": 1789777730.037376,
+    "ast_hash": "83d4678e944af5275d4d237cebb37d36",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/README.md": {
+    "mtime": 1789700187.7485025,
+    "seen": 1789777730.037376,
+    "ast_hash": "09b49d3e0ad291ada9b739f581fa6874",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/agents/code-reviewer.md": {
+    "mtime": 1789700187.7495012,
+    "seen": 1789777730.037376,
+    "ast_hash": "0e48993477ae73632e60396e0510c5c7",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/agents/security-auditor.md": {
+    "mtime": 1789700187.7495012,
+    "seen": 1789777730.037376,
+    "ast_hash": "88970bc2e33737479ec771b9d7280b59",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/agents/test-engineer.md": {
+    "mtime": 1789700187.750502,
+    "seen": 1789777730.037376,
+    "ast_hash": "3245a0e677806330c33d286cbdd38d77",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/agents/web-performance-auditor.md": {
+    "mtime": 1789700187.751502,
+    "seen": 1789777730.037376,
+    "ast_hash": "52f9fb3895c2c79bd865c7c95331df79",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/adoption-guide.md": {
+    "mtime": 1789700187.755502,
+    "seen": 1789777730.037376,
+    "ast_hash": "779e3cb9a699823e00aaeb0498f4e65a",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/advanced-per-agent-configuration.md": {
+    "mtime": 1789700187.755502,
+    "seen": 1789777730.037376,
+    "ast_hash": "ab114b0592ff30ca4b1cf676d8ac865c",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/agents.md": {
+    "mtime": 1789700187.755502,
+    "seen": 1789777730.037376,
+    "ast_hash": "8955aed633df44a69284667c22ef738a",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/antigravity-setup.md": {
+    "mtime": 1789700187.756502,
+    "seen": 1789777730.037376,
+    "ast_hash": "13413a7e0c27290c9434bd1195465c82",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/codex-setup.md": {
+    "mtime": 1789700187.756502,
+    "seen": 1789777730.037376,
+    "ast_hash": "4d2617763c97e0d9b7370f75f8733cc2",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/commandcode-setup.md": {
+    "mtime": 1789700187.756502,
+    "seen": 1789777730.037376,
+    "ast_hash": "3407a3cff4eed9d962b327271f26dc85",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/comparison.md": {
+    "mtime": 1789700187.7575016,
+    "seen": 1789777730.037376,
+    "ast_hash": "a75c4a14685e62ec0629995c3dd77785",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/copilot-cli-setup.md": {
+    "mtime": 1789700187.7575016,
+    "seen": 1789777730.037376,
+    "ast_hash": "f1adfa8fd72b708b7bfa1f4bfe965048",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/copilot-setup.md": {
+    "mtime": 1789700187.758502,
+    "seen": 1789777730.037376,
+    "ast_hash": "f3fffb43f4a08543eb43f60e78f9a85c",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/cursor-setup.md": {
+    "mtime": 1789700187.758502,
+    "seen": 1789777730.037376,
+    "ast_hash": "f7c8910be66b139f6095274847dbbd2b",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/developer-onboarding.md": {
+    "mtime": 1789700187.758502,
+    "seen": 1789777730.037376,
+    "ast_hash": "4af2b9d2aef0255c25d4f42f9afeb838",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/gemini-cli-setup.md": {
+    "mtime": 1789700187.759502,
+    "seen": 1789777730.037376,
+    "ast_hash": "8204ba159052788a226d6d9f7d35137f",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/getting-started.md": {
+    "mtime": 1789700187.759502,
+    "seen": 1789777730.037376,
+    "ast_hash": "8e62730cfc9bc636adf54aaecd69beae",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/opencode-setup.md": {
+    "mtime": 1789700187.759502,
+    "seen": 1789777730.037376,
+    "ast_hash": "ce42771636f10f5f837d4d2803351ac0",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/skill-anatomy.md": {
+    "mtime": 1789700187.760502,
+    "seen": 1789777730.037376,
+    "ast_hash": "33e74abe574bd583b510d5f9febd6b57",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/docs/windsurf-setup.md": {
+    "mtime": 1789700187.760502,
+    "seen": 1789777730.037376,
+    "ast_hash": "6869e003c3664eb1e41896d009d07576",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/README.md": {
+    "mtime": 1789700187.760502,
+    "seen": 1789777730.037376,
+    "ast_hash": "bb63e6057c47c7dfef02f34b0e7bb475",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/api-and-interface-design/service-brief.md": {
+    "mtime": 1789700187.770502,
+    "seen": 1789777730.037376,
+    "ast_hash": "0fbe5eaa449b7ad713a474f563d9af07",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/browser-testing-with-devtools/README.md": {
+    "mtime": 1789700187.7715018,
+    "seen": 1789777730.037376,
+    "ast_hash": "47d5a95a888b0fdd42b83c9e57f11c94",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/browser-testing-with-devtools/index.html": {
+    "mtime": 1789700187.7715018,
+    "seen": 1789777730.037376,
+    "ast_hash": "fa71b29efed6b1964ed3a77ac325ac7e",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/context-engineering/context-audit.md": {
+    "mtime": 1789700187.7765021,
+    "seen": 1789777730.037376,
+    "ast_hash": "94d07a2a88a0d102ed16b2fdf6efa39e",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/debugging-and-error-recovery/time-pressure.md": {
+    "mtime": 1789700187.7775025,
+    "seen": 1789777730.037376,
+    "ast_hash": "191380c81ed3bb1afc2e5d460b53a2d3",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/deprecation-and-migration/api-inventory.md": {
+    "mtime": 1789700187.7775025,
+    "seen": 1789777730.037376,
+    "ast_hash": "91935a9054ad11b330d630cdd0054436",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/documentation-and-adrs/decision-context.md": {
+    "mtime": 1789700187.7785022,
+    "seen": 1789777730.037376,
+    "ast_hash": "a2d55efe4606ae6b5b623bcc7b06aae0",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/doubt-driven-development/migration-plan.md": {
+    "mtime": 1789700187.7785022,
+    "seen": 1789777730.037376,
+    "ast_hash": "b823c457c36f9065644315a72dc63ebd",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/frontend-ui-engineering/design-system.md": {
+    "mtime": 1789700187.7795024,
+    "seen": 1789777730.037376,
+    "ast_hash": "0ca79db7a0306a96473c0f6d5763a6eb",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/incremental-implementation-pressure/scenario.md": {
+    "mtime": 1789700187.7825022,
+    "seen": 1789777730.037376,
+    "ast_hash": "30088d0822fc909608e1767947ae30ea",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/incremental-implementation/tasks/plan.md": {
+    "mtime": 1789700187.7835019,
+    "seen": 1789777730.037376,
+    "ast_hash": "6e47d8c8c1117c50a57eec868b86ad80",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/observability-and-instrumentation/operations.md": {
+    "mtime": 1789700187.7835019,
+    "seen": 1789777730.037376,
+    "ast_hash": "1952551e5739e3e38c08bbf5b81b4c6f",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/planning-and-task-breakdown/notifications-spec.md": {
+    "mtime": 1789700187.785502,
+    "seen": 1789777730.037376,
+    "ast_hash": "1af6e56be7adbe712f0cb8b90a627aca",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/shipping-and-launch/authority-pressure.md": {
+    "mtime": 1789700187.7875016,
+    "seen": 1789777730.037376,
+    "ast_hash": "7a606634aff27d62db93da435a8e57fc",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/shipping-and-launch/launch-status.md": {
+    "mtime": 1789700187.7875016,
+    "seen": 1789777730.037376,
+    "ast_hash": "85a1ab9c5c9078885a8a859498f5f920",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/source-driven-development/framework-task.md": {
+    "mtime": 1789700187.7885017,
+    "seen": 1789777730.037376,
+    "ast_hash": "f15070331a7df6c5a4c4b85264391237",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/spec-driven-development-decomposition/portal-brief.md": {
+    "mtime": 1789700187.7885017,
+    "seen": 1789777730.037376,
+    "ast_hash": "daf569862e93597debf56186d7642350",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/spec-driven-development/billing-brief.md": {
+    "mtime": 1789700187.7895021,
+    "seen": 1789777730.037376,
+    "ast_hash": "8d8f04e75a6739bd102049eaa5e6380a",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/test-driven-development-ecosystem/README.md": {
+    "mtime": 1789700187.7895021,
+    "seen": 1789777730.037376,
+    "ast_hash": "e6373a7de0e9169a18218f4a029417e7",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/test-driven-development/BUG.md": {
+    "mtime": 1789700187.790502,
+    "seen": 1789777730.037376,
+    "ast_hash": "ad8009e1f57703fb6f1e641611c5078f",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/test-driven-development/README.md": {
+    "mtime": 1789700187.791502,
+    "seen": 1789777730.037376,
+    "ast_hash": "88532319aaa4f5beb9b4f5e76d7af675",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/fixtures/using-agent-skills/incident.md": {
+    "mtime": 1789700187.7935019,
+    "seen": 1789777730.037376,
+    "ast_hash": "c00fef0ec923bb2ae029e88ed11b1a90",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/evals/skill-impact.md": {
+    "mtime": 1789700187.7935019,
+    "seen": 1789777730.037376,
+    "ast_hash": "55790842f3d18d36a2fe60ba53a60e90",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/hooks/SDD-CACHE.md": {
+    "mtime": 1789700187.7935019,
+    "seen": 1789777730.037376,
+    "ast_hash": "9751ce274869ce0b9632b497a42045b6",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/hooks/SIMPLIFY-IGNORE.md": {
+    "mtime": 1789700187.7945023,
+    "seen": 1789777730.037376,
+    "ast_hash": "6833c443a2ac50822b33be2c5916671e",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/references/accessibility-checklist.md": {
+    "mtime": 1789700187.7975023,
+    "seen": 1789777730.037376,
+    "ast_hash": "48ca786064dea786af8a1d15579bc87c",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/references/definition-of-done.md": {
+    "mtime": 1789700187.7975023,
+    "seen": 1789777730.037376,
+    "ast_hash": "ef3cfa41831aad4e76c82b5bc8e4b174",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/references/observability-checklist.md": {
+    "mtime": 1789700187.7985063,
+    "seen": 1789777730.037376,
+    "ast_hash": "8347c542e050628df44ed94434148edd",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/references/orchestration-patterns.md": {
+    "mtime": 1789700187.7995017,
+    "seen": 1789777730.037376,
+    "ast_hash": "17e700500bfe71c82e43f779ad56aa9e",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/references/performance-checklist.md": {
+    "mtime": 1789700187.7995017,
+    "seen": 1789777730.037376,
+    "ast_hash": "115c4782ea0e3fa7b92b843ecbe9995f",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/references/security-checklist.md": {
+    "mtime": 1789700187.800502,
+    "seen": 1789777730.037376,
+    "ast_hash": "a934729eb697a034514400e485c450ce",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/references/testing-patterns.md": {
+    "mtime": 1789700187.800502,
+    "seen": 1789777730.037376,
+    "ast_hash": "f5f74035a84f71dc01484520e102e154",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/api-and-interface-design/SKILL.md": {
+    "mtime": 1789700187.809502,
+    "seen": 1789777730.037376,
+    "ast_hash": "a890974341086aebb1972fd995b53945",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/browser-testing-with-devtools/SKILL.md": {
+    "mtime": 1789700187.809502,
+    "seen": 1789777730.037376,
+    "ast_hash": "639b3e0f3bae1118b986269fb7bd5e87",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/ci-cd-and-automation/SKILL.md": {
+    "mtime": 1789700187.8105016,
+    "seen": 1789777730.037376,
+    "ast_hash": "6a3b179662eb6f3b434bb3e95201d45f",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/code-review-and-quality/SKILL.md": {
+    "mtime": 1789700187.811502,
+    "seen": 1789777730.037376,
+    "ast_hash": "dc260b644bba88dc8a1bfcc3f01a839e",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/code-simplification/SKILL.md": {
+    "mtime": 1789700187.8125017,
+    "seen": 1789777730.037376,
+    "ast_hash": "239dbb2a2f3caca0de086f7e0e0ebb03",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/constraint-driven-development/SKILL.md": {
+    "mtime": 1789700187.8135037,
+    "seen": 1789777730.037376,
+    "ast_hash": "99c5a737188665e5fb5a96d7edee4f08",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/constraint-driven-development/references/floor-guard.md": {
+    "mtime": 1789700187.8145027,
+    "seen": 1789777730.037376,
+    "ast_hash": "327d07d19f50aeec50dc748fe945a292",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/context-engineering/SKILL.md": {
+    "mtime": 1789700187.8155017,
+    "seen": 1789777730.037376,
+    "ast_hash": "7c141b7d9d12c416aa57f0c29509256e",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/debugging-and-error-recovery/SKILL.md": {
+    "mtime": 1789700187.8155017,
+    "seen": 1789777730.037376,
+    "ast_hash": "e906de3fe5071e70402b2705d3794a34",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/deprecation-and-migration/SKILL.md": {
+    "mtime": 1789700187.8165016,
+    "seen": 1789777730.037376,
+    "ast_hash": "bd2d9a567b78d26c3c3044261e06f11d",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/documentation-and-adrs/SKILL.md": {
+    "mtime": 1789700187.8175023,
+    "seen": 1789777730.037376,
+    "ast_hash": "9c74a0348a7f4a928f779e27dc52446d",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/doubt-driven-development/SKILL.md": {
+    "mtime": 1789700187.8175023,
+    "seen": 1789777730.037376,
+    "ast_hash": "f9ed4a58f060e10b4b28922ac93f857a",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/frontend-ui-engineering/SKILL.md": {
+    "mtime": 1789700187.8185024,
+    "seen": 1789777730.037376,
+    "ast_hash": "632c501a0962adc45d9bee6dfed6038a",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/git-workflow-and-versioning/SKILL.md": {
+    "mtime": 1789700187.8195019,
+    "seen": 1789777730.037376,
+    "ast_hash": "6257ade8b2491231a0a2ec068aa8815f",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/idea-refine/SKILL.md": {
+    "mtime": 1789700187.820502,
+    "seen": 1789777730.037376,
+    "ast_hash": "7af2490cfd895ad7d419e6112985f4b3",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/idea-refine/examples.md": {
+    "mtime": 1789700187.820502,
+    "seen": 1789777730.037376,
+    "ast_hash": "8e3e911c980f371e695e786d5b22b495",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/idea-refine/frameworks.md": {
+    "mtime": 1789700187.8215013,
+    "seen": 1789777730.037376,
+    "ast_hash": "fa20786abdfa9de40c6886a8d7c958f2",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/idea-refine/refinement-criteria.md": {
+    "mtime": 1789700187.8215013,
+    "seen": 1789777730.037376,
+    "ast_hash": "5ce82e7acc7b4b2b9dcd843fb9dcd1d6",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/incremental-implementation/SKILL.md": {
+    "mtime": 1789700187.8235013,
+    "seen": 1789777730.037376,
+    "ast_hash": "4bf69e4ab81601c958335bc1e938f657",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/interview-me/SKILL.md": {
+    "mtime": 1789700187.8235013,
+    "seen": 1789777730.037376,
+    "ast_hash": "9d57d4cd52197bad45adefee66226088",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/observability-and-instrumentation/SKILL.md": {
+    "mtime": 1789700187.824502,
+    "seen": 1789777730.037376,
+    "ast_hash": "9fa7e1868c1522f36a8ca34485eb706b",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/performance-optimization/SKILL.md": {
+    "mtime": 1789700187.8255005,
+    "seen": 1789777730.037376,
+    "ast_hash": "291e94a7b230759b2bc56a1751dd9616",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/planning-and-task-breakdown/SKILL.md": {
+    "mtime": 1789700187.826502,
+    "seen": 1789777730.037376,
+    "ast_hash": "9e8003b2dd231261f3078eb3fa3916da",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/security-and-hardening/SKILL.md": {
+    "mtime": 1789700187.8275018,
+    "seen": 1789777730.037376,
+    "ast_hash": "d1dd8f68f722d15031493035bbf2d553",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/shipping-and-launch/SKILL.md": {
+    "mtime": 1789700187.8285024,
+    "seen": 1789777730.037376,
+    "ast_hash": "2a8a7b623b0263bd1728a37adf376887",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/source-driven-development/SKILL.md": {
+    "mtime": 1789700187.8295007,
+    "seen": 1789777730.037376,
+    "ast_hash": "721ea4941cbd0a28f6579d3ed1d0aaa3",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/spec-driven-development/SKILL.md": {
+    "mtime": 1789700187.8305016,
+    "seen": 1789777730.037376,
+    "ast_hash": "a7fd879e418650480cebcadc0ee513d8",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/test-driven-development/SKILL.md": {
+    "mtime": 1789700187.8305016,
+    "seen": 1789777730.037376,
+    "ast_hash": "2763d4c81c31998fdf39f687860ca353",
+    "semantic_hash": ""
+  },
+  ".agents/plugins/agent-skills/skills/using-agent-skills/SKILL.md": {
+    "mtime": 1789700187.8315022,
+    "seen": 1789777730.037376,
+    "ast_hash": "05fe5402ed96bf608ae4ab746772e926",
+    "semantic_hash": ""
+  },
+  ".agents/rules/graphify.md": {
+    "mtime": 1789698772.1617053,
+    "seen": 1789777730.037376,
+    "ast_hash": "a0e4d192b9e2e17256124dbfc8e24e6a",
+    "semantic_hash": ""
+  },
+  ".agents/workflows/graphify.md": {
+    "mtime": 1789698772.163664,
+    "seen": 1789777730.037376,
+    "ast_hash": "a831cf3669f1e6ab85d8a80ebe655f99",
+    "semantic_hash": ""
+  },
+  "client/README.md": {
+    "mtime": 1789777440.86239,
+    "seen": 1789777730.037376,
+    "ast_hash": "75eb386f17caf77fd6fe3ce1d90968ee",
+    "semantic_hash": ""
+  },
+  "client/index.html": {
+    "mtime": 1789801630.7179925,
+    "seen": 1789802014.1456008,
+    "ast_hash": "b3e78ebebd7a23f14ef20229b597ee18",
+    "semantic_hash": ""
+  },
+  "client/public/favicon.svg": {
+    "mtime": 1789777440.8674023,
+    "seen": 1789777730.037376,
+    "ast_hash": "7e840862161341271697daa99a40d76b",
+    "semantic_hash": ""
+  },
+  "client/public/icons.svg": {
+    "mtime": 1789777440.8694053,
+    "seen": 1789777730.037376,
+    "ast_hash": "3b4fcfcf393eca4d264dca4a4663bc37",
+    "semantic_hash": ""
+  },
+  "client/src/assets/hero.png": {
+    "mtime": 1789777440.8736467,
+    "seen": 1789777730.037376,
+    "ast_hash": "aead493361b27e7510691c5d7072dfc1",
+    "semantic_hash": ""
+  },
+  "client/src/assets/react.svg": {
+    "mtime": 1789777440.8743849,
+    "seen": 1789777730.037376,
+    "ast_hash": "f0402b67b6ce880f65666bb49e841696",
+    "semantic_hash": ""
+  },
+  "client/src/assets/vite.svg": {
+    "mtime": 1789777440.876392,
+    "seen": 1789777730.037376,
+    "ast_hash": "9960a24288958394ac50e57ff638b036",
+    "semantic_hash": ""
+  },
+  "backend/ai_briefer.py": {
+    "mtime": 1789780835.9662886,
+    "seen": 1789781207.025994,
+    "ast_hash": "ec7dc0885b2bcc3b2908f048f281d642",
+    "semantic_hash": ""
+  },
+  "backend/app.py": {
+    "mtime": 1789792719.9293804,
+    "seen": 1789792728.5153182,
+    "ast_hash": "b5451d6f83a7f35397671aa12ae6da3a",
+    "semantic_hash": ""
+  },
+  "backend/correlation.py": {
+    "mtime": 1789781940.042657,
+    "seen": 1789782087.7770977,
+    "ast_hash": "f845bf5f7c6f30c51e6f600bb615da4f",
+    "semantic_hash": ""
+  },
+  "backend/ingestion.py": {
+    "mtime": 1789795014.1807961,
+    "seen": 1789795209.676341,
+    "ast_hash": "307b0e4d35dea6366991d6f69e2755e4",
+    "semantic_hash": ""
+  },
+  "backend/mitre_mapper.py": {
+    "mtime": 1789778272.1918766,
+    "seen": 1789778502.0310667,
+    "ast_hash": "0b72e057460233f05edce317a656e615",
+    "semantic_hash": ""
+  },
+  "backend/models.py": {
+    "mtime": 1789782008.7281394,
+    "seen": 1789782087.7780974,
+    "ast_hash": "386de172a43c5a97050e079cc25f1b31",
+    "semantic_hash": ""
+  },
+  "backend/mttt_calculator.py": {
+    "mtime": 1789778823.4937737,
+    "seen": 1789779147.4589503,
+    "ast_hash": "3ecfbad2b03acb1e371a493af839330d",
+    "semantic_hash": ""
+  },
+  "backend/normalization.py": {
+    "mtime": 1789781852.36583,
+    "seen": 1789782087.7780974,
+    "ast_hash": "cc59c15cbbd71548e843e0daaa68fc10",
+    "semantic_hash": ""
+  },
+  "backend/prioritization.py": {
+    "mtime": 1789780558.042897,
+    "seen": 1789781207.025994,
+    "ast_hash": "207f4e5c904c125dc5bf6ced3e5f04dd",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_pipeline.py": {
+    "mtime": 1789778846.9213016,
+    "seen": 1789779147.4589503,
+    "ast_hash": "8ac44b9c710d2e080402adfbb9465200",
+    "semantic_hash": ""
+  },
+  "client/src/components/IncidentQueue.jsx": {
+    "mtime": 1789797965.9399765,
+    "seen": 1789801019.8106577,
+    "ast_hash": "27378ac5996d62af325a2a998b1281e4",
+    "semantic_hash": ""
+  },
+  "client/src/components/SocOverview.jsx": {
+    "mtime": 1789801861.1131134,
+    "seen": 1789802014.1336014,
+    "ast_hash": "513a87f84726bdadab8e51fe2b9e7f95",
+    "semantic_hash": ""
+  },
+  "client/src/components/TriageImpact.jsx": {
+    "mtime": 1789798447.7323792,
+    "seen": 1789801019.8106577,
+    "ast_hash": "902109e26b22a8720cd571dd444a7dc1",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1789780086.2924922,
+    "seen": 1789781207.0443141,
+    "ast_hash": "e4bf72de67205bef207d8ec5ea8d98f8",
+    "semantic_hash": ""
+  },
+  "backend/tests/verify_endpoints.py": {
+    "mtime": 1789779250.1982267,
+    "seen": 1789779264.633936,
+    "ast_hash": "66084da8f9af4bb5e87a6852de6e5afc",
+    "semantic_hash": ""
+  },
+  "backend/ai_brief.py": {
+    "mtime": 1789780573.056406,
+    "seen": 1789781207.025994,
+    "ast_hash": "44de8b65e4b21bfdc493875c4a725f80",
+    "semantic_hash": ""
+  },
+  "backend/ml/data/test_dataset.json": {
+    "mtime": 1789795088.0366762,
+    "seen": 1789795209.676341,
+    "ast_hash": "40e27d900fcbe76bc9e1d4fb72206f25",
+    "semantic_hash": ""
+  },
+  "backend/ml/dataset_generator.py": {
+    "mtime": 1789795048.8155088,
+    "seen": 1789795209.676341,
+    "ast_hash": "8feab93d217af0d2e215e5944cb1cc9f",
+    "semantic_hash": ""
+  },
+  "backend/ml/evaluate.py": {
+    "mtime": 1789787511.7907362,
+    "seen": 1789788596.6818013,
+    "ast_hash": "267ae3a72604fa8b568570c8b9ab796a",
+    "semantic_hash": ""
+  },
+  "backend/ml/inference.py": {
+    "mtime": 1789780819.820584,
+    "seen": 1789781207.025994,
+    "ast_hash": "46ee781c4c00a7d3024be91b8e54670e",
+    "semantic_hash": ""
+  },
+  "backend/ml/metrics.json": {
+    "mtime": 1789795096.5897424,
+    "seen": 1789795209.676341,
+    "ast_hash": "62fa7f7db243fb5f128886ae66a5c04a",
+    "semantic_hash": ""
+  },
+  "backend/ml/preprocessing.py": {
+    "mtime": 1789795062.515438,
+    "seen": 1789795209.676341,
+    "ast_hash": "216ed6c93a43811d718363d46eb780f8",
+    "semantic_hash": ""
+  },
+  "backend/ml/train.py": {
+    "mtime": 1789795074.7856328,
+    "seen": 1789795209.676341,
+    "ast_hash": "41e0ab0d89f052c4926c2de606a318ef",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_ml_pipeline.py": {
+    "mtime": 1789781157.6874695,
+    "seen": 1789781207.025994,
+    "ast_hash": "af766910fd8c73e5b277c53df8c4c6b1",
+    "semantic_hash": ""
+  },
+  "client/src/components/AiMlEvaluation.jsx": {
+    "mtime": 1789797650.8890514,
+    "seen": 1789801019.8106577,
+    "ast_hash": "27692f4cabb2e9141d1381ba84445c5d",
+    "semantic_hash": ""
+  },
+  "backend/dataset_validator.py": {
+    "mtime": 1789792704.8438568,
+    "seen": 1789792728.5153182,
+    "ast_hash": "647f8e9729a4dbdff60e2abfc80eab89",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_dataset_upgrade.py": {
+    "mtime": 1789782051.3098867,
+    "seen": 1789782087.7780974,
+    "ast_hash": "e8ee6c1800aca9d53f9990cabe872fa5",
+    "semantic_hash": ""
+  },
+  "DATASET_DOCUMENTATION.md": {
+    "mtime": 1789782078.6474028,
+    "seen": 1789782087.7910986,
+    "ast_hash": "83d62598187a91c8a8f12ea545a02cba",
+    "semantic_hash": ""
+  },
+  "backend/review_persistence.py": {
+    "mtime": 1789788559.7872734,
+    "seen": 1789788596.6818013,
+    "ast_hash": "58547cd7f8b305c8b66bed7d6448ec77",
+    "semantic_hash": ""
+  },
+  "backend/data/analyst_reviews.json": {
+    "mtime": 1789798630.642246,
+    "seen": 1789801019.8086586,
+    "ast_hash": "c67fe76edac95a2aa3394a7ebb226a79",
+    "semantic_hash": ""
+  },
+  "backend/mttt_persistence.py": {
+    "mtime": 1789788942.7495959,
+    "seen": 1789788969.2868516,
+    "ast_hash": "55ce629ad51265d0eda0ba45bf0656dc",
+    "semantic_hash": ""
+  },
+  "backend/data/mttt_sessions.json": {
+    "mtime": 1789798630.6412437,
+    "seen": 1789801019.8086586,
+    "ast_hash": "9124d0489b7e68a68c786bb5dbfa2011",
+    "semantic_hash": ""
+  },
+  "client/src/components/AttackTimelineView.jsx": {
+    "mtime": 1789799721.336006,
+    "seen": 1789801019.8106577,
+    "ast_hash": "9ca290d4451147895ea4a6a178953f09",
+    "semantic_hash": ""
+  },
+  "client/src/components/ErrorBoundary.jsx": {
+    "mtime": 1789800104.692258,
+    "seen": 1789801019.8106577,
+    "ast_hash": "33a4f24a968cf47093ebb11407754b7a",
+    "semantic_hash": ""
+  },
+  "client/src/components/Header.jsx": {
+    "mtime": 1789801809.9347959,
+    "seen": 1789802014.1336014,
+    "ast_hash": "ccf08b19420631f068e0a2c6d94ce357",
+    "semantic_hash": ""
+  },
+  "client/src/components/MitreAttackView.jsx": {
+    "mtime": 1789799731.7303424,
+    "seen": 1789801019.8106577,
+    "ast_hash": "a35e8b3fe33d704cec2c3facc23b050c",
+    "semantic_hash": ""
+  },
+  "client/src/components/SettingsModal.jsx": {
+    "mtime": 1789799746.7670147,
+    "seen": 1789801019.8106577,
+    "ast_hash": "dd194291b8b4f0b837fbeef3bcc53330",
+    "semantic_hash": ""
+  },
+  "client/src/components/Sidebar.jsx": {
+    "mtime": 1789801786.992956,
+    "seen": 1789802014.1336014,
+    "ast_hash": "47449e1f99ee5e500dd9a12d3fb78255",
+    "semantic_hash": ""
+  },
+  "client/src/components/SocTopology3D.jsx": {
+    "mtime": 1789801772.4812872,
+    "seen": 1789802014.1336014,
+    "ast_hash": "f3b9eaef553a120aaa925a9f53d1595f",
+    "semantic_hash": ""
+  },
+  "client/src/components/SystemHealthModal.jsx": {
+    "mtime": 1789799739.3480706,
+    "seen": 1789801019.8106577,
+    "ast_hash": "63a7a46de56078b8ae78a61eca09c9be",
+    "semantic_hash": ""
+  }
+}

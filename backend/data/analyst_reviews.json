@@ -1,0 +1,28 @@
+{
+  "INC-102": {
+    "incident_id": "INC-102",
+    "investigation_status": "Confirmed",
+    "analyst_status": "Confirmed by Analyst",
+    "analyst_notes": [
+      "Shift-1 note: Validated outbound network telemetry.",
+      "[AI Brief Feedback - Agreed]: Forensic timeline and indicators are highly accurate.",
+      "Test empirical triage on incident"
+    ],
+    "custom_brief_text": "Analyst verified: Host compromised via credential stuffing.",
+    "analyst_agreement": "Agreed",
+    "analyst_feedback_notes": "Forensic timeline and indicators are highly accurate.",
+    "review_time_seconds": 45.0,
+    "last_updated": "2026-09-19T06:17:10.642245+00:00"
+  },
+  "INC-103": {
+    "incident_id": "INC-103",
+    "investigation_status": "Investigated",
+    "analyst_status": "Investigation Completed & Documented",
+    "analyst_notes": [],
+    "custom_brief_text": null,
+    "analyst_agreement": "Pending Review",
+    "analyst_feedback_notes": null,
+    "review_time_seconds": 701.0,
+    "last_updated": "2026-09-19T15:57:07.660694+00:00"
+  }
+}

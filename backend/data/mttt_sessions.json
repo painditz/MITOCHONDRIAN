@@ -1,0 +1,83 @@
+[
+  {
+    "session_id": "SES-ASST-1",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-19T03:36:22.072849+00:00",
+    "end_timestamp": "2026-09-19T03:36:40.572849+00:00",
+    "duration_seconds": 18.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-RAW_-2",
+    "session_type": "raw_alert",
+    "target_id": "ALT-SAMPLE-10042",
+    "start_timestamp": "2026-09-19T06:20:00Z",
+    "end_timestamp": "2026-09-19T06:21:35Z",
+    "duration_seconds": 95.0,
+    "analyst_decision": "Manual Alert Triaged"
+  },
+  {
+    "session_id": "SES-ASST-3",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-19T06:16:58.640248+00:00",
+    "end_timestamp": "2026-09-19T06:17:10.640248+00:00",
+    "duration_seconds": 12.0,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-4",
+    "session_type": "assisted_incident",
+    "target_id": "INC-103",
+    "start_timestamp": "2026-09-19T15:54:59.043427+00:00",
+    "end_timestamp": "2026-09-19T15:56:43.043427+00:00",
+    "duration_seconds": 104.0,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-5",
+    "session_type": "assisted_incident",
+    "target_id": "INC-103",
+    "start_timestamp": "2026-09-19T15:54:58.890711+00:00",
+    "end_timestamp": "2026-09-19T15:56:46.890711+00:00",
+    "duration_seconds": 108.0,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-6",
+    "session_type": "assisted_incident",
+    "target_id": "INC-103",
+    "start_timestamp": "2026-09-19T15:54:59.603054+00:00",
+    "end_timestamp": "2026-09-19T15:56:57.603054+00:00",
+    "duration_seconds": 118.0,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-7",
+    "session_type": "assisted_incident",
+    "target_id": "INC-103",
+    "start_timestamp": "2026-09-19T15:54:59.236036+00:00",
+    "end_timestamp": "2026-09-19T15:57:00.236036+00:00",
+    "duration_seconds": 121.0,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-8",
+    "session_type": "assisted_incident",
+    "target_id": "INC-103",
+    "start_timestamp": "2026-09-19T15:54:59.186810+00:00",
+    "end_timestamp": "2026-09-19T15:57:01.186810+00:00",
+    "duration_seconds": 122.0,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-9",
+    "session_type": "assisted_incident",
+    "target_id": "INC-103",
+    "start_timestamp": "2026-09-19T15:54:59.619859+00:00",
+    "end_timestamp": "2026-09-19T15:57:07.619859+00:00",
+    "duration_seconds": 128.0,
+    "analyst_decision": "Investigated"
+  }
+]
