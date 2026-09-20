@@ -1,82 +1,177 @@
 // client/src/components/SentinelSpatial.jsx
-// SentinelOps AI - 3D Digital Water Surface Environment + Glass Interface
-// Features:
-// 1. REAL 3D DIGITAL WATER SURFACE (Fixed cinematic background with wave peaks, pointer ripples, click shockwaves)
-// 2. LEFT HERO: "3,000 ALERTS. ONE ANALYST." + "TRIAGE CORE ACTIVE"
-// 3. LEFT METRICS PANEL: ALERTS (3,000), INCIDENTS (15), P1 (7), P2 (2), P3 (1), P4 (5)
-// 4. RIGHT DEDICATED INCIDENT INTELLIGENCE MAP: Isolated 3D Viewport with OrbitControls (dragging/zooming does NOT move water/page)
-// 5. BOTTOM 7-STAGE CONNECTED WORKFLOW: INGEST -> NORMALIZE -> CORRELATE -> PRIORITIZE -> MAP -> SUMMARIZE -> REVIEW
-// 6. RIGHT-SIDE INVESTIGATION INSPECTOR DRAWER: Forensic data, risk breakdown, MITRE tags, FLAN-T5 AI brief, Analyst review actions
+// SentinelOps AI - Spatial 3D Digital Water Environment & Enterprise Glass Product Experience
+// Flow:
+// 1. HERO + 3D DIGITAL WATER ENVIRONMENT (Continuous waves, pointer disturbance, expanding click shockwaves)
+// 2. DEDICATED INCIDENT INTELLIGENCE MAP (Isolated 3D Viewport with OrbitControls)
+// 3. KPI / LIVE METRICS WITH WAVEFORMS
+// 4. 00 / TRIAGE IMPACT (Mode 1 Simulation vs Mode 2 Empirical Stopwatch Trials)
+// 5. 01 / ALERT INTELLIGENCE ARCHITECTURE (7 Interactive Stages, Control/Data Planes)
+// 6. 02 / RISK INTELLIGENCE (5 explainable components + INC-102 vs INC-114 Case Study)
+// 7. 03 / DETERMINISTIC CORRELATION (3,000 Alerts -> Observable Pivots -> 15 Clusters + Top Assets)
+// 8. 04 / MITRE ATT&CK (Evidence-grounded technique attribution)
+// 9. 05 / AI SHIFT HANDOVER & HUMAN REVIEW & SYSTEM HEALTH
+// 10. FORENSIC INCIDENT INSPECTION MODAL (Opens on incident click)
 
 import React, { useState, useMemo, useCallback } from 'react';
 import { DigitalWater } from './spatial/DigitalWater';
 import { IncidentMapPanel } from './spatial/IncidentMapPanel';
+import { TriageImpactSection } from './TriageImpactSection';
+import { ArchitectureSection } from './ArchitectureSection';
+import { RiskIntelligenceSection } from './RiskIntelligenceSection';
+import { CorrelationSection } from './CorrelationSection';
+import { MitreSection } from './MitreSection';
+import { AiShiftHandoverSection } from './AiShiftHandoverSection';
+import { IncidentInspectionModal } from './IncidentInspectionModal';
+import { ARCHITECTURE_DATA } from '../data/mockData';
 import './SentinelSpatial.css';
 
 const FALLBACK_INCIDENTS = [
   {
     incident_id: 'INC-101',
+    id: 'INC-101',
     priority: 'P1',
     risk_score: 92.1,
+    riskScore: 92.1,
     alert_count: 14,
-    asset_name: 'CORP-ENDPOINT',
+    signalsCount: 14,
+    asset_name: 'CORP-ENDPOINT-DC',
+    asset: 'CORP-ENDPOINT-DC',
     asset_criticality: 'CRITICAL',
+    criticality: 'CRITICAL ASSET',
+    user: 'svc-replication',
+    observable: '10.0.1.5',
+    duration: '45.2 min',
+    mitre_techniques: [{ id: 'T1078.002', name: 'Domain Accounts' }],
+    ai_brief: 'Directory replication service anomaly originating from non-DC internal host targeting Directory Services replication RPC endpoint.',
   },
   {
     incident_id: 'INC-102',
+    id: 'INC-102',
     priority: 'P1',
     risk_score: 96.4,
+    riskScore: 96.4,
     alert_count: 10,
+    signalsCount: 10,
     asset_name: 'CORP-EXCHANGE-ONLINE',
+    asset: 'CORP-EXCHANGE-ONLINE',
     asset_criticality: 'CRITICAL',
+    criticality: 'CRITICAL ASSET',
+    user: 'marcus.vance.cfo',
+    observable: '185.220.101.5',
+    duration: '60.4 min',
+    mitre_techniques: [
+      { id: 'T1114.002', name: 'Email Collection: Remote Email Forwarding' },
+      { id: 'T1567.002', name: 'Cloud Storage Exfiltration' },
+    ],
+    ai_brief: 'Executive account compromise followed by cloud data exfiltration involving Exchange Online asset. Automated mailbox forwarding rule to mega.nz cloud storage endpoint.',
   },
   {
     incident_id: 'INC-103',
+    id: 'INC-103',
     priority: 'P2',
     risk_score: 78.2,
+    riskScore: 78.2,
     alert_count: 18,
+    signalsCount: 18,
     asset_name: 'CORP-AD',
+    asset: 'CORP-AD',
     asset_criticality: 'HIGH',
+    criticality: 'HIGH ASSET',
+    user: 'sarah.connor',
+    observable: '194.26.29.112',
+    duration: '32.1 min',
+    mitre_techniques: [{ id: 'T1566.001', name: 'Spearphishing Attachment' }],
+    ai_brief: 'Malicious macro document execution spawned encoded PowerShell session attempting outbound connection to suspicious IP.',
   },
   {
     incident_id: 'INC-105',
+    id: 'INC-105',
     priority: 'P2',
     risk_score: 71.3,
+    riskScore: 71.3,
     alert_count: 24,
+    signalsCount: 24,
     asset_name: 'CORP-FILE-SERVER',
+    asset: 'CORP-FILE-SERVER',
     asset_criticality: 'HIGH',
+    criticality: 'HIGH ASSET',
+    user: 'db_service_acct',
+    observable: '198.51.100.77',
+    duration: '42.0 min',
+    mitre_techniques: [{ id: 'T1190', name: 'Exploit Public-Facing Application' }],
+    ai_brief: 'Anomalous SQL queries with union-select patterns targeting customer records table.',
   },
   {
     incident_id: 'INC-106',
+    id: 'INC-106',
     priority: 'P3',
     risk_score: 54.7,
+    riskScore: 54.7,
     alert_count: 7,
+    signalsCount: 7,
     asset_name: 'CORP-WORKSTATION',
+    asset: 'CORP-WORKSTATION',
     asset_criticality: 'MEDIUM',
+    criticality: 'MEDIUM ASSET',
+    user: 'dev_intern',
+    observable: '10.0.4.12',
+    duration: '15.4 min',
+    mitre_techniques: [{ id: 'T1059.001', name: 'PowerShell Execution' }],
+    ai_brief: 'Local script execution in developer workspace. Bounded risk score due to non-critical asset.',
   },
   {
     incident_id: 'INC-108',
+    id: 'INC-108',
     priority: 'P1',
     risk_score: 88.5,
+    riskScore: 88.5,
     alert_count: 21,
+    signalsCount: 21,
     asset_name: 'CORP-IDENTITY',
+    asset: 'CORP-IDENTITY',
     asset_criticality: 'CRITICAL',
+    criticality: 'CRITICAL ASSET',
+    user: 'admin_ad',
+    observable: '10.0.1.1',
+    duration: '50.1 min',
+    mitre_techniques: [{ id: 'T1003.001', name: 'LSASS Memory Dumping' }],
+    ai_brief: 'Credential dumping detected on Azure AD synchronization server targeting Kerberos TGT tickets.',
   },
   {
     incident_id: 'INC-111',
+    id: 'INC-111',
     priority: 'P3',
     risk_score: 46.8,
+    riskScore: 46.8,
     alert_count: 8,
+    signalsCount: 8,
     asset_name: 'CORP-ENDPOINT',
+    asset: 'CORP-ENDPOINT',
     asset_criticality: 'MEDIUM',
+    criticality: 'MEDIUM ASSET',
+    user: 'guest_user',
+    observable: '10.0.5.88',
+    duration: '18.0 min',
+    mitre_techniques: [{ id: 'T1078', name: 'Valid Accounts' }],
+    ai_brief: 'Guest account failed logon storm followed by successful connection from guest Wi-Fi subnet.',
   },
   {
     incident_id: 'INC-114',
+    id: 'INC-114',
     priority: 'P4',
     risk_score: 15.0,
+    riskScore: 15.0,
     alert_count: 1452,
+    signalsCount: 1452,
     asset_name: 'CORP-TELEMETRY',
+    asset: 'CORP-TELEMETRY',
     asset_criticality: 'MEDIUM',
+    criticality: 'MEDIUM ASSET',
+    user: 'sys_logger',
+    observable: '10.0.9.9',
+    duration: '120.0 min',
+    mitre_techniques: [],
+    ai_brief: 'High-volume diagnostic log storm. Capped volume factor correctly keeps priority at P4 Low.',
   },
 ];
 
@@ -91,27 +186,11 @@ const WORKFLOW_STAGES = [
 ];
 
 function normalizeIncident(raw) {
-  const id =
-    raw?.incident_id ||
-    raw?.id ||
-    raw?.incidentId ||
-    raw?.incident?.incident_id;
-
+  const id = raw?.incident_id || raw?.id || raw?.incidentId;
   if (!id) return null;
 
-  const risk = Number(
-    raw?.risk_score ??
-      raw?.risk ??
-      raw?.score ??
-      raw?.riskScore ??
-      0
-  );
-
-  let priority =
-    raw?.priority ||
-    raw?.severity_priority ||
-    (risk >= 80 ? 'P1' : risk >= 60 ? 'P2' : risk >= 40 ? 'P3' : 'P4');
-
+  const risk = Number(raw?.risk_score ?? raw?.risk ?? raw?.score ?? raw?.riskScore ?? 0);
+  let priority = raw?.priority || (risk >= 80 ? 'P1' : risk >= 60 ? 'P2' : risk >= 40 ? 'P3' : 'P4');
   if (typeof priority === 'string') {
     if (priority.startsWith('P1')) priority = 'P1';
     else if (priority.startsWith('P2')) priority = 'P2';
@@ -139,161 +218,24 @@ function normalizeIncident(raw) {
   return {
     ...raw,
     incident_id: id,
+    id,
     risk_score: Number.isFinite(risk) ? risk : 0,
+    riskScore: Number.isFinite(risk) ? risk : 0,
     priority,
-    alert_count: Number(
-      raw?.alert_count ??
-        raw?.alertCount ??
-        raw?.alerts?.length ??
-        raw?.count ??
-        raw?.signalsCount ??
-        0
-    ),
-    asset_name:
-      raw?.asset_name ||
-      raw?.hostname ||
-      raw?.asset ||
-      raw?.asset_id ||
-      'UNKNOWN ASSET',
-    asset_criticality:
-      raw?.asset_criticality ||
-      raw?.criticality ||
-      'HIGH',
+    alert_count: Number(raw?.alert_count ?? raw?.alertCount ?? raw?.signalsCount ?? 1),
+    signalsCount: Number(raw?.alert_count ?? raw?.alertCount ?? raw?.signalsCount ?? 1),
+    asset_name: raw?.asset_name || raw?.hostname || raw?.asset || 'UNKNOWN ASSET',
+    asset: raw?.asset_name || raw?.hostname || raw?.asset || 'UNKNOWN ASSET',
+    asset_criticality: raw?.asset_criticality || raw?.criticality || 'HIGH',
+    criticality: raw?.asset_criticality || raw?.criticality || 'HIGH',
+    user: raw?.user || 'marcus.vance.cfo',
+    observable: raw?.observable || '185.220.101.5',
     ai_brief: aiBriefText,
+    aiBrief: aiBriefText,
     mitre_techniques: mitreList,
+    mitreTechniques: mitreList,
   };
 }
-
-/* ============================================================
-   INCIDENT INVESTIGATION INSPECTOR DRAWER
-   ============================================================ */
-
-function IncidentInspector({ incident, onClose }) {
-  const [reviewStatus, setReviewStatus] = useState(null);
-  if (!incident) return null;
-
-  const risk = Number(incident.risk_score || 0);
-
-  const handleReview = (action) => {
-    setReviewStatus(action);
-    // Optional persist to backend review API
-    fetch('http://127.0.0.1:8000/api/feedback', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        incident_id: incident.incident_id,
-        action,
-        analyst: 'Security Operations Analyst',
-        timestamp: new Date().toISOString(),
-      }),
-    }).catch(() => {});
-  };
-
-  return (
-    <aside className="sentinel-inspector glass-panel-shadow" aria-label="Incident Investigation Inspector">
-      <div className="sentinel-inspector-top">
-        <div>
-          <div className="sentinel-eyebrow mono">INCIDENT INVESTIGATION</div>
-          <h2>{incident.incident_id}</h2>
-        </div>
-        <button
-          className="sentinel-close"
-          onClick={onClose}
-          aria-label="Close Inspector"
-        >
-          &times;
-        </button>
-      </div>
-
-      <div className="sentinel-risk-row">
-        <div>
-          <span className={`sentinel-priority-tag ${String(incident.priority).toLowerCase()} mono`}>
-            {incident.priority}
-          </span>
-          <span className="sentinel-muted mono">
-            {incident.alert_count} ALERTS CORRELATED
-          </span>
-        </div>
-        <div className="risk-score-display mono">
-          <span className="risk-num">{risk.toFixed(1)}</span>
-          <span className="risk-sub">RISK SCORE</span>
-        </div>
-      </div>
-
-      <div className="sentinel-inspector-section">
-        <span className="sentinel-label mono">TARGET ASSET</span>
-        <strong className="asset-heading">{incident.asset_name}</strong>
-        <span className="asset-crit-badge mono">{incident.asset_criticality} CRITICALITY</span>
-      </div>
-
-      <div className="sentinel-inspector-section">
-        <span className="sentinel-label mono">RISK CONTRIBUTORS</span>
-        <div className="sentinel-breakdown mono">
-          <div>
-            <span>Asset Criticality</span>
-            <b>+{incident.asset_criticality?.toUpperCase() === 'CRITICAL' ? 45 : 30}</b>
-          </div>
-          <div>
-            <span>Severity Multiplier</span>
-            <b>+{Math.round(risk * 0.35)}</b>
-          </div>
-          <div>
-            <span>Kill-Chain Spread</span>
-            <b>+{Math.min(15, Math.round((incident.alert_count || 1) * 1.5))}</b>
-          </div>
-          <div>
-            <span>ML Anomaly Score</span>
-            <b>&le; 10</b>
-          </div>
-        </div>
-      </div>
-
-      {(incident.mitre_techniques?.length > 0) && (
-        <div className="sentinel-inspector-section">
-          <span className="sentinel-label mono">MITRE ATT&CK TECHNIQUES</span>
-          <div className="sentinel-mitre">
-            {incident.mitre_techniques.slice(0, 5).map((tech, idx) => (
-              <span key={idx} className="mono">
-                {typeof tech === 'string'
-                  ? tech
-                  : tech.id || tech.technique_id || tech.name || 'T1078'}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="sentinel-inspector-section">
-        <span className="sentinel-label mono">FLAN-T5 AI SHIFT BRIEF</span>
-        <p className="sentinel-brief">
-          {incident.ai_brief ||
-            incident.brief ||
-            'Correlated multi-vector telemetry across enterprise endpoints indicates credential access attempt followed by lateral movement staging.'}
-        </p>
-      </div>
-
-      <div className="sentinel-review">
-        <span className="sentinel-label mono">ANALYST VERIFICATION</span>
-        {reviewStatus ? (
-          <div className="review-confirmed-msg mono">
-            &check; Status set to <b>{reviewStatus.toUpperCase()}</b>
-          </div>
-        ) : (
-          <div className="sentinel-review-buttons">
-            <button onClick={() => handleReview('confirmed')}>Confirm</button>
-            <button onClick={() => handleReview('rejected')}>Reject</button>
-            <button onClick={() => handleReview('modified')}>Modify</button>
-            <button onClick={() => handleReview('investigated')}>Investigated</button>
-          </div>
-        )}
-      </div>
-    </aside>
-  );
-}
-
-/* ============================================================
-   MAIN SENTINEL SPATIAL EXPERIENCE COMPONENT
-   ============================================================ */
 
 export default function SentinelSpatial({
   incidents: suppliedIncidents,
@@ -301,6 +243,7 @@ export default function SentinelSpatial({
   metrics: suppliedMetrics,
 }) {
   const [selectedIncident, setSelectedIncident] = useState(null);
+  const [inspectionModalIncident, setInspectionModalIncident] = useState(null);
 
   const incidents = useMemo(() => {
     const source =
@@ -311,7 +254,7 @@ export default function SentinelSpatial({
     return source.map(normalizeIncident).filter(Boolean);
   }, [suppliedIncidents]);
 
-  // Real production telemetry metrics
+  // Production Telemetry Stats
   const stats = useMemo(() => {
     const total = incidents.length;
     const p1 = incidents.filter((i) => i.priority === 'P1').length;
@@ -333,6 +276,9 @@ export default function SentinelSpatial({
   const handleSelect = useCallback(
     (incident) => {
       setSelectedIncident(incident);
+      if (incident) {
+        setInspectionModalIncident(incident);
+      }
       onIncidentSelect?.(incident);
     },
     [onIncidentSelect]
@@ -340,113 +286,162 @@ export default function SentinelSpatial({
 
   return (
     <div className="sentinel-spatial-master">
-      {/* 1. REAL 3D DIGITAL WATER ENVIRONMENT (Continuous waves, ripple on pointer move, shockwave on click) */}
+      {/* 1. REAL 3D DIGITAL WATER ENVIRONMENT (Fixed in background across whole scroll flow) */}
       <DigitalWater incidents={incidents} />
 
-      {/* 2. GLASS SENTINELOPS INTERFACE OVERLAY (Pointer-events passthrough so water receives interaction) */}
-      <div className="sentinel-interface-layer">
+      {/* 2. SCROLLABLE PRODUCT NARRATIVE OVERLAY */}
+      <div className="sentinel-product-scroll-track">
         
-        {/* LEFT HERO: 3,000 ALERTS. ONE ANALYST. */}
-        <section className="sentinel-hero-block" aria-label="Hero Introduction">
-          <div className="sentinel-hero-eyebrow mono">
-            SENTINELOPS AI &bull; SECURITY OPERATIONS
+        {/* HERO VIEWPORT STAGE (100vh Atmospheric Anchor) */}
+        <div className="sentinel-hero-viewport">
+          
+          {/* Left Hero Content */}
+          <div className="sentinel-hero-block">
+            <div className="sentinel-hero-eyebrow mono">
+              SENTINELOPS AI &bull; SECURITY OPERATIONS
+            </div>
+
+            <h1 className="sentinel-hero-title">
+              3,000 ALERTS.
+              <br />
+              <span className="hero-subline">ONE ANALYST.</span>
+            </h1>
+
+            <p className="sentinel-hero-lead">
+              Turn alert chaos into incident intelligence.
+            </p>
+
+            <div className="sentinel-triage-badge mono">
+              <span className="triage-live-dot" />
+              <span>TRIAGE CORE ACTIVE</span>
+            </div>
           </div>
 
-          <h1 className="sentinel-hero-title">
-            3,000 ALERTS.
-            <br />
-            <span className="hero-subline">ONE ANALYST.</span>
-          </h1>
+          {/* Left Metrics Panel with Waveforms */}
+          <div className="sentinel-glass-metrics">
+            <div className="metric-col">
+              <span className="metric-tag mono">ALERTS</span>
+              <b className="metric-number">{stats.alerts.toLocaleString()}</b>
+              <div className="mini-waveform cyan" />
+            </div>
 
-          <p className="sentinel-hero-lead">
-            Turn alert chaos into incident intelligence.
-          </p>
+            <div className="metric-sep" />
 
-          <div className="sentinel-triage-badge mono">
-            <span className="triage-live-dot" />
-            <span>TRIAGE CORE ACTIVE</span>
-          </div>
-        </section>
+            <div className="metric-col">
+              <span className="metric-tag mono">INCIDENTS</span>
+              <b className="metric-number">{stats.incidents}</b>
+              <div className="mini-waveform white" />
+            </div>
 
-        {/* LEFT METRICS PANEL (Below Hero Area) */}
-        <aside className="sentinel-glass-metrics" aria-label="Operational Telemetry Metrics">
-          <div className="metric-col">
-            <span className="metric-tag mono">ALERTS</span>
-            <b className="metric-number">{stats.alerts.toLocaleString()}</b>
-          </div>
+            <div className="metric-sep" />
 
-          <div className="metric-sep" />
+            <div className="metric-col">
+              <span className="metric-tag mono p1-tag">P1</span>
+              <b className="metric-number p1-val">{stats.p1}</b>
+              <div className="mini-waveform red" />
+            </div>
 
-          <div className="metric-col">
-            <span className="metric-tag mono">INCIDENTS</span>
-            <b className="metric-number">{stats.incidents}</b>
-          </div>
+            <div className="metric-sep" />
 
-          <div className="metric-sep" />
+            <div className="metric-col">
+              <span className="metric-tag mono p2-tag">P2</span>
+              <b className="metric-number p2-val">{stats.p2}</b>
+              <div className="mini-waveform amber" />
+            </div>
 
-          <div className="metric-col">
-            <span className="metric-tag mono p1-tag">P1</span>
-            <b className="metric-number p1-val">{stats.p1}</b>
-          </div>
+            <div className="metric-sep" />
 
-          <div className="metric-sep" />
+            <div className="metric-col">
+              <span className="metric-tag mono p3-tag">P3</span>
+              <b className="metric-number p3-val">{stats.p3}</b>
+              <div className="mini-waveform cyan" />
+            </div>
 
-          <div className="metric-col">
-            <span className="metric-tag mono p2-tag">P2</span>
-            <b className="metric-number p2-val">{stats.p2}</b>
-          </div>
+            <div className="metric-sep" />
 
-          <div className="metric-sep" />
-
-          <div className="metric-col">
-            <span className="metric-tag mono p3-tag">P3</span>
-            <b className="metric-number p3-val">{stats.p3}</b>
+            <div className="metric-col">
+              <span className="metric-tag mono p4-tag">P4</span>
+              <b className="metric-number p4-val">{stats.p4}</b>
+              <div className="mini-waveform slate" />
+            </div>
           </div>
 
-          <div className="metric-sep" />
+          {/* Right Dedicated Incident Intelligence Map Panel (Isolated 3D Viewport) */}
+          <IncidentMapPanel
+            incidents={incidents}
+            selectedIncident={selectedIncident}
+            onSelectIncident={handleSelect}
+          />
 
-          <div className="metric-col">
-            <span className="metric-tag mono p4-tag">P4</span>
-            <b className="metric-number p4-val">{stats.p4}</b>
+          {/* Bottom 7-Stage Workflow Dock */}
+          <div className="sentinel-workflow-dock">
+            <div className="workflow-modules-track">
+              {WORKFLOW_STAGES.map((stage, idx) => (
+                <React.Fragment key={stage.step}>
+                  <div className="workflow-stage-card">
+                    <div className="stage-top align-center mono">
+                      <span className="stage-num">{stage.step}</span>
+                      <span className="stage-name">{stage.name}</span>
+                    </div>
+                    <div className="stage-desc">{stage.desc}</div>
+                  </div>
+
+                  {idx < WORKFLOW_STAGES.length - 1 && (
+                    <div className="workflow-connector-arrow" aria-hidden="true">
+                      &rarr;
+                    </div>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
           </div>
-        </aside>
 
-        {/* RIGHT DEDICATED INCIDENT INTELLIGENCE MAP (Dedicated Glass Panel with Isolated 3D Viewport) */}
-        <IncidentMapPanel
+          {/* Scroll Prompt Arrow */}
+          <div className="scroll-down-hint mono align-center">
+            <span>SCROLL TO EXPLORE ARCHITECTURE &bull; RISK &bull; MITRE &bull; AI</span>
+            <span className="scroll-arrow-anim">&darr;</span>
+          </div>
+        </div>
+
+        {/* 00 / TRIAGE IMPACT SECTION */}
+        <TriageImpactSection telemetry={stats} />
+
+        {/* 01 / ALERT INTELLIGENCE ARCHITECTURE SECTION */}
+        <ArchitectureSection
+          stages={ARCHITECTURE_DATA.stages}
+          telemetry={stats}
+        />
+
+        {/* 02 / RISK INTELLIGENCE SECTION */}
+        <RiskIntelligenceSection />
+
+        {/* 03 / CORRELATION & TOP ASSETS SECTION */}
+        <CorrelationSection
           incidents={incidents}
-          selectedIncident={selectedIncident}
           onSelectIncident={handleSelect}
         />
 
-        {/* BOTTOM CONNECTED WORKFLOW (7 Glass Processing Stages) */}
-        <footer className="sentinel-workflow-dock" aria-label="End-to-End Processing Workflow">
-          <div className="workflow-modules-track">
-            {WORKFLOW_STAGES.map((stage, idx) => (
-              <React.Fragment key={stage.step}>
-                <div className="workflow-stage-card">
-                  <div className="stage-top align-center mono">
-                    <span className="stage-num">{stage.step}</span>
-                    <span className="stage-name">{stage.name}</span>
-                  </div>
-                  <div className="stage-desc">{stage.desc}</div>
-                </div>
+        {/* 04 / MITRE ATT&CK SECTION */}
+        <MitreSection />
 
-                {idx < WORKFLOW_STAGES.length - 1 && (
-                  <div className="workflow-connector-arrow" aria-hidden="true">
-                    &rarr;
-                  </div>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        </footer>
-
-        {/* RIGHT-SIDE INVESTIGATION INSPECTOR (Opens on incident click) */}
-        <IncidentInspector
-          incident={selectedIncident}
-          onClose={() => handleSelect(null)}
+        {/* 05 / AI SHIFT HANDOVER & HUMAN REVIEW SECTION */}
+        <AiShiftHandoverSection
+          selectedIncident={selectedIncident || incidents[1] || incidents[0]}
+          onOpenFullDetail={(inc) => setInspectionModalIncident(inc)}
         />
+
       </div>
+
+      {/* FORENSIC INCIDENT INSPECTION MODAL */}
+      {inspectionModalIncident && (
+        <IncidentInspectionModal
+          incident={inspectionModalIncident}
+          onClose={() => setInspectionModalIncident(null)}
+          onReviewAction={(id, action, notes) => {
+            console.log(`[SentinelOps] Analyst reviewed ${id}: ${action} (${notes})`);
+          }}
+        />
+      )}
     </div>
   );
 }
