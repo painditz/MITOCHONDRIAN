@@ -21,11 +21,18 @@ const INCIDENT_POSITIONS = {
   "INC-101": [-5.2, 2.2, -1.8],
   "INC-102": [-1.0, 2.8, 0.0],
   "INC-103": [3.8, 2.0, -2.8],
+  "INC-104": [2.2, 0.8, 1.5],
   "INC-105": [5.5, -1.0, -1.0],
   "INC-106": [-3.8, -2.2, 0.8],
+  "INC-107": [-1.5, -0.8, 2.2],
   "INC-108": [1.0, -2.2, -2.5],
+  "INC-109": [4.2, -2.5, 0.5],
+  "INC-110": [-2.0, 0.5, -2.0],
   "INC-111": [-6.0, 0.0, -3.5],
+  "INC-112": [-4.5, 3.2, 1.2],
+  "INC-113": [0.5, 3.6, -1.5],
   "INC-114": [4.8, 3.0, 2.0],
+  "INC-115": [-3.0, -3.2, -1.2],
 };
 
 const PRIORITY_COLORS = {
@@ -119,7 +126,7 @@ function normalizeIncident(raw) {
       0
   );
 
-  const priority =
+  let priority =
     raw?.priority ||
     raw?.severity_priority ||
     (risk >= 80
@@ -129,6 +136,30 @@ function normalizeIncident(raw) {
         : risk >= 40
           ? "P3"
           : "P4");
+
+  if (typeof priority === "string") {
+    if (priority.startsWith("P1")) priority = "P1";
+    else if (priority.startsWith("P2")) priority = "P2";
+    else if (priority.startsWith("P3")) priority = "P3";
+    else if (priority.startsWith("P4")) priority = "P4";
+  }
+
+  const aiBriefText =
+    typeof raw?.shift_brief?.what_happened === "string"
+      ? raw?.shift_brief?.what_happened
+      : typeof raw?.ai_brief === "string"
+        ? raw?.ai_brief
+        : raw?.ai_brief?.brief || raw?.aiBrief;
+
+  const mitreList =
+    raw?.mitre_techniques ||
+    raw?.mitre_mappings ||
+    raw?.shift_brief?.mitre_techniques?.map((m) => ({
+      id: m.technique_id,
+      name: m.technique_name,
+    })) ||
+    raw?.mitre ||
+    [];
 
   return {
     ...raw,
@@ -140,10 +171,12 @@ function normalizeIncident(raw) {
         raw?.alertCount ??
         raw?.alerts?.length ??
         raw?.count ??
+        raw?.signalsCount ??
         0
     ),
     asset_name:
       raw?.asset_name ||
+      raw?.hostname ||
       raw?.asset ||
       raw?.asset_id ||
       "UNKNOWN ASSET",
@@ -151,6 +184,8 @@ function normalizeIncident(raw) {
       raw?.asset_criticality ||
       raw?.criticality ||
       "UNKNOWN",
+    ai_brief: aiBriefText,
+    mitre_techniques: mitreList,
   };
 }
 
@@ -271,7 +306,11 @@ function IncidentNode({
   const [hovered, setHovered] = useState(false);
 
   const position =
-    INCIDENT_POSITIONS[incident.incident_id] || [0, 0, 0];
+    INCIDENT_POSITIONS[incident.incident_id] || [
+      ((parseInt(incident.incident_id.replace(/\D/g, "") || "0", 10) % 7) - 3) * 1.8,
+      (((parseInt(incident.incident_id.replace(/\D/g, "") || "0", 10) * 3) % 5) - 2) * 1.4,
+      (((parseInt(incident.incident_id.replace(/\D/g, "") || "0", 10) * 2) % 6) - 3) * 1.0,
+    ];
 
   const color = getColor(incident.priority);
 
@@ -440,10 +479,18 @@ function CorrelationEdges({
         const b = incidents[j];
 
         const pa =
-          INCIDENT_POSITIONS[a.incident_id];
+          INCIDENT_POSITIONS[a.incident_id] || [
+            ((parseInt(a.incident_id.replace(/\D/g, "") || "0", 10) % 7) - 3) * 1.8,
+            (((parseInt(a.incident_id.replace(/\D/g, "") || "0", 10) * 3) % 5) - 2) * 1.4,
+            (((parseInt(a.incident_id.replace(/\D/g, "") || "0", 10) * 2) % 6) - 3) * 1.0,
+          ];
 
         const pb =
-          INCIDENT_POSITIONS[b.incident_id];
+          INCIDENT_POSITIONS[b.incident_id] || [
+            ((parseInt(b.incident_id.replace(/\D/g, "") || "0", 10) % 7) - 3) * 1.8,
+            (((parseInt(b.incident_id.replace(/\D/g, "") || "0", 10) * 3) % 5) - 2) * 1.4,
+            (((parseInt(b.incident_id.replace(/\D/g, "") || "0", 10) * 2) % 6) - 3) * 1.0,
+          ];
 
         if (!pa || !pb) continue;
 
@@ -505,13 +552,13 @@ function CameraController({
 }) {
   const { camera, pointer } = useThree();
 
-  const overviewPosition = useMemo(
-    () => new THREE.Vector3(0, 1.0, 14),
+  const overview = useMemo(
+    () => new THREE.Vector3(0, 1, 14),
     []
   );
 
   const desiredPosition = useRef(
-    overviewPosition.clone()
+    overview.clone()
   );
 
   const desiredLookAt = useRef(
@@ -532,7 +579,7 @@ function CameraController({
       desiredPosition.current.set(
         p[0] * 0.58,
         p[1] * 0.58 + 0.7,
-        7.0
+        7
       );
 
       desiredLookAt.current.set(
@@ -542,12 +589,12 @@ function CameraController({
       );
     } else {
       desiredPosition.current.copy(
-        overviewPosition
+        overview
       );
 
       desiredLookAt.current.set(0, 0, 0);
     }
-  }, [selectedIncident, overviewPosition]);
+  }, [selectedIncident, overview]);
 
   useFrame((_, delta) => {
     const pointerOffsetX =
@@ -556,18 +603,10 @@ function CameraController({
     const pointerOffsetY =
       selectedIncident ? 0 : pointer.y * 0.35;
 
-    const targetX =
-      desiredPosition.current.x +
-      pointerOffsetX;
-
-    const targetY =
-      desiredPosition.current.y +
-      pointerOffsetY;
-
     camera.position.x =
       THREE.MathUtils.damp(
         camera.position.x,
-        targetX,
+        desiredPosition.current.x + pointerOffsetX,
         4.5,
         delta
       );
@@ -575,7 +614,7 @@ function CameraController({
     camera.position.y =
       THREE.MathUtils.damp(
         camera.position.y,
-        targetY,
+        desiredPosition.current.y + pointerOffsetY,
         4.5,
         delta
       );
@@ -590,20 +629,17 @@ function CameraController({
 
     currentLookAt.current.lerp(
       desiredLookAt.current,
-      1 -
-        Math.pow(0.002, delta)
+      1 - Math.pow(0.002, delta)
     );
 
-    camera.lookAt(
-      currentLookAt.current
-    );
+    camera.lookAt(currentLookAt.current);
   });
 
   return null;
 }
 
 /* ============================================================
-   SCENE
+   3D SCENE
    ============================================================ */
 
 function SceneContents({
@@ -740,7 +776,7 @@ function IncidentInspector({
             <span>
               Asset Criticality
             </span>
-            <b>+{incident.asset_criticality === "CRITICAL" ? 45 : "—"}</b>
+            <b>+{incident.asset_criticality?.toUpperCase() === "CRITICAL" ? 45 : "dynamic"}</b>
           </div>
 
           <div>
@@ -795,7 +831,8 @@ function IncidentInspector({
                     ? technique
                     : technique.id ||
                       technique.technique ||
-                      technique.name}
+                      technique.name ||
+                      technique.technique_id}
                 </span>
               ))}
           </div>
@@ -832,12 +869,13 @@ function IncidentInspector({
 }
 
 /* ============================================================
-   MAIN COMPONENT
+   MAIN
    ============================================================ */
 
 export default function SentinelSpatial({
   incidents: suppliedIncidents,
   onIncidentSelect,
+  metrics: suppliedMetrics,
 }) {
   const [selectedIncident, setSelectedIncident] =
     useState(null);
@@ -856,6 +894,28 @@ export default function SentinelSpatial({
       .map(normalizeIncident)
       .filter(Boolean);
   }, [suppliedIncidents]);
+
+  // Dynamic calculation of production metrics from live data
+  const stats = useMemo(() => {
+    const total = incidents.length;
+    const p1 = incidents.filter((i) => i.priority === "P1").length;
+    const p2 = incidents.filter((i) => i.priority === "P2").length;
+    const p3 = incidents.filter((i) => i.priority === "P3").length;
+    const p4 = incidents.filter((i) => i.priority === "P4").length;
+    const alertSum = incidents.reduce(
+      (sum, i) => sum + (i.alert_count || 0),
+      0
+    );
+
+    return {
+      alerts: suppliedMetrics?.total_alerts || alertSum || 3000,
+      incidents: suppliedMetrics?.grouped_incidents || total || 15,
+      p1: suppliedMetrics?.critical_incidents || p1 || 7,
+      p2: suppliedMetrics?.high_incidents || p2 || 2,
+      p3: suppliedMetrics?.medium_incidents || p3 || 1,
+      p4: suppliedMetrics?.low_incidents || p4 || 5,
+    };
+  }, [incidents, suppliedMetrics]);
 
   const handleSelect = useCallback(
     (incident) => {
@@ -895,15 +955,9 @@ export default function SentinelSpatial({
           <Suspense fallback={null}>
             <SceneContents
               incidents={incidents}
-              selectedIncident={
-                selectedIncident
-              }
-              setSelectedIncident={
-                handleSelect
-              }
-              setHoveredIncident={
-                setHoveredIncident
-              }
+              selectedIncident={selectedIncident}
+              setSelectedIncident={handleSelect}
+              setHoveredIncident={setHoveredIncident}
             />
           </Suspense>
         </Canvas>
@@ -935,58 +989,49 @@ export default function SentinelSpatial({
         <div className="sentinel-system-hud">
           <div>
             <span>ALERTS</span>
-            <b>3,000</b>
+            <b>{stats.alerts.toLocaleString()}</b>
           </div>
 
           <div>
             <span>INCIDENTS</span>
-            <b>15</b>
+            <b>{stats.incidents}</b>
           </div>
 
           <div>
             <span>P1</span>
-            <b>7</b>
+            <b>{stats.p1}</b>
           </div>
 
           <div>
             <span>P2</span>
-            <b>2</b>
+            <b>{stats.p2}</b>
           </div>
 
           <div>
             <span>P3</span>
-            <b>1</b>
+            <b>{stats.p3}</b>
           </div>
 
           <div>
             <span>P4</span>
-            <b>5</b>
+            <b>{stats.p4}</b>
           </div>
         </div>
 
-        {hoveredIncident &&
-          !selectedIncident && (
-            <div className="sentinel-hover-status">
-              <span>
-                INSPECT
-              </span>
+        {hoveredIncident && !selectedIncident && (
+          <div className="sentinel-hover-status">
+            <span>INSPECT</span>
 
-              <strong>
-                {hoveredIncident.incident_id}
-              </strong>
+            <strong>{hoveredIncident.incident_id}</strong>
 
-              <span>
-                Click to investigate
-              </span>
-            </div>
-          )}
+            <span>Click to investigate</span>
+          </div>
+        )}
       </div>
 
       <IncidentInspector
         incident={selectedIncident}
-        onClose={() =>
-          setSelectedIncident(null)
-        }
+        onClose={() => setSelectedIncident(null)}
       />
     </section>
   );

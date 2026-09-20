@@ -1,5 +1,5 @@
 // client/src/components/Navigation.jsx
-// Phase B: Compact Global Top Navigation (60-72px, no sidebar, thin bottom rule)
+// Global Top Navigation (Dark frosted glass, high-contrast typography, fixed 60px)
 import React, { useState, useEffect } from 'react';
 import { Settings } from 'lucide-react';
 
@@ -73,105 +73,122 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
       <style>{`
         .daq-global-nav {
           width: 100%;
-          height: 64px;
-          background-color: var(--color-base);
-          border-bottom: 1px solid var(--color-line);
-          position: sticky;
+          height: 60px;
+          background: rgba(5, 8, 11, 0.88);
+          backdrop-filter: blur(18px);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          position: fixed;
           top: 0;
+          left: 0;
+          right: 0;
           z-index: 100;
           user-select: none;
         }
 
         .nav-inner {
           height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 clamp(1rem, 3vw, 2.5rem);
         }
 
         .nav-brand {
-          gap: 0.35rem;
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
         }
 
         .brand-primary {
-          font-family: var(--font-display);
+          font-family: var(--font-display, sans-serif);
           font-size: 0.95rem;
           font-weight: 800;
           letter-spacing: 0.08em;
-          color: var(--color-primary);
+          color: #f8fafc;
         }
 
         .brand-accent {
           font-size: 0.68rem;
           font-weight: 700;
-          color: var(--color-accent);
+          color: #38bdf8;
           letter-spacing: 0.08em;
         }
 
         .nav-links {
+          display: flex;
+          align-items: center;
           gap: 2rem;
         }
 
         .nav-link-btn {
           background: transparent;
           border: none;
-          font-family: var(--font-body);
-          font-size: 0.85rem;
-          font-weight: 450;
-          color: var(--color-secondary);
+          font-family: var(--font-body, sans-serif);
+          font-size: 0.82rem;
+          font-weight: 500;
+          color: #94a3b8;
           cursor: pointer;
-          padding: 0.5rem 0;
+          padding: 0.4rem 0;
           position: relative;
           transition: color 140ms ease;
         }
 
         .nav-link-btn:hover {
-          color: var(--color-primary);
+          color: #f8fafc;
         }
 
         .nav-link-btn.active {
-          color: var(--color-primary);
+          color: #38bdf8;
           font-weight: 600;
         }
 
         .nav-link-btn.active::after {
           content: '';
           position: absolute;
-          bottom: -8px;
+          bottom: -6px;
           left: 0;
           right: 0;
-          height: 1px;
-          background-color: var(--color-primary);
+          height: 2px;
+          background-color: #38bdf8;
+          border-radius: 1px;
         }
 
         .nav-meta {
+          display: flex;
+          align-items: center;
           gap: 0.85rem;
           font-size: 0.65rem;
-          color: var(--color-secondary);
+          color: #64748b;
         }
 
         .system-status-indicator {
+          display: flex;
+          align-items: center;
           gap: 0.4rem;
-          color: var(--color-primary);
+          color: #e2e8f0;
           font-weight: 600;
         }
 
         .status-live-dot {
           width: 5px;
           height: 5px;
-          background-color: #16A34A;
+          background-color: #10b981;
           border-radius: 50%;
+          box-shadow: 0 0 8px #10b981;
         }
 
         .nav-meta-sep {
-          color: var(--color-line);
+          color: rgba(255, 255, 255, 0.12);
         }
 
         .utc-clock {
-          color: var(--color-secondary);
+          color: #94a3b8;
         }
 
         .nav-settings-btn {
           background: transparent;
           border: none;
-          color: var(--color-secondary);
+          color: #64748b;
           cursor: pointer;
           display: flex;
           align-items: center;
@@ -180,7 +197,7 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
         }
 
         .nav-settings-btn:hover {
-          color: var(--color-primary);
+          color: #f8fafc;
         }
 
         @media (max-width: 900px) {
