@@ -1,28 +1,32 @@
 /* ==========================================================================
-   SentinelOps AI - Phase A: Global Typography, Color & 12-Column Grid
-   Direct DAQ Consulting Translation
+   SentinelOps AI - Global Enterprise Typography & Dark Design System
    ========================================================================== */
 
 :root {
-  --color-base: #F3F1EC;
-  --color-primary: #111111;
-  --color-secondary: #6F6F6F;
-  --color-line: #D8D5CE;
-  --color-surface-dark: #111111;
-  --color-text-light: #F4F2ED;
-  --color-accent: #2563EB;
+  --color-base: #02070B;
+  --color-surface-dark: #030A10;
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
+  --color-line: rgba(110, 190, 220, 0.16);
+  --color-accent: #35CFFF;
 
-  --color-p1: #C73B3B;
-  --color-p2: #B98621;
-  --color-p3: #3A83B8;
-  --color-p4: #777777;
+  --color-p1: #FF4655;
+  --color-p2: #FFB52E;
+  --color-p3: #21D4FF;
+  --color-p4: #B7C5CF;
 
-  --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
-  --font-body: 'Inter', -apple-system, sans-serif;
-  --font-mono: 'IBM Plex Mono', monospace;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+
+  --glass-bg: rgba(3, 10, 16, 0.68);
+  --glass-border: 1px solid rgba(110, 190, 220, 0.16);
+  --glass-blur: blur(20px);
+  --glass-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
 
   --container-max: 1600px;
-  --container-pad: clamp(24px, 5vw, 96px);
+  --container-pad: clamp(24px, 5vw, 80px);
 }
 
 /* Base Reset */
@@ -35,7 +39,7 @@
 html {
   scroll-behavior: smooth;
   background-color: var(--color-base);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -45,17 +49,16 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   background-color: var(--color-base);
-  color: var(--color-primary);
-  line-height: 1.45;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  font-family: var(--font-body);
 }
 
-/* Typography Scale */
+/* Typography Hierarchy */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  font-weight: 500;
-  line-height: 0.94;
-  letter-spacing: -0.035em;
-  color: var(--color-primary);
+  font-weight: 700;
+  color: #ffffff;
 }
 
 .mono {
@@ -63,7 +66,7 @@ h1, h2, h3, h4, h5, h6 {
   font-variant-numeric: tabular-nums;
 }
 
-/* Global 12-Column Grid Container */
+/* Global Container */
 .daq-container {
   width: 100%;
   max-width: var(--container-max);
@@ -73,43 +76,10 @@ h1, h2, h3, h4, h5, h6 {
   padding-right: var(--container-pad);
 }
 
-/* Thin Structural Rules */
-.daq-rule {
-  width: 100%;
-  height: 1px;
-  background-color: var(--color-line);
-  border: none;
-}
-
-.daq-rule-dark {
-  width: 100%;
-  height: 1px;
-  background-color: rgba(244, 242, 237, 0.12);
-  border: none;
-}
-
-/* Small Editorial Labels */
-.editorial-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-secondary);
-}
-
-.editorial-label-dark {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(244, 242, 237, 0.6);
-}
-
-/* Flex utilities */
 .flex-between {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 }
 
 .align-center {

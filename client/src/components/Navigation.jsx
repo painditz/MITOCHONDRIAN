@@ -1,5 +1,5 @@
 // client/src/components/Navigation.jsx
-// Global Top Navigation (Dark frosted glass, high-contrast typography, fixed 60px)
+// Global Top Navigation (Translucent dark glass, clean enterprise Inter typography, 60px)
 import React, { useState, useEffect } from 'react';
 import { Settings } from 'lucide-react';
 
@@ -22,19 +22,19 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
     { id: 'architecture', label: 'Architecture' },
     { id: 'mitre', label: 'MITRE' },
     { id: 'triage', label: 'Triage' },
-    { id: 'aiml', label: 'AI / ML' }
+    { id: 'aiml', label: 'AI / ML' },
   ];
 
   return (
     <header className="daq-global-nav">
-      <div className="daq-container nav-inner flex-between">
+      <div className="nav-inner flex-between">
         {/* Left: Brand */}
         <div className="nav-brand align-center">
           <span className="brand-primary">SENTINELOPS</span>
           <span className="brand-accent mono">AI</span>
         </div>
 
-        {/* Center: Clean Text Navigation */}
+        {/* Center: Enterprise Navigation */}
         <nav className="nav-links align-center" aria-label="Main Navigation">
           {navItems.map((item) => {
             const isActive = activeNav === item.id;
@@ -74,9 +74,10 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
         .daq-global-nav {
           width: 100%;
           height: 60px;
-          background: rgba(5, 8, 11, 0.88);
-          backdrop-filter: blur(18px);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          background: rgba(2, 7, 11, 0.75);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-bottom: 1px solid rgba(110, 190, 220, 0.16);
           position: fixed;
           top: 0;
           left: 0;
@@ -90,43 +91,45 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0 clamp(1rem, 3vw, 2.5rem);
+          padding: 0 clamp(1.5rem, 4vw, 3.5rem);
+          max-width: 1600px;
+          margin: 0 auto;
         }
 
         .nav-brand {
           display: flex;
           align-items: center;
-          gap: 0.4rem;
+          gap: 0.45rem;
         }
 
         .brand-primary {
-          font-family: var(--font-display, sans-serif);
-          font-size: 0.95rem;
-          font-weight: 800;
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.92rem;
+          font-weight: 700;
           letter-spacing: 0.08em;
           color: #f8fafc;
         }
 
         .brand-accent {
-          font-size: 0.68rem;
+          font-size: 0.65rem;
           font-weight: 700;
-          color: #38bdf8;
+          color: #35CFFF;
           letter-spacing: 0.08em;
         }
 
         .nav-links {
           display: flex;
           align-items: center;
-          gap: 2rem;
+          gap: 2.2rem;
         }
 
         .nav-link-btn {
           background: transparent;
           border: none;
-          font-family: var(--font-body, sans-serif);
-          font-size: 0.82rem;
-          font-weight: 500;
-          color: #94a3b8;
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 14px;
+          font-weight: 550;
+          color: #8293A1;
           cursor: pointer;
           padding: 0.4rem 0;
           position: relative;
@@ -138,7 +141,7 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
         }
 
         .nav-link-btn.active {
-          color: #38bdf8;
+          color: #35CFFF;
           font-weight: 600;
         }
 
@@ -149,7 +152,7 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
           left: 0;
           right: 0;
           height: 2px;
-          background-color: #38bdf8;
+          background-color: #35CFFF;
           border-radius: 1px;
         }
 
@@ -164,40 +167,47 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
         .system-status-indicator {
           display: flex;
           align-items: center;
-          gap: 0.4rem;
+          gap: 0.45rem;
           color: #e2e8f0;
           font-weight: 600;
+          font-size: 0.68rem;
         }
 
         .status-live-dot {
-          width: 5px;
-          height: 5px;
+          width: 6px;
+          height: 6px;
           background-color: #10b981;
           border-radius: 50%;
           box-shadow: 0 0 8px #10b981;
         }
 
         .nav-meta-sep {
-          color: rgba(255, 255, 255, 0.12);
+          color: rgba(255, 255, 255, 0.15);
         }
 
         .utc-clock {
           color: #94a3b8;
+          font-size: 0.68rem;
+          letter-spacing: 0.05em;
         }
 
         .nav-settings-btn {
           background: transparent;
-          border: none;
-          color: #64748b;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #94a3b8;
           cursor: pointer;
+          padding: 0.35rem;
+          border-radius: 4px;
           display: flex;
           align-items: center;
-          padding: 0;
-          transition: color 120ms ease;
+          justify-content: center;
+          transition: all 140ms ease;
         }
 
         .nav-settings-btn:hover {
-          color: #f8fafc;
+          color: #ffffff;
+          border-color: rgba(53, 207, 255, 0.4);
+          background: rgba(53, 207, 255, 0.08);
         }
 
         @media (max-width: 900px) {

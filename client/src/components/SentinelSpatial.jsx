@@ -304,7 +304,7 @@ export default function SentinelSpatial({
             <h1 className="sentinel-hero-title">
               3,000 ALERTS.
               <br />
-              <span className="hero-subline">ONE ANALYST.</span>
+              <span className="hero-subline"><span className="hero-accent-one">ONE</span> ANALYST.</span>
             </h1>
 
             <p className="sentinel-hero-lead">

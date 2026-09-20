@@ -1,13 +1,14 @@
 // client/src/components/spatial/DigitalWater.jsx
 // 3D Digital Water Surface using Three.js / React Three Fiber ShaderMaterial
-// Features:
-// - PlaneGeometry (40 x 24, 180 x 120 subdivisions) rotated horizontally
-// - 3D wave peaks and valleys with continuous cinematic motion
-// - Dynamic pointer disturbance (smoothly interpolated uMouse)
-// - Click disturbance (expanding temporary shockwave ripple with uClickPos / uClickTime)
-// - Specular highlights, dark navy depth, cyan highlights
-// - Incident light reflections (subtle colored shimmering glow projected onto the water)
-// - Translucent secondary reflection layer with animated diagonal highlights
+// Palette:
+// Base: #02070B
+// Deep Water: #03111A
+// Blue: #063047
+// Cyan: #087EAD
+// Highlight: #62DFFF
+// White: #DCEFF5
+// ZERO global red, purple, or orange glow.
+// Tiny localized reflections strictly under incident nodes.
 
 import React, { useRef, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
@@ -99,44 +100,63 @@ const waterFragmentShader = /* glsl */ `
   varying vec2 vUv;
 
   void main() {
-    vec3 deepWater = vec3(0.005, 0.025, 0.045);
-    vec3 cyanWater = vec3(0.01, 0.18, 0.28);
+    // Exact Palette:
+    // Base: #02070B -> vec3(0.0078, 0.0275, 0.0431)
+    // Deep Water: #03111A -> vec3(0.0118, 0.0667, 0.1020)
+    // Blue: #063047 -> vec3(0.0235, 0.1882, 0.2784)
+    // Cyan: #087EAD -> vec3(0.0314, 0.4941, 0.6784)
+    // Highlight: #62DFFF -> vec3(0.3843, 0.8745, 1.0000)
+    // White: #DCEFF5 -> vec3(0.8627, 0.9373, 0.9608)
 
-    float waveLight = smoothstep(-0.05, 0.35, vWave);
-    vec3 color = mix(deepWater, cyanWater, waveLight * 0.45);
+    vec3 baseWater = vec3(0.0078, 0.0275, 0.0431);
+    vec3 deepWater = vec3(0.0118, 0.0667, 0.1020);
+    vec3 blueWater = vec3(0.0235, 0.1882, 0.2784);
+    vec3 cyanWater = vec3(0.0314, 0.4941, 0.6784);
+    vec3 highlightCyan = vec3(0.3843, 0.8745, 1.0);
+    vec3 specularWhite = vec3(0.8627, 0.9373, 0.9608);
 
-    /* Moving highlights across the water */
+    // Deep water to blue water elevation
+    float waveElevation = smoothstep(-0.15, 0.35, vWave);
+    vec3 color = mix(deepWater, blueWater, waveElevation * 0.7);
+
+    // Moving cyan wave crests
+    float crest = smoothstep(0.12, 0.40, vWave);
+    color = mix(color, cyanWater, crest * 0.4);
+
+    // Moving moonlight telemetry streaks (cool cyan #62DFFF)
     float highlight = sin(
-      vWorldPosition.x * 1.4 +
-      vWorldPosition.z * 0.8 +
-      uTime * 0.8
+      vWorldPosition.x * 1.35 +
+      vWorldPosition.z * 0.75 +
+      uTime * 0.65
     );
-    highlight = smoothstep(0.82, 1.0, highlight);
-    color += vec3(0.03, 0.18, 0.25) * highlight;
+    highlight = smoothstep(0.85, 1.0, highlight);
+    color += highlightCyan * (highlight * 0.24);
 
-    /* Crisp specular sheen */
+    // Crisp specular sheen (white #DCEFF5)
     float sheen = sin(
-      (vWorldPosition.x - vWorldPosition.z) * 1.6 +
-      uTime * 0.55
+      (vWorldPosition.x - vWorldPosition.z) * 1.5 +
+      uTime * 0.48
     );
-    sheen = smoothstep(0.93, 1.0, sheen) * 0.32;
-    color += vec3(0.12, 0.30, 0.40) * sheen;
+    sheen = smoothstep(0.94, 1.0, sheen);
+    color += specularWhite * (sheen * 0.32);
 
-    /* Subtle neon reflections from incident nodes onto the water surface */
+    // Strictly localized pinpoint incident reflections:
+    // Bounded to radius < 1.0 with steep falloff to ensure ZERO global bleed
     for (int i = 0; i < 8; i++) {
       if (i >= uIncidentCount) break;
       vec2 incPos = uIncidentPositions[i];
       float dist = distance(vWorldPosition.xz, incPos);
-      float shimmer = sin(dist * 3.5 - uTime * 2.2 + vWave * 7.0) * 0.5 + 0.5;
-      float falloff = exp(-dist * 0.42) * 0.32;
-      color += uIncidentColors[i] * falloff * (0.6 + 0.4 * shimmer);
+      if (dist < 1.0) {
+        float localPinpoint = exp(-dist * 5.0) * 0.15;
+        color += uIncidentColors[i] * localPinpoint;
+      }
     }
 
-    gl_FragColor = vec4(color, 0.96);
+    gl_FragColor = vec4(color, 0.98);
   }
 `;
 
-// Secondary reflection layer shader (subtle moving diagonal highlights)
+// Secondary reflection layer shader (subtle moving diagonal highlights in cool cyan)
 const reflectionLayerVertexShader = /* glsl */ `
   uniform float uTime;
   varying vec2 vUv;
@@ -156,13 +176,13 @@ const reflectionLayerFragmentShader = /* glsl */ `
   varying vec3 vWorldPosition;
 
   void main() {
-    // Subtle animated diagonal light streaks
-    float streak = sin((vUv.x + vUv.y * 1.5) * 18.0 - uTime * 0.7) * 0.5 + 0.5;
-    float streak2 = sin((vUv.x * 2.0 - vUv.y) * 12.0 + uTime * 0.5) * 0.5 + 0.5;
-    float combined = smoothstep(0.85, 1.0, streak * streak2);
+    float streak = sin((vUv.x + vUv.y * 1.5) * 18.0 - uTime * 0.6) * 0.5 + 0.5;
+    float streak2 = sin((vUv.x * 2.0 - vUv.y) * 12.0 + uTime * 0.45) * 0.5 + 0.5;
+    float combined = smoothstep(0.88, 1.0, streak * streak2);
 
-    vec3 sheenColor = vec3(0.15, 0.45, 0.65);
-    gl_FragColor = vec4(sheenColor, combined * 0.08);
+    // Subtle cool cyan highlight (#62DFFF)
+    vec3 sheenColor = vec3(0.384, 0.875, 1.0);
+    gl_FragColor = vec4(sheenColor, combined * 0.05);
   }
 `;
 
@@ -175,20 +195,19 @@ function WaterSurfaceMesh({ incidents = [] }) {
   const secondaryRef = useRef();
   const { pointer } = useThree();
 
-  // Smooth pointer interpolation targets
   const targetMouse = useRef(new THREE.Vector2(0, 0));
   const currentMouse = useRef(new THREE.Vector2(0, 0));
   const clickData = useRef({ pos: new THREE.Vector2(0, 0), time: -10, strength: 0 });
 
-  // Incident colors & positions for projected water reflections
+  // Incident colors strictly reserved for local pinpoints
   const { incidentColors, incidentPositions, incidentCount } = useMemo(() => {
     const colors = [];
     const positions = [];
     const colorMap = {
-      P1: new THREE.Vector3(1.0, 0.23, 0.30), // Red
-      P2: new THREE.Vector3(1.0, 0.69, 0.12), // Amber
-      P3: new THREE.Vector3(0.26, 0.84, 1.00), // Cyan
-      P4: new THREE.Vector3(0.55, 0.60, 0.67), // Gray/Blue
+      P1: new THREE.Vector3(1.0, 0.274, 0.333), // #FF4655
+      P2: new THREE.Vector3(1.0, 0.710, 0.180), // #FFB52E
+      P3: new THREE.Vector3(0.129, 0.831, 1.000), // #21D4FF
+      P4: new THREE.Vector3(0.718, 0.773, 0.812), // #B7C5CF
     };
 
     const count = Math.min(incidents.length, 8);
@@ -197,9 +216,8 @@ function WaterSurfaceMesh({ incidents = [] }) {
         const inc = incidents[i];
         const prio = (inc.priority || 'P1').slice(0, 2);
         colors.push(colorMap[prio] || colorMap.P1);
-        // Map incident coordinate to 3D water surface XZ
-        const x = ((i % 4) - 1.5) * 6.0;
-        const z = (Math.floor(i / 4) - 0.5) * 6.0;
+        const x = ((i % 4) - 1.5) * 7.0;
+        const z = (Math.floor(i / 4) - 0.5) * 7.0;
         positions.push(new THREE.Vector2(x, z));
       } else {
         colors.push(new THREE.Vector3(0, 0, 0));
@@ -214,7 +232,6 @@ function WaterSurfaceMesh({ incidents = [] }) {
     };
   }, [incidents]);
 
-  // Custom Shader Material for Water
   const waterMaterial = useMemo(() => {
     return new THREE.ShaderMaterial({
       vertexShader: waterVertexShader,
@@ -236,7 +253,6 @@ function WaterSurfaceMesh({ incidents = [] }) {
     });
   }, [incidentColors, incidentPositions, incidentCount]);
 
-  // Material for the secondary subtle reflection layer
   const reflectionMaterial = useMemo(() => {
     return new THREE.ShaderMaterial({
       vertexShader: reflectionLayerVertexShader,
@@ -251,10 +267,12 @@ function WaterSurfaceMesh({ incidents = [] }) {
     });
   }, []);
 
-  // Click handler to trigger shockwave ripples
   useEffect(() => {
     const handlePointerDown = (e) => {
-      // Normalize to [-1, 1]
+      const target = e.target;
+      if (target && (target.closest('.incident-intelligence-panel') || target.closest('.sentinel-inspector') || target.closest('.modal-body-scroll'))) {
+        return;
+      }
       const nx = (e.clientX / window.innerWidth) * 2 - 1;
       const ny = -(e.clientY / window.innerHeight) * 2 + 1;
       clickData.current = {
@@ -271,13 +289,11 @@ function WaterSurfaceMesh({ incidents = [] }) {
     return () => window.removeEventListener('pointerdown', handlePointerDown);
   }, [waterMaterial]);
 
-  // Animation Loop (60 FPS)
-  useFrame((state, delta) => {
+  useFrame((state) => {
     const time = state.clock.elapsedTime;
     waterMaterial.uniforms.uTime.value = time;
     reflectionMaterial.uniforms.uTime.value = time;
 
-    // Smoothly interpolate pointer into uMouse
     targetMouse.current.set(pointer.x, pointer.y);
     currentMouse.current.lerp(targetMouse.current, 0.08);
     waterMaterial.uniforms.uMouse.value.copy(currentMouse.current);
@@ -285,23 +301,21 @@ function WaterSurfaceMesh({ incidents = [] }) {
 
   return (
     <group>
-      {/* 1. Main 3D Digital Water Surface (40 x 24, 180 x 120 subdivisions) */}
       <mesh
         ref={meshRef}
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, -1.8, 0]}
       >
-        <planeGeometry args={[44, 28, 180, 120]} />
+        <planeGeometry args={[48, 30, 180, 120]} />
         <primitive object={waterMaterial} attach="material" />
       </mesh>
 
-      {/* 2. Secondary Translucent Reflection Layer */}
       <mesh
         ref={secondaryRef}
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, -1.74, 0]}
       >
-        <planeGeometry args={[44, 28, 20, 20]} />
+        <planeGeometry args={[48, 30, 20, 20]} />
         <primitive object={reflectionMaterial} attach="material" />
       </mesh>
     </group>
@@ -317,9 +331,8 @@ function WaterCameraController() {
   const basePos = useMemo(() => new THREE.Vector3(0, 8.5, 14), []);
 
   useFrame((_, delta) => {
-    // Subtle, restrained pointer parallax on global water camera
-    const targetX = basePos.x + pointer.x * 0.85;
-    const targetY = basePos.y + pointer.y * 0.45;
+    const targetX = basePos.x + pointer.x * 0.75;
+    const targetY = basePos.y + pointer.y * 0.35;
     const targetZ = basePos.z;
 
     camera.position.x = THREE.MathUtils.damp(camera.position.x, targetX, 3.0, delta);
@@ -353,20 +366,17 @@ export function DigitalWater({ incidents = [] }) {
           powerPreference: 'high-performance',
         }}
         onCreated={({ gl }) => {
-          gl.setClearColor(new THREE.Color('#030609'), 1);
+          gl.setClearColor(new THREE.Color('#02070B'), 1);
         }}
       >
-        <color attach="background" args={['#030609']} />
-        <fog attach="fog" args={['#030609', 14, 38]} />
+        <color attach="background" args={['#02070B']} />
+        <fog attach="fog" args={['#02070B', 14, 40]} />
 
-        {/* Ambient & Directional Lighting */}
-        <ambientLight intensity={0.25} />
-        <directionalLight position={[6, 12, 8]} intensity={0.45} color="#42d6ff" />
+        {/* Deep ocean ambient & moonlight cyan directional lighting */}
+        <ambientLight intensity={0.35} color="#063047" />
+        <directionalLight position={[6, 14, 8]} intensity={0.55} color="#62DFFF" />
 
-        {/* The 3D Digital Water Surface */}
         <WaterSurfaceMesh incidents={incidents} />
-
-        {/* Subtle, restrained telemetry sparkles */}
         <WaterCameraController />
       </Canvas>
 
@@ -377,7 +387,7 @@ export function DigitalWater({ incidents = [] }) {
           z-index: 0;
           pointer-events: auto;
           overflow: hidden;
-          background: #030609;
+          background: #02070B;
         }
 
         .digital-water-container canvas {
