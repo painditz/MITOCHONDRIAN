@@ -31,8 +31,9 @@ export function AlertEvidenceDrawer({ alert, onClose }) {
           <button
             className="drawer-close-btn align-center mono sentinel-interactive-btn"
             onClick={onClose}
+            aria-label="Back to incident"
           >
-            <span>ESC / CLOSE</span>
+            <span>&larr; BACK TO INCIDENT</span>
             <X size={13} />
           </button>
         </div>

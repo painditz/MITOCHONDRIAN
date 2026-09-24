@@ -1,12 +1,9 @@
-// client/src/components/telemetry/RawTelemetryLake.jsx
-// 07 / RAW TELEMETRY LAKE — 3,000 ALERTS • 19 FIELDS
-// High-throughput raw stream table with expandable forensic evidence drawer
 import React, { useState, useEffect } from 'react';
 import { AlertEvidenceDrawer } from './AlertEvidenceDrawer';
 import { RawSeverityBadge } from '../shared/StatusBadge';
 import { SectionHeader } from '../shared/SectionHeader';
 import { Reveal } from '../shared/Reveal';
-import { Search, Database, ChevronLeft, ChevronRight, Layers, RefreshCw, Info } from 'lucide-react';
+import { Search, Database, ChevronLeft, ChevronRight, Layers, RefreshCw, Info, Upload, CheckCircle2 } from 'lucide-react';
 
 export function RawTelemetryLake() {
   const [alerts, setAlerts] = useState([]);
@@ -18,7 +15,21 @@ export function RawTelemetryLake() {
   const [totalAlerts, setTotalAlerts] = useState(0);
   const [selectedAlert, setSelectedAlert] = useState(null);
 
+  // Phase 2: Ingestion status and dynamic reload/upload
+  const [ingestionStatus, setIngestionStatus] = useState(null);
+  const [isProcessingIngest, setIsProcessingIngest] = useState(false);
+  const [ingestMessage, setIngestMessage] = useState('');
+
   const PAGE_SIZE = 25;
+
+  const fetchIngestionStatus = () => {
+    fetch('http://127.0.0.1:8000/api/alerts/ingestion-status')
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data) setIngestionStatus(data);
+      })
+      .catch((e) => console.error('[Ingestion Status Error]', e));
+  };
 
   const fetchAlerts = () => {
     setLoading(true);
@@ -48,7 +59,79 @@ export function RawTelemetryLake() {
 
   useEffect(() => {
     fetchAlerts();
+    fetchIngestionStatus();
   }, [page, search]);
+
+  const handleReloadSynthetic = async () => {
+    setIsProcessingIngest(true);
+    setIngestMessage('');
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/reset?count=3000', { method: 'POST' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      setIngestMessage(`Baseline 3,000 synthetic alert dataset loaded. Pipeline healthy (19/19 schema fields).`);
+      fetchIngestionStatus();
+      fetchAlerts();
+    } catch (err) {
+      console.error('[Reload Synthetic Error]', err);
+      setIngestMessage('Error reloading synthetic dataset.');
+    } finally {
+      setIsProcessingIngest(false);
+    }
+  };
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsProcessingIngest(true);
+    setIngestMessage(`Parsing and ingesting ${file.name}...`);
+
+    try {
+      const text = await file.text();
+      let alertObjects = [];
+
+      if (file.name.endsWith('.json')) {
+        const parsed = JSON.parse(text);
+        alertObjects = Array.isArray(parsed) ? parsed : (parsed.alerts || [parsed]);
+      } else if (file.name.endsWith('.csv')) {
+        const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+        if (lines.length > 1) {
+          const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+          for (let i = 1; i < lines.length; i++) {
+            const row = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+            const obj = {};
+            headers.forEach((h, idx) => {
+              obj[h] = row[idx] || '';
+            });
+            alertObjects.push(obj);
+          }
+        }
+      }
+
+      if (alertObjects.length === 0) {
+        throw new Error('No valid alert records found in file');
+      }
+
+      const res = await fetch('http://127.0.0.1:8000/api/alerts/ingest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ alerts: alertObjects })
+      });
+
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+      const resData = await res.json();
+      setIngestMessage(resData.message || `Successfully ingested ${resData.normalized} alerts through normalization & correlation.`);
+      fetchIngestionStatus();
+      fetchAlerts();
+    } catch (err) {
+      console.error('[File Ingest Error]', err);
+      setIngestMessage(`Ingest failed: ${err.message}`);
+    } finally {
+      setIsProcessingIngest(false);
+      event.target.value = '';
+    }
+  };
 
   const filtered = alerts.filter(
     (a) => severityFilter === 'ALL' || (a.severity || '').toLowerCase() === severityFilter.toLowerCase()
@@ -63,19 +146,94 @@ export function RawTelemetryLake() {
         <SectionHeader
           code="05"
           eyebrow="TELEMETRY"
-          title="RAW ALERT STREAM"
+          title="ALERT INGESTION &amp; RAW STREAM"
           subtitle="Direct high-throughput pipeline stream across Endpoint, Identity, Cloud, and Perimeter telemetry without loss."
           rightContent={
             <div className="align-center mono" style={{ gap: '0.85rem' }}>
               <span className="telemetry-total-pill font-bold">
-                {totalAlerts ? `${totalAlerts.toLocaleString()} RAW ALERTS` : '3,000 ALERTS'} &bull; 19 FIELDS
+                {ingestionStatus?.received ? `${ingestionStatus.received.toLocaleString()} ALERTS` : (totalAlerts ? `${totalAlerts.toLocaleString()} RAW ALERTS` : '3,000 ALERTS')} &bull; 19 FIELDS
               </span>
             </div>
           }
         />
       </Reveal>
 
-      {/* Distinction Explainer Note (Part 6 & 16) */}
+      {/* PHASE 2: DEMONSTRABLE ALERT INGESTION & PIPELINE INTEGRITY CONTROL */}
+      <Reveal delay={40}>
+        <div className="alert-ingestion-control-card sentinel-glass-card mono">
+          <div className="ingestion-header-row flex-between">
+            <div>
+              <div className="ingestion-eyebrow">PIPELINE DEMONSTRATION &bull; PROBLEM STATEMENT #25</div>
+              <h2 className="ingestion-title">
+                ALERT INGESTION &mdash; <span className="text-cyan">{ingestionStatus?.received ? `${ingestionStatus.received.toLocaleString()} ALERTS` : '3,000 ALERTS'}</span>
+              </h2>
+            </div>
+            <div className="ingestion-actions align-center">
+              <button
+                className="ingest-btn reload-btn sentinel-interactive-btn"
+                onClick={handleReloadSynthetic}
+                disabled={isProcessingIngest}
+                title="Reset pipeline and reload the official 3,000 alert baseline"
+              >
+                <RefreshCw size={13} className={isProcessingIngest ? 'spin' : ''} />
+                <span>LOAD SYNTHETIC DATASET</span>
+              </button>
+              <label className="ingest-btn upload-btn sentinel-interactive-btn" title="Upload custom CSV or JSON telemetry batch">
+                <Upload size={13} />
+                <span>UPLOAD CSV / JSON</span>
+                <input
+                  type="file"
+                  accept=".csv,.json"
+                  style={{ display: 'none' }}
+                  onChange={handleFileUpload}
+                  disabled={isProcessingIngest}
+                />
+              </label>
+            </div>
+          </div>
+
+          {/* 4-Stat Pipeline Validation Grid */}
+          <div className="pipeline-validation-grid">
+            <div className="validation-item">
+              <span className="val-lbl">RECEIVED</span>
+              <span className="val-num text-white">
+                {ingestionStatus ? ingestionStatus.received.toLocaleString() : '3,000'}
+              </span>
+              <span className="val-sub">ALERTS STREAMED</span>
+            </div>
+            <div className="validation-item">
+              <span className="val-lbl">NORMALIZED</span>
+              <span className="val-num text-cyan">
+                {ingestionStatus ? ingestionStatus.normalized.toLocaleString() : '3,000'}
+              </span>
+              <span className="val-sub">CANONICAL ENTITIES</span>
+            </div>
+            <div className="validation-item">
+              <span className="val-lbl">REJECTED</span>
+              <span className="val-num text-green">
+                {ingestionStatus ? ingestionStatus.rejected : '0'}
+              </span>
+              <span className="val-sub">DROPPED / MALFORMED</span>
+            </div>
+            <div className="validation-item">
+              <span className="val-lbl">SCHEMA FIELDS</span>
+              <span className="val-num text-bright-cyan">
+                {ingestionStatus ? `${ingestionStatus.schema_fields} / ${ingestionStatus.total_schema_fields}` : '19 / 19'}
+              </span>
+              <span className="val-sub">COMPLETE FIELD MAP</span>
+            </div>
+          </div>
+
+          {ingestMessage && (
+            <div className="ingest-feedback-banner align-center">
+              <CheckCircle2 size={13} className="text-green" />
+              <span>{ingestMessage}</span>
+            </div>
+          )}
+        </div>
+      </Reveal>
+
+      {/* Distinction Explainer Note */}
       <div className="raw-alert-explainer-note flex-between mono">
         <div className="align-center" style={{ gap: '0.5rem' }}>
           <Info size={14} className="text-cyan" />
@@ -84,49 +242,6 @@ export function RawTelemetryLake() {
           </span>
         </div>
       </div>
-
-      {/* Hero Stats Strip */}
-      <Reveal delay={60}>
-        <div className="telemetry-hero-strip sentinel-glass-card">
-          <div className="hero-strip-item">
-            <span className="strip-label mono">INGESTED VOLUME</span>
-            <div className="strip-val mono" style={{ color: '#F3EFE8' }}>
-              {totalAlerts ? totalAlerts.toLocaleString() : '—'}
-              <span className="strip-sub mono">EVENTS IN LAKE</span>
-            </div>
-          </div>
-
-          <div className="strip-divider" />
-
-          <div className="hero-strip-item">
-            <span className="strip-label mono text-cyan">SCHEMA BREADTH</span>
-            <div className="strip-val mono text-cyan">
-              19
-              <span className="strip-sub mono">ATTRIBUTES PER EVENT</span>
-            </div>
-          </div>
-
-          <div className="strip-divider" />
-
-          <div className="hero-strip-item">
-            <span className="strip-label mono text-bright-cyan">COMPRESSION RATIO</span>
-            <div className="strip-val mono text-bright-cyan">
-              99.5%
-              <span className="strip-sub mono">3,000 &rarr; 15 INCIDENTS</span>
-            </div>
-          </div>
-
-          <div className="strip-divider" />
-
-          <div className="hero-strip-item">
-            <span className="strip-label mono">LOSS RATE</span>
-            <div className="strip-val mono text-green">
-              0.00%
-              <span className="strip-sub mono">ZERO TELEMETRY DROP</span>
-            </div>
-          </div>
-        </div>
-      </Reveal>
 
       {/* Table Toolbar: Severity Filter + Real-time Search */}
       <Reveal delay={120}>
@@ -283,6 +398,125 @@ export function RawTelemetryLake() {
           display: flex;
           flex-direction: column;
           gap: 1.5rem;
+        }
+
+        /* Phase 2: Ingestion Control Card */
+        .alert-ingestion-control-card {
+          background: rgba(25, 24, 22, 0.88);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 6px;
+          padding: 1.25rem 1.5rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1.15rem;
+        }
+
+        .ingestion-eyebrow {
+          font-size: 0.64rem;
+          font-weight: 700;
+          color: #A96B42;
+          letter-spacing: 0.12em;
+        }
+
+        .ingestion-title {
+          font-size: 1.35rem;
+          font-weight: 800;
+          color: #F3EFE8;
+          margin-top: 0.2rem;
+          letter-spacing: -0.01em;
+        }
+
+        .ingestion-actions {
+          gap: 0.65rem;
+        }
+
+        .ingest-btn {
+          font-size: 0.68rem;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          padding: 0.45rem 0.85rem;
+          border-radius: 4px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          transition: all 160ms ease;
+        }
+
+        .ingest-btn.reload-btn {
+          background: rgba(169, 107, 66, 0.15);
+          border: 1px solid rgba(169, 107, 66, 0.4);
+          color: #F3EFE8;
+        }
+        .ingest-btn.reload-btn:hover {
+          background: rgba(169, 107, 66, 0.28);
+          border-color: #A96B42;
+        }
+
+        .ingest-btn.upload-btn {
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          color: #C8C2B9;
+        }
+        .ingest-btn.upload-btn:hover {
+          background: rgba(255, 255, 255, 0.12);
+          color: #F3EFE8;
+          border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .pipeline-validation-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 1rem;
+          padding-top: 1rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .validation-item {
+          display: flex;
+          flex-direction: column;
+          gap: 0.2rem;
+          background: rgba(255, 255, 255, 0.025);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 0.75rem 1rem;
+          border-radius: 4px;
+        }
+
+        .val-lbl {
+          font-size: 0.6rem;
+          font-weight: 700;
+          color: #817B73;
+          letter-spacing: 0.1em;
+        }
+
+        .val-num {
+          font-size: 1.35rem;
+          font-weight: 800;
+          line-height: 1.1;
+        }
+
+        .val-sub {
+          font-size: 0.58rem;
+          color: #817B73;
+          letter-spacing: 0.06em;
+        }
+
+        .ingest-feedback-banner {
+          background: rgba(95, 158, 136, 0.12);
+          border: 1px solid rgba(95, 158, 136, 0.3);
+          color: #F3EFE8;
+          font-size: 0.68rem;
+          padding: 0.5rem 0.85rem;
+          border-radius: 4px;
+          gap: 0.5rem;
+        }
+
+        .spin {
+          animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
 
         .raw-alert-explainer-note {

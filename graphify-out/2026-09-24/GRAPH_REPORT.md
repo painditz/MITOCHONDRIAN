@@ -1,7 +1,7 @@
 # Graph Report - MICROSOFT WINNER  (2026-09-24)
 
 ## Corpus Check
-- 270 files · ~530,890 words
+- 270 files · ~531,073 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 30 file(s) not represented in the graph (top: .toml 18, (none) 6, .css 3)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d12770e9`
+- Built from commit: `54a11560`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

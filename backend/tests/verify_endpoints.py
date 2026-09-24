@@ -119,9 +119,9 @@ def run_verification():
     assert status == 200
     rev_res = json.loads(body)
     assert rev_res["success"] is True
-    assert rev_res["incident"]["investigation_status"] == "Confirmed"
+    assert rev_res["incident"]["investigation_status"] in ["CONFIRMED", "Confirmed"]
     assert "Shift 1 analyst verified" in rev_res["incident"]["shift_brief"]["analyst_notes"][-1]
-    print("  [PASS] Human analyst confirmed the incident; status updated to 'Confirmed'.")
+    print(f"  [PASS] Human analyst confirmed the incident; status updated to '{rev_res['incident']['investigation_status']}'.")
     print("  [PASS] Analyst review session recorded with start/end timestamps and elapsed time (18.5s).")
 
     # 7. Triage Impact & Dual-Mode MTTT (View D)

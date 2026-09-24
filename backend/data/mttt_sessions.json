@@ -286,5 +286,41 @@
     "end_timestamp": "2026-09-24T09:12:16.947746+00:00",
     "duration_seconds": 12.0,
     "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-33",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T14:10:07.087290+00:00",
+    "end_timestamp": "2026-09-24T14:10:19.087290+00:00",
+    "duration_seconds": 12.0,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-34",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T14:10:21.038978+00:00",
+    "end_timestamp": "2026-09-24T14:10:39.538978+00:00",
+    "duration_seconds": 18.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-35",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T14:11:34.567590+00:00",
+    "end_timestamp": "2026-09-24T14:11:53.067590+00:00",
+    "duration_seconds": 18.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-RAW_-36",
+    "session_type": "raw_alert",
+    "target_id": "ALT-SAMPLE-10042",
+    "start_timestamp": "2026-09-19T06:20:00Z",
+    "end_timestamp": "2026-09-19T06:21:40Z",
+    "duration_seconds": 100.0,
+    "analyst_decision": "Manual Inspection Completed (Ticket Filed)"
   }
 ]

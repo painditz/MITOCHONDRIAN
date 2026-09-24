@@ -1,12 +1,12 @@
 // client/src/components/incidents/IncidentDetailModal.jsx
 // SentinelOps AI - Incident Investigation Forensic Workstation
 // Master SOC 3-Column Forensic Layout:
-// LEFT: Incident Identity & Vertical Evidence Timeline
-// CENTER: Evidence Workspace + Sophisticated Risk Composition Breakdown + MITRE Attribution
+// LEFT: Incident Identity & Vertical Evidence Timeline (Clickable to inspect raw alert telemetry)
+// CENTER: Why This Priority? + What-If Risk Simulator + Correlated Alerts Traceability + Evidence-Grounded MITRE
 // RIGHT: AI Shift Handover Brief + Human Review Controls
 import React, { useState, useEffect, useMemo } from 'react';
 import { PriorityBadge, CriticalityBadge, AuditStatusBadge } from '../shared/StatusBadge';
-import { X, CheckCircle, AlertTriangle, Edit3, MessageSquare, ShieldCheck, Activity, ChevronRight, ThumbsUp, ThumbsDown, Scissors } from 'lucide-react';
+import { X, CheckCircle, AlertTriangle, Edit3, MessageSquare, ShieldCheck, Activity, ChevronRight, ThumbsUp, ThumbsDown, Scissors, HelpCircle, Layers, ShieldAlert } from 'lucide-react';
 import { AnalystDecisionCenter } from './AnalystDecisionCenter';
 import { AiBriefReviewPanel } from './AiBriefReviewPanel';
 import { EvidenceReviewPanel } from './EvidenceReviewPanel';
@@ -14,70 +14,71 @@ import { InvestigationCompletenessBadge } from './InvestigationCompletenessBadge
 import { ReviewHistoryAudit } from './ReviewHistoryAudit';
 import { AnalystNotesPanel } from './AnalystNotesPanel';
 import { IncidentSplitModal } from './IncidentSplitModal';
+import { AlertEvidenceDrawer } from '../telemetry/AlertEvidenceDrawer';
 
 function parseRiskFactors(incident) {
-  if (incident?.priority_reason) {
-    // Regex extract factors from backend priority_reason string:
-    // e.g. "Asset Criticality [Critical] (+45.0 pts), Peak Severity [Critical] (+25.0 pts)..."
-    const regex = /([A-Za-z\s\-]+)\s*\[?[^\]\(\)]*\]?\s*\(\+([0-9.]+)\s*pts\)/g;
-    const matches = [...incident.priority_reason.matchAll(regex)];
-    if (matches.length >= 3) {
-      return matches.map((m) => {
-        const name = m[1].trim();
-        const pts = parseFloat(m[2]);
-        let maxPts = 45;
-        let color = '#21C7F3';
-
-        if (name.includes('Criticality')) {
-          maxPts = 45;
-          color = pts >= 30 ? '#FF4655' : '#FFB52E';
-        } else if (name.includes('Severity')) {
-          maxPts = 25;
-          color = pts >= 20 ? '#FF4655' : '#FFB52E';
-        } else if (name.includes('Kill-Chain')) {
-          maxPts = 15;
-          color = '#21D4FF';
-        } else if (name.includes('ML')) {
-          maxPts = 10;
-          color = '#62DFFF';
-        } else if (name.includes('Volume')) {
-          maxPts = 5;
-          color = '#10B981';
-        }
-
-        return {
-          name: name.toUpperCase(),
-          points: pts,
-          maxPoints: maxPts,
-          percent: Math.min(100, Math.round((pts / maxPts) * 100)),
-          color,
-        };
-      });
-    }
-  }
-
-  // Fallback to exact values from incident model properties
+  const host = incident?.hostname || incident?.asset_name || 'CORP-HOST';
   const crit = (incident?.asset_criticality || 'Medium').toLowerCase();
-  const critPts = crit === 'critical' ? 45 : crit === 'high' ? 30 : crit === 'medium' ? 15 : 0;
+  const critPts = crit === 'critical' ? 45.0 : crit === 'high' ? 30.0 : crit === 'medium' ? 15.0 : 0.0;
 
   const sev = (incident?.severity || 'Medium').toLowerCase();
-  const sevPts = sev === 'critical' ? 25 : sev === 'high' ? 18 : sev === 'medium' ? 10 : 5;
+  const sevPts = sev === 'critical' ? 25.0 : sev === 'high' ? 18.0 : sev === 'medium' ? 10.0 : 5.0;
 
-  const alertCount = Number(incident?.alert_count ?? 1);
+  const alertCount = Number(incident?.alert_count ?? (incident?.alerts?.length || 1));
   const volPts = Math.min(alertCount * 0.5, 5.0);
 
-  const tacticsCount = incident?.mitre_mappings?.length || 0;
-  const kcPts = tacticsCount >= 2 ? 12 : tacticsCount === 1 ? 4 : 0;
+  const tacticsCount = incident?.mitre_mappings?.length || (incident?.shift_brief?.mitre_techniques?.length || 0);
+  const kcPts = tacticsCount >= 3 ? 15.0 : tacticsCount === 2 ? 12.0 : tacticsCount === 1 ? 4.0 : 0.0;
 
   const risk = Number(incident?.risk_score ?? 50);
-  const mlPts = Math.max(0, Math.min(10, risk - (critPts + sevPts + volPts + kcPts)));
+  const mlPts = Math.max(0, Math.min(10.0, Math.round((risk - (critPts + sevPts + volPts + kcPts)) * 10) / 10));
 
   return [
-    { name: 'ASSET CRITICALITY', points: critPts, maxPoints: 45, percent: (critPts / 45) * 100, color: critPts >= 30 ? '#FF4655' : '#FFB52E' },
-    { name: 'PEAK SEVERITY', points: sevPts, maxPoints: 25, percent: (sevPts / 25) * 100, color: sevPts >= 20 ? '#FF4655' : '#FFB52E' },
-    { name: 'KILL-CHAIN DEPTH', points: kcPts, maxPoints: 15, percent: (kcPts / 15) * 100, color: '#21D4FF' },
-    { name: 'ML RELEVANCE', points: mlPts, maxPoints: 10, percent: (mlPts / 10) * 100, color: '#62DFFF' },
-    { name: 'ALERT VOLUME', points: volPts, maxPoints: 5, percent: (volPts / 5) * 100, color: '#10B981' },
+    {
+      id: 'criticality',
+      name: 'ASSET CRITICALITY',
+      points: critPts,
+      maxPoints: 45,
+      percent: (critPts / 45) * 100,
+      color: critPts >= 30 ? '#B84D61' : '#C18A4A',
+      explanation: `Critical production asset (${host}). Criticality Tier: ${(incident?.asset_criticality || 'MEDIUM').toUpperCase()}. Primary determinant of risk priority (+${critPts} pts).`,
+    },
+    {
+      id: 'severity',
+      name: 'PEAK SEVERITY',
+      points: sevPts,
+      maxPoints: 25,
+      percent: (sevPts / 25) * 100,
+      color: sevPts >= 20 ? '#B84D61' : '#C18A4A',
+      explanation: `Critical alert observed within incident. Peak severity [${(incident?.severity || 'Medium').toUpperCase()}] observed in telemetry (+${sevPts} pts).`,
+    },
+    {
+      id: 'killchain',
+      name: 'KILL-CHAIN DEPTH',
+      points: kcPts,
+      maxPoints: 15,
+      percent: (kcPts / 15) * 100,
+      color: '#57CFEF',
+      explanation: `Multiple ATT&CK tactics observed across kill-chain (${tacticsCount} verified tactics) (+${kcPts} pts).`,
+    },
+    {
+      id: 'ml',
+      name: 'ML RELEVANCE',
+      points: mlPts,
+      maxPoints: 10,
+      percent: (mlPts / 10) * 100,
+      color: '#8BE3FF',
+      explanation: `Supporting model signal from trained Random Forest classifier on telemetry features (+${mlPts.toFixed(1)} pts).`,
+    },
+    {
+      id: 'volume',
+      name: 'ALERT VOLUME',
+      points: volPts,
+      maxPoints: 5,
+      percent: (volPts / 5) * 100,
+      color: '#5F9E88',
+      explanation: `Alert volume contribution (${alertCount} correlated alerts). Capped at +5.0 pts to prevent volume bias (+${volPts.toFixed(1)} pts).`,
+    },
   ];
 }
 
@@ -85,16 +86,31 @@ export function IncidentDetailModal({ incident, onClose, onReviewAction }) {
   const [activeIncident, setActiveIncident] = useState(incident);
   const [showSplitModal, setShowSplitModal] = useState(false);
 
+  // Phase 4, 5, 12 states
+  const [selectedAlertForDrawer, setSelectedAlertForDrawer] = useState(null);
+  const [showCorrelatedAlertsView, setShowCorrelatedAlertsView] = useState(false);
+  const [whatIfTier, setWhatIfTier] = useState((incident?.asset_criticality || 'Critical').toUpperCase());
+  const [expandedFactor, setExpandedFactor] = useState(null);
+
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        if (selectedAlertForDrawer) {
+          setSelectedAlertForDrawer(null);
+        } else {
+          onClose();
+        }
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+  }, [onClose, selectedAlertForDrawer]);
 
   useEffect(() => {
     setActiveIncident(incident);
+    if (incident?.asset_criticality) {
+      setWhatIfTier(incident.asset_criticality.toUpperCase());
+    }
   }, [incident]);
 
   const handleIncidentUpdated = (updated) => {
@@ -118,22 +134,30 @@ export function IncidentDetailModal({ incident, onClose, onReviewAction }) {
   const criticality = (activeIncident.asset_criticality || activeIncident.criticality || 'MEDIUM').toUpperCase();
   const alertCount = activeIncident.alert_count ?? activeIncident.signalsCount ?? (activeIncident.alerts?.length || 1);
 
-  const riskFactors = parseRiskFactors(incident);
+  const riskFactors = parseRiskFactors(activeIncident);
 
-  const mitreList = incident.mitre_mappings || incident.mitre_techniques || [];
+  const mitreList = activeIncident.mitre_mappings || activeIncident.mitre_techniques || [];
+
+  // What-If Dynamic Recalculation (Phase 5)
+  const currentCriticality = criticality.toLowerCase();
+  const currentCritPts = currentCriticality === 'critical' ? 45.0 : currentCriticality === 'high' ? 30.0 : currentCriticality === 'medium' ? 15.0 : 0.0;
+  const whatIfCritPts = whatIfTier.toLowerCase() === 'critical' ? 45.0 : whatIfTier.toLowerCase() === 'high' ? 30.0 : whatIfTier.toLowerCase() === 'medium' ? 15.0 : 0.0;
+  const whatIfDelta = whatIfCritPts - currentCritPts;
+  const simulatedScore = Math.max(0, Math.min(100, Math.round((risk + whatIfDelta) * 10) / 10));
+  const simulatedPrio = simulatedScore >= 75 ? 'P1' : simulatedScore >= 55 ? 'P2' : simulatedScore >= 35 ? 'P3' : 'P4';
 
   const aiBriefText =
-    incident.shift_brief?.custom_brief_text ||
-    incident.shift_brief?.what_happened ||
-    (typeof incident.ai_brief === 'string' ? incident.ai_brief : incident.ai_brief?.brief) ||
+    activeIncident.shift_brief?.custom_brief_text ||
+    activeIncident.shift_brief?.what_happened ||
+    (typeof activeIncident.ai_brief === 'string' ? activeIncident.ai_brief : activeIncident.ai_brief?.brief) ||
     '';
 
-  const investigationPoints = incident.shift_brief?.investigation_points || [];
+  const investigationPoints = activeIncident.shift_brief?.investigation_points || [];
 
-  // Build timeline events from actual incident.alerts
+  // Build timeline events from actual incident.alerts (Phase 8 & 12)
   const timelineEvents = useMemo(() => {
-    if (incident.alerts && Array.isArray(incident.alerts) && incident.alerts.length > 0) {
-      const sorted = [...incident.alerts].sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0));
+    if (activeIncident.alerts && Array.isArray(activeIncident.alerts) && activeIncident.alerts.length > 0) {
+      const sorted = [...activeIncident.alerts].sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0));
       return sorted.map((al, idx) => {
         let phase = 'CORRELATED ACTIVITY';
         if (idx === 0) phase = 'INITIAL SIGNAL';
@@ -141,43 +165,48 @@ export function IncidentDetailModal({ incident, onClose, onReviewAction }) {
         else if (String(al.severity || '').toLowerCase() === 'critical') phase = 'ESCALATION';
         else if (idx === sorted.length - 1) phase = 'CURRENT STATE';
 
+        const tStr = al.timestamp ? (al.timestamp.length > 19 ? al.timestamp.slice(11, 19) + ' UTC' : al.timestamp) : '00:00:00 UTC';
+
         return {
           phase,
-          timestamp: al.timestamp ? new Date(al.timestamp).toUTCString().slice(17, 25) + ' UTC' : '00:00:00 UTC',
+          timestamp: tStr,
           alertType: al.alert_type || 'Observed Signal',
           source: al.source || 'Endpoint Telemetry',
-          evidence: al.evidence ? JSON.stringify(al.evidence) : al.description || 'Observed telemetry anomaly',
+          evidence: al.evidence ? (typeof al.evidence === 'string' ? al.evidence : JSON.stringify(al.evidence)) : al.description || 'Observed telemetry anomaly',
           mitre: al.mitre_technique || al.mitre_tactic || null,
           severity: al.severity || 'Medium',
+          rawAlert: al,
         };
       });
     }
 
     // Fallback using shift_brief.timeline_events
-    if (incident.shift_brief?.timeline_events && incident.shift_brief.timeline_events.length > 0) {
-      return incident.shift_brief.timeline_events.map((evt, idx) => ({
-        phase: idx === 0 ? 'INITIAL SIGNAL' : idx === incident.shift_brief.timeline_events.length - 1 ? 'CURRENT STATE' : 'CORRELATED ACTIVITY',
+    if (activeIncident.shift_brief?.timeline_events && activeIncident.shift_brief.timeline_events.length > 0) {
+      return activeIncident.shift_brief.timeline_events.map((evt, idx) => ({
+        phase: idx === 0 ? 'INITIAL SIGNAL' : idx === activeIncident.shift_brief.timeline_events.length - 1 ? 'CURRENT STATE' : 'CORRELATED ACTIVITY',
         timestamp: `${idx * 4}m offset`,
         alertType: 'Security Signal',
         source: 'Normalized Pipeline',
         evidence: evt,
         mitre: null,
         severity: prio === 'P1' ? 'Critical' : 'High',
+        rawAlert: null,
       }));
     }
 
     return [
       {
         phase: 'INITIAL SIGNAL',
-        timestamp: (incident.start_time || '').slice(11, 19) || '14:22:10 UTC',
-        alertType: incident.title || 'Anomalous Activity',
+        timestamp: (activeIncident.start_time || '').slice(11, 19) || '14:22:10 UTC',
+        alertType: activeIncident.title || 'Anomalous Activity',
         source: 'Security Pipeline',
-        evidence: incident.correlation_reason || 'Pairwise correlation match',
+        evidence: activeIncident.correlation_reason || 'Pairwise correlation match',
         mitre: mitreList[0]?.technique_id || null,
         severity: prio === 'P1' ? 'Critical' : 'High',
+        rawAlert: null,
       },
     ];
-  }, [incident, mitreList, prio]);
+  }, [activeIncident, mitreList, prio]);
 
   const handleAction = async (action) => {
     setIsSubmitting(true);
@@ -284,11 +313,16 @@ export function IncidentDetailModal({ incident, onClose, onReviewAction }) {
                 </div>
               </div>
 
-              {/* Vertical Evidence Timeline */}
+              {/* Vertical Evidence Timeline (Clickable to inspect raw alert) */}
               <div className="vertical-timeline-container">
                 <div className="timeline-spine" />
                 {timelineEvents.map((evt, idx) => (
-                  <div key={idx} className="timeline-node-item">
+                  <div
+                    key={idx}
+                    className={`timeline-node-item ${evt.rawAlert ? 'interactive-timeline-item' : ''}`}
+                    onClick={() => evt.rawAlert && setSelectedAlertForDrawer(evt.rawAlert)}
+                    title={evt.rawAlert ? `Click to inspect raw alert ${evt.rawAlert.alert_id} in forensic drawer` : ''}
+                  >
                     <div className="node-marker-ring">
                       <div className="node-marker-center" />
                     </div>
@@ -302,11 +336,18 @@ export function IncidentDetailModal({ incident, onClose, onReviewAction }) {
                       <div className="node-evidence-text mono" title={evt.evidence}>
                         {evt.evidence.length > 110 ? evt.evidence.slice(0, 110) + '...' : evt.evidence}
                       </div>
-                      {evt.mitre && (
-                        <div className="node-mitre-pill mono">
-                          MITRE: {evt.mitre}
-                        </div>
-                      )}
+                      <div className="flex-between align-center" style={{ marginTop: '0.35rem' }}>
+                        {evt.mitre ? (
+                          <div className="node-mitre-pill mono">
+                            MITRE: {evt.mitre}
+                          </div>
+                        ) : <span />}
+                        {evt.rawAlert && (
+                          <span className="node-click-inspect-tag mono">
+                            INSPECT ALERT &rarr;
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -322,48 +363,176 @@ export function IncidentDetailModal({ incident, onClose, onReviewAction }) {
             <div className="column-card center-workspace-column">
               <div className="column-header-bar flex-between mono">
                 <span>02 / EVIDENCE &amp; RISK</span>
-                <span className="col-sub-pill text-cyan">DETERMINISTIC</span>
+                <span className="col-sub-pill text-cyan">DETERMINISTIC FORMULA</span>
               </div>
 
-              {/* Large Risk Composition Panel */}
-              <div className="risk-composition-panel">
-                <div className="risk-main-display flex-between">
+              {/* PHASE 4: PROMINENT "WHY THIS PRIORITY?" PANEL */}
+              <div className="why-priority-panel sentinel-glass-card">
+                <div className="why-priority-header flex-between align-center mono">
                   <div>
-                    <span className="risk-lead-label mono">CALCULATED INCIDENT RISK</span>
-                    <div className="risk-hero-number mono">
-                      <span className="hero-val">{risk.toFixed(1)}</span>
-                      <span className="hero-denom">/ 100</span>
-                    </div>
+                    <span className="why-lead-tag">EXPLAINABLE PRIORITIZATION</span>
+                    <h3 className="why-title">WHY THIS PRIORITY?</h3>
                   </div>
-                  <div className="risk-prio-lock mono">
-                    <span className="lock-label">TIER ASSIGNMENT</span>
-                    <PriorityBadge priority={prio} />
+                  <div className="why-hero-badge mono">
+                    <span className="why-inc-id">{id}</span>
+                    <span className="why-sep">&bull;</span>
+                    <span className="why-prio">{prio}</span>
+                    <span className="why-sep">&mdash;</span>
+                    <span className="why-score">{risk.toFixed(1)} <span className="denom">/ 100</span></span>
                   </div>
                 </div>
 
-                {/* Horizontal Risk Composition Progress Bars */}
-                <div className="risk-bars-stack">
-                  {riskFactors.map((rf, i) => (
-                    <div key={i} className="risk-factor-progress-item mono">
-                      <div className="factor-meta flex-between">
-                        <span className="factor-name">{rf.name}</span>
-                        <span className="factor-pts" style={{ color: rf.color }}>
-                          +{rf.points.toFixed(1)} PTS
-                        </span>
-                      </div>
-                      <div className="factor-track">
-                        <div
-                          className="factor-fill"
-                          style={{
-                            width: `${rf.percent}%`,
-                            backgroundColor: rf.color,
-                            boxShadow: `0 0 10px ${rf.color}40`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  ))}
+                <div className="risk-contribution-lead mono">
+                  <span>RISK CONTRIBUTION (ADDITIVE AUDIT FORMULA)</span>
+                  <span className="contrib-hint">&bull; Click item to inspect rationale</span>
                 </div>
+
+                <div className="risk-contribution-table mono">
+                  {riskFactors.map((rf) => {
+                    const isExpanded = expandedFactor === rf.id;
+                    return (
+                      <div
+                        key={rf.id}
+                        className={`contribution-row ${isExpanded ? 'expanded' : ''} sentinel-interactive-btn`}
+                        onClick={() => setExpandedFactor(isExpanded ? null : rf.id)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => e.key === 'Enter' && setExpandedFactor(isExpanded ? null : rf.id)}
+                        title="Click to view explanation"
+                      >
+                        <div className="contrib-main flex-between align-center">
+                          <span className="contrib-name align-center">
+                            <span>{rf.name}</span>
+                            <HelpCircle size={11} className="text-muted" style={{ marginLeft: '0.35rem' }} />
+                          </span>
+                          <span className="contrib-pts font-bold" style={{ color: rf.color }}>
+                            +{rf.points.toFixed(1)}
+                          </span>
+                        </div>
+                        {isExpanded && (
+                          <div className="contrib-explanation">
+                            {rf.explanation}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+
+                  <div className="contribution-divider" />
+                  <div className="contribution-total-row flex-between align-center mono font-bold">
+                    <span className="text-white">COMPOSITE RISK SCORE</span>
+                    <span className="text-burgundy" style={{ fontSize: '1.05rem' }}>{risk.toFixed(1)} / 100</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* PHASE 5: WHAT-IF RISK SIMULATOR */}
+              <div className="what-if-simulator-panel sentinel-glass-card mono">
+                <div className="what-if-header flex-between align-center">
+                  <div>
+                    <span className="what-if-lead-tag">ASSET CRITICALITY DEMONSTRATION</span>
+                    <h4 className="what-if-title">WHAT-IF RISK SIMULATOR</h4>
+                  </div>
+                  <div className="what-if-tag-pill">HYPOTHETICAL</div>
+                </div>
+
+                <div className="what-if-tier-selector">
+                  <span className="tier-select-lbl">SIMULATED ASSET CRITICALITY TIER:</span>
+                  <div className="tier-btn-group">
+                    {['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'].map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        className={`tier-btn ${whatIfTier.toUpperCase() === t ? 'active ' + t.toLowerCase() : ''}`}
+                        onClick={() => setWhatIfTier(t)}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="what-if-comparison-strip flex-between align-center">
+                  <div className="sim-block">
+                    <span className="sim-lbl">CURRENT PRODUCTION STATE</span>
+                    <div className="sim-val font-bold text-white">
+                      {(activeIncident.asset_criticality || 'MEDIUM').toUpperCase()} &rarr; {risk.toFixed(1)} <span className="prio-tag">{prio}</span>
+                    </div>
+                  </div>
+                  <div className="sim-arrow text-muted">&rarr;</div>
+                  <div className="sim-block">
+                    <span className="sim-lbl">SIMULATED RECALCULATION</span>
+                    <div className="sim-val font-bold text-cyan">
+                      {whatIfTier.toUpperCase()} &rarr; {simulatedScore.toFixed(1)} <span className="prio-tag">{simulatedPrio}</span>
+                      <span className="sim-delta" style={{ color: whatIfDelta >= 0 ? '#5F9E88' : '#B84D61', marginLeft: '0.4rem' }}>
+                        ({whatIfDelta >= 0 ? `+${whatIfDelta}` : whatIfDelta} pts)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="what-if-disclaimer align-center">
+                  <ShieldAlert size={12} className="text-amber" />
+                  <span>WHAT-IF SIMULATION &bull; DOES NOT CHANGE PRODUCTION INCIDENT DATA</span>
+                </div>
+              </div>
+
+              {/* PHASE 12: CORRELATED ALERTS TRACEABILITY */}
+              <div className="correlated-alerts-panel sentinel-glass-card mono">
+                <div className="correlated-header flex-between align-center">
+                  <div className="align-center" style={{ gap: '0.45rem' }}>
+                    <Layers size={13} style={{ color: '#57CFEF' }} />
+                    <span className="corr-title">
+                      CORRELATED ALERTS TRACEABILITY ({activeIncident.alerts?.length || alertCount} ALERTS)
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    className="corr-toggle-btn sentinel-interactive-btn"
+                    onClick={() => setShowCorrelatedAlertsView(!showCorrelatedAlertsView)}
+                  >
+                    {showCorrelatedAlertsView ? 'HIDE CORRELATED ALERTS ▲' : 'SHOW CORRELATED ALERTS ▼'}
+                  </button>
+                </div>
+
+                {showCorrelatedAlertsView && (
+                  <div className="correlated-alerts-list">
+                    {(activeIncident.alerts && activeIncident.alerts.length > 0 ? activeIncident.alerts : [
+                      {
+                        alert_id: 'ALT-102-01',
+                        timestamp: activeIncident.start_time || '2026-09-24T14:22:10Z',
+                        source: 'Defender for Endpoint',
+                        alert_type: activeIncident.title || 'Suspicious Process Execution',
+                        severity: activeIncident.severity || 'Critical',
+                        hostname: assetName,
+                        user: activeIncident.user || 'SYSTEM',
+                        description: activeIncident.correlation_reason || 'Correlated security event'
+                      }
+                    ]).map((a) => (
+                      <div
+                        key={a.alert_id}
+                        className="corr-alert-item flex-between align-center sentinel-interactive-btn"
+                        onClick={() => setSelectedAlertForDrawer(a)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => e.key === 'Enter' && setSelectedAlertForDrawer(a)}
+                        title="Click to inspect all 19 fields in evidence drawer"
+                      >
+                        <div className="corr-item-left">
+                          <div className="align-center" style={{ gap: '0.5rem' }}>
+                            <span className="corr-aid font-bold text-cyan">{a.alert_id}</span>
+                            <span className="corr-type text-white">{a.alert_type}</span>
+                          </div>
+                          <div className="corr-desc text-muted">{a.description}</div>
+                        </div>
+                        <div className="corr-item-right align-center">
+                          <span className={`corr-sev ${(a.severity || 'low').toLowerCase()}`}>{a.severity}</span>
+                          <span className="corr-inspect-pill">&rarr; INSPECT</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Human-in-the-Loop 2.0 Evidence Review Panel */}
@@ -386,7 +555,7 @@ export function IncidentDetailModal({ incident, onClose, onReviewAction }) {
                 </button>
               </div>
 
-              {/* Evidence-Grounded MITRE Panel */}
+              {/* Evidence-Grounded MITRE Panel (Phase 6) */}
               <div className="mitre-evidence-panel">
                 <div className="mitre-panel-title mono flex-between">
                   <span>MITRE ATT&amp;CK ATTRIBUTION</span>
@@ -416,7 +585,7 @@ export function IncidentDetailModal({ incident, onClose, onReviewAction }) {
                   </div>
                 ) : (
                   <div className="no-mitre-state mono">
-                    NO VERIFIED MITRE MAPPING
+                    NO VERIFIED MITRE TECHNIQUE
                   </div>
                 )}
               </div>
@@ -440,6 +609,13 @@ export function IncidentDetailModal({ incident, onClose, onReviewAction }) {
           incident={activeIncident}
           onClose={() => setShowSplitModal(false)}
           onSplitConfirmed={handleIncidentUpdated}
+        />
+      )}
+
+      {selectedAlertForDrawer && (
+        <AlertEvidenceDrawer
+          alert={selectedAlertForDrawer}
+          onClose={() => setSelectedAlertForDrawer(null)}
         />
       )}
 
@@ -716,70 +892,362 @@ export function IncidentDetailModal({ incident, onClose, onReviewAction }) {
           border-radius: 2px;
         }
 
-        /* Center Column: Risk Composition Panel */
-        .risk-composition-panel {
-          background: rgba(255, 255, 255, 0.035);
-          border: 1px solid rgba(255, 255, 255, 0.07);
-          border-radius: 4px;
-          padding: 1.15rem;
+        .interactive-timeline-item {
+          cursor: pointer;
+          transition: transform 140ms ease;
+        }
+        .interactive-timeline-item:hover {
+          transform: translateX(2px);
+        }
+        .interactive-timeline-item:hover .node-content-box {
+          border-color: rgba(169, 107, 66, 0.45);
+          background: rgba(255, 255, 255, 0.06);
+        }
+        .node-click-inspect-tag {
+          font-size: 0.58rem;
+          color: #57CFEF;
+          font-weight: 700;
+          letter-spacing: 0.05em;
         }
 
-        .risk-lead-label {
-          font-size: 0.62rem;
+        /* PHASE 4: WHY THIS PRIORITY? PANEL */
+        .why-priority-panel {
+          background: rgba(255, 255, 255, 0.035);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 6px;
+          padding: 1.15rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.85rem;
+        }
+
+        .why-priority-header {
+          padding-bottom: 0.65rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .why-lead-tag {
+          font-size: 0.6rem;
           font-weight: 700;
-          color: #817B73;
+          color: #A96B42;
           letter-spacing: 0.12em;
         }
 
-        .risk-hero-number {
-          font-size: 2.25rem;
+        .why-title {
+          font-size: 1.05rem;
           font-weight: 800;
-          line-height: 1;
-          color: #B84D61;
-          margin-top: 0.25rem;
-        }
-        .hero-denom {
-          font-size: 1rem;
-          color: #817B73;
-          margin-left: 0.3rem;
+          color: #F3EFE8;
+          margin-top: 0.15rem;
+          letter-spacing: -0.01em;
         }
 
-        .risk-prio-lock {
+        .why-hero-badge {
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.10);
+          padding: 0.35rem 0.65rem;
+          border-radius: 4px;
+          font-size: 0.72rem;
           display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          gap: 0.3rem;
+          align-items: center;
+          gap: 0.4rem;
         }
-        .lock-label {
-          font-size: 0.6rem;
+        .why-inc-id { color: #57CFEF; font-weight: 700; }
+        .why-sep { color: #817B73; }
+        .why-prio { color: #B84D61; font-weight: 800; }
+        .why-score { color: #F3EFE8; font-weight: 700; }
+        .why-score .denom { color: #817B73; font-size: 0.62rem; }
+
+        .risk-contribution-lead {
+          font-size: 0.62rem;
+          font-weight: 700;
           color: #817B73;
           letter-spacing: 0.1em;
+          display: flex;
+          justify-content: space-between;
+        }
+        .contrib-hint {
+          color: #A96B42;
+          font-weight: 600;
         }
 
-        .risk-bars-stack {
-          margin-top: 1.25rem;
+        .risk-contribution-table {
           display: flex;
           flex-direction: column;
-          gap: 0.65rem;
+          gap: 0.4rem;
         }
 
-        .factor-meta {
-          font-size: 0.65rem;
+        .contribution-row {
+          background: rgba(255, 255, 255, 0.025);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          border-radius: 4px;
+          padding: 0.55rem 0.75rem;
+          cursor: pointer;
+          transition: all 140ms ease;
+        }
+        .contribution-row:hover,
+        .contribution-row.expanded {
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .contrib-main {
+          font-size: 0.68rem;
+          font-weight: 700;
+        }
+        .contrib-name {
+          color: #F3EFE8;
+          letter-spacing: 0.06em;
+        }
+        .contrib-pts {
+          font-size: 0.75rem;
+        }
+
+        .contrib-explanation {
+          margin-top: 0.45rem;
+          padding-top: 0.45rem;
+          border-top: 1px dashed rgba(255, 255, 255, 0.08);
+          font-size: 0.64rem;
+          color: #C8C2B9;
+          line-height: 1.45;
+        }
+
+        .contribution-divider {
+          height: 1px;
+          background: rgba(255, 255, 255, 0.10);
+          margin: 0.3rem 0;
+        }
+
+        .contribution-total-row {
+          padding: 0.4rem 0.75rem;
+          font-size: 0.72rem;
+          letter-spacing: 0.08em;
+        }
+
+        /* PHASE 5: WHAT-IF RISK SIMULATOR PANEL */
+        .what-if-simulator-panel {
+          background: rgba(255, 255, 255, 0.035);
+          border: 1px solid rgba(169, 107, 66, 0.25);
+          border-radius: 6px;
+          padding: 1.15rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.85rem;
+        }
+
+        .what-if-header {
+          padding-bottom: 0.5rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .what-if-lead-tag {
+          font-size: 0.6rem;
+          font-weight: 700;
+          color: #A96B42;
+          letter-spacing: 0.12em;
+        }
+        .what-if-title {
+          font-size: 0.95rem;
+          font-weight: 800;
+          color: #F3EFE8;
+          margin-top: 0.15rem;
+        }
+        .what-if-tag-pill {
+          font-size: 0.58rem;
+          background: rgba(169, 107, 66, 0.15);
+          border: 1px solid rgba(169, 107, 66, 0.35);
+          color: #A96B42;
+          padding: 0.15rem 0.45rem;
+          border-radius: 3px;
           font-weight: 700;
           letter-spacing: 0.08em;
         }
 
-        .factor-name {
+        .what-if-tier-selector {
+          display: flex;
+          flex-direction: column;
+          gap: 0.4rem;
+        }
+        .tier-select-lbl {
+          font-size: 0.62rem;
+          color: #817B73;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+        }
+        .tier-btn-group {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0.4rem;
+        }
+        .tier-btn {
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          color: #C8C2B9;
+          font-size: 0.65rem;
+          font-weight: 700;
+          padding: 0.4rem 0;
+          border-radius: 4px;
+          cursor: pointer;
+          letter-spacing: 0.08em;
+          transition: all 140ms ease;
+        }
+        .tier-btn:hover {
+          background: rgba(255, 255, 255, 0.08);
+          color: #F3EFE8;
+        }
+        .tier-btn.active.critical {
+          background: rgba(184, 77, 97, 0.2);
+          border-color: #B84D61;
+          color: #F3EFE8;
+        }
+        .tier-btn.active.high {
+          background: rgba(193, 138, 74, 0.2);
+          border-color: #C18A4A;
+          color: #F3EFE8;
+        }
+        .tier-btn.active.medium {
+          background: rgba(95, 158, 136, 0.2);
+          border-color: #5F9E88;
+          color: #F3EFE8;
+        }
+        .tier-btn.active.low {
+          background: rgba(120, 130, 138, 0.2);
+          border-color: #78828A;
           color: #F3EFE8;
         }
 
-        .factor-track {
-          width: 100%;
-          height: 6px;
+        .what-if-comparison-strip {
+          background: rgba(255, 255, 255, 0.025);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 0.65rem 0.85rem;
+          border-radius: 4px;
+          gap: 0.5rem;
+        }
+        .sim-block {
+          display: flex;
+          flex-direction: column;
+          gap: 0.15rem;
+        }
+        .sim-lbl {
+          font-size: 0.56rem;
+          color: #817B73;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+        }
+        .sim-val {
+          font-size: 0.72rem;
+          display: flex;
+          align-items: center;
+        }
+        .sim-val .prio-tag {
+          margin-left: 0.35rem;
+          padding: 0.1rem 0.35rem;
+          border-radius: 2px;
           background: rgba(255, 255, 255, 0.08);
+          font-size: 0.62rem;
+        }
+        .sim-delta {
+          font-size: 0.64rem;
+          font-weight: 700;
+        }
+
+        .what-if-disclaimer {
+          font-size: 0.58rem;
+          color: #E0A854;
+          gap: 0.4rem;
+          letter-spacing: 0.06em;
+          padding: 0.35rem 0.5rem;
+          background: rgba(224, 168, 84, 0.08);
+          border: 1px solid rgba(224, 168, 84, 0.2);
           border-radius: 3px;
+        }
+
+        /* PHASE 12: CORRELATED ALERTS TRACEABILITY PANEL */
+        .correlated-alerts-panel {
+          background: rgba(255, 255, 255, 0.035);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 6px;
+          padding: 0.95rem 1.15rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+        .corr-title {
+          font-size: 0.68rem;
+          font-weight: 700;
+          color: #F3EFE8;
+          letter-spacing: 0.08em;
+        }
+        .corr-toggle-btn {
+          background: rgba(87, 207, 239, 0.10);
+          border: 1px solid rgba(87, 207, 239, 0.25);
+          color: #57CFEF;
+          font-size: 0.62rem;
+          font-weight: 700;
+          padding: 0.3rem 0.65rem;
+          border-radius: 3px;
+          cursor: pointer;
+        }
+        .corr-toggle-btn:hover {
+          background: rgba(87, 207, 239, 0.18);
+        }
+
+        .correlated-alerts-list {
+          display: flex;
+          flex-direction: column;
+          gap: 0.45rem;
+          max-height: 240px;
+          overflow-y: auto;
+          padding-right: 0.3rem;
+        }
+        .corr-alert-item {
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 0.55rem 0.75rem;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: all 140ms ease;
+        }
+        .corr-alert-item:hover {
+          background: rgba(255, 255, 255, 0.06);
+          border-color: rgba(87, 207, 239, 0.35);
+        }
+        .corr-item-left {
+          display: flex;
+          flex-direction: column;
+          gap: 0.15rem;
+          font-size: 0.66rem;
+        }
+        .corr-aid {
+          font-size: 0.68rem;
+        }
+        .corr-type {
+          font-weight: 600;
+        }
+        .corr-desc {
+          font-size: 0.6rem;
+          line-height: 1.35;
+          max-width: 320px;
+          white-space: nowrap;
           overflow: hidden;
-          margin-top: 0.25rem;
+          text-overflow: ellipsis;
+        }
+        .corr-item-right {
+          gap: 0.5rem;
+        }
+        .corr-sev {
+          font-size: 0.58rem;
+          font-weight: 700;
+          padding: 0.15rem 0.4rem;
+          border-radius: 2px;
+          text-transform: uppercase;
+        }
+        .corr-sev.critical { background: rgba(184, 77, 97, 0.2); color: #B84D61; }
+        .corr-sev.high { background: rgba(193, 138, 74, 0.2); color: #C18A4A; }
+        .corr-sev.medium { background: rgba(95, 158, 136, 0.2); color: #5F9E88; }
+        .corr-sev.low { background: rgba(120, 130, 138, 0.2); color: #78828A; }
+        .corr-inspect-pill {
+          font-size: 0.58rem;
+          color: #57CFEF;
+          font-weight: 700;
         }
 
         .factor-fill {

@@ -45,17 +45,20 @@
       "Host isolated from internal VLAN 12.",
       "Credential revocation completed via Azure AD admin.",
       "Verified against telemetry stream",
-      "Verified against telemetry stream"
+      "Verified against telemetry stream",
+      "Verified against telemetry stream",
+      "Shift 1 analyst verified and confirmed incident against EDR telemetry.",
+      "Shift 1 analyst verified and confirmed incident against EDR telemetry."
     ],
     "custom_brief_text": "AI Synthesis (google/flan-t5-small): Security alerts: mega.nz (5153960755 bytes). Telemetry confirms 10 alerts targeting asset [CORP-EXCHANGE-ONLINE] (Critical Criticality) involving user account [marcus.vance.cfo@contoso.com]. Key evidence: Outbound transfer to: `mega.nz (5153960755 bytes)`\n[Analyst Note: Outbound exfiltration to 185.220.101.5 confirmed blocked at edge firewall.]",
     "analyst_agreement": "Agreed",
     "analyst_feedback_notes": "Verified test",
-    "review_time_seconds": 299.5,
-    "last_updated": "2026-09-24T09:12:16.947746+00:00",
+    "review_time_seconds": 348.5,
+    "last_updated": "2026-09-24T14:11:53.073428+00:00",
     "analyst_decision": "CONFIRM",
     "analyst_confidence": "HIGH",
     "analyst_reason": "Evidence supports system assessment",
-    "analyst_note": "Verified against telemetry stream",
+    "analyst_note": "Shift 1 analyst verified and confirmed incident against EDR telemetry.",
     "analyst_priority_override": "P1",
     "analyst_priority_reason": "Executive asset tier",
     "ai_brief_review": {
@@ -616,6 +619,38 @@
         "previous_state": "CONFIRMED",
         "new_state": "CONFIRMED",
         "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Verified against telemetry stream"
+      },
+      {
+        "timestamp": "2026-09-24T14:10:19.087290+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Priority overridden",
+        "previous_state": "System Priority P1-Critical",
+        "new_state": "Analyst Priority P1",
+        "details": "Executive asset tier"
+      },
+      {
+        "timestamp": "2026-09-24T14:10:19.087290+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Incident confirm",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Verified against telemetry stream"
+      },
+      {
+        "timestamp": "2026-09-24T14:10:39.538978+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Incident confirm",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Shift 1 analyst verified and confirmed incident against EDR telemetry."
+      },
+      {
+        "timestamp": "2026-09-24T14:11:53.067590+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Incident confirm",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Shift 1 analyst verified and confirmed incident against EDR telemetry."
       }
     ],
     "structured_notes": [
@@ -854,6 +889,24 @@
         "author": "Analyst (SOC Tier-1)",
         "timestamp": "2026-09-24T09:12:16.947746+00:00",
         "text": "Verified against telemetry stream"
+      },
+      {
+        "id": "NOT-39",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T14:10:19.087290+00:00",
+        "text": "Verified against telemetry stream"
+      },
+      {
+        "id": "NOT-40",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T14:10:39.538978+00:00",
+        "text": "Shift 1 analyst verified and confirmed incident against EDR telemetry."
+      },
+      {
+        "id": "NOT-41",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T14:11:53.067590+00:00",
+        "text": "Shift 1 analyst verified and confirmed incident against EDR telemetry."
       }
     ],
     "merge_proposals": [],
