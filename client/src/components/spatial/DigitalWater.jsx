@@ -1,118 +1,174 @@
 // client/src/components/spatial/DigitalWater.jsx
-// SentinelOps AI - Fluid Atmospheric Background (Microsoft Innovate 2026 Phase 3 Freeze)
-// Visual target: Dark Graphite + Smooth Fluid Depth + Subtle Bronze + Subtle Burgundy + Very Subtle Slate Reflections
-// Strictly NO bright white ribbons, NO laser lines, NO fog bands, NO pointer event capture.
+// SentinelOps AI - Premium Atmospheric Fluid Background
+// Visual direction: Dark Graphite + Deep Charcoal + Subtle Burgundy + Subtle Copper + Very Dark Slate + Soft Liquid Depth
+// Subtle but clearly visible fluid atmosphere. Layered behind all application content.
+// Strictly NO white ribbons, NO bright streaks, NO diagonal stripes, NO glowing cables, NO cyberpunk neon.
 
 import React from 'react';
 
 export function DigitalWater() {
   return (
     <div className="sentinel-atmosphere" aria-hidden="true">
-      <div className="sentinel-fluid" />
-      <div className="sentinel-sheen" />
+      {/* LAYER 1: Deep fluid pools (Copper, Burgundy, Slate, Charcoal) */}
+      <div className="sentinel-fluid-deep" />
+
+      {/* LAYER 2: Secondary liquid surface sheen (Soft Slate-Teal & Copper refraction) */}
+      <div className="sentinel-fluid-surface" />
+
+      {/* LAYER 3: Soft ambient liquid drift */}
+      <div className="sentinel-fluid-ambient" />
+
+      {/* LAYER 4: Dark edge vignette */}
       <div className="sentinel-vignette" />
+
+      {/* LAYER 5: Dark readability scrim (Guarantees high contrast for typography while keeping fluid visible) */}
       <div className="sentinel-readability-scrim" />
 
       <style>{`
-        /* LAYER 1: ATMOSPHERE CONTAINER (Fixed, Non-interactive) */
+        /* GLOBAL ATMOSPHERE CONTAINER (Fixed, Non-interactive, Viewport-wide) */
         .sentinel-atmosphere {
           position: fixed;
           inset: 0;
           z-index: 1;
           pointer-events: none;
           overflow: hidden;
-          background: #1D1C1A; /* Dark Graphite Ground */
+          background: #141312; /* Deep Charcoal / Dark Graphite Ground */
         }
 
-        /* Fluid depth with subtle bronze, burgundy, and slate gradients */
-        .sentinel-fluid {
+        /* 1. Deep Liquid Atmosphere: Clearly visible, rich, organic pools */
+        .sentinel-fluid-deep {
           position: absolute;
           inset: -25%;
-          opacity: 0.35;
-          filter: blur(48px);
+          opacity: 0.65;
+          filter: blur(52px);
           background:
             radial-gradient(
-              ellipse 45% 25% at 20% 30%,
-              rgba(169, 107, 66, 0.18) 0%,
+              ellipse 52% 32% at 18% 28%,
+              rgba(169, 107, 66, 0.42) 0%,
+              rgba(169, 107, 66, 0.15) 45%,
+              transparent 72%
+            ),
+            radial-gradient(
+              ellipse 48% 30% at 82% 32%,
+              rgba(110, 53, 68, 0.38) 0%,
+              rgba(110, 53, 68, 0.12) 48%,
+              transparent 72%
+            ),
+            radial-gradient(
+              ellipse 55% 35% at 38% 78%,
+              rgba(45, 62, 74, 0.44) 0%,
+              rgba(45, 62, 74, 0.14) 50%,
+              transparent 74%
+            ),
+            radial-gradient(
+              ellipse 42% 26% at 86% 76%,
+              rgba(169, 107, 66, 0.32) 0%,
+              rgba(110, 53, 68, 0.15) 50%,
+              transparent 70%
+            );
+          animation: sentinel-fluid-drift 38s ease-in-out infinite alternate;
+          will-change: transform;
+        }
+
+        /* 2. Liquid Surface Sheen: Soft secondary fluid drift with slate & copper refraction */
+        .sentinel-fluid-surface {
+          position: absolute;
+          inset: -20%;
+          opacity: 0.45;
+          filter: blur(64px);
+          background:
+            radial-gradient(
+              ellipse 55% 18% at 32% 22%,
+              rgba(57, 78, 92, 0.32) 0%,
+              rgba(57, 78, 92, 0.10) 45%,
               transparent 70%
             ),
             radial-gradient(
-              ellipse 50% 30% at 78% 35%,
-              rgba(110, 53, 68, 0.14) 0%,
+              ellipse 46% 16% at 72% 64%,
+              rgba(142, 88, 54, 0.28) 0%,
+              rgba(90, 42, 54, 0.12) 45%,
               transparent 70%
             ),
             radial-gradient(
-              ellipse 40% 28% at 45% 75%,
-              rgba(57, 65, 73, 0.16) 0%,
-              transparent 70%
-            ),
-            radial-gradient(
-              ellipse 35% 22% at 85% 80%,
-              rgba(169, 107, 66, 0.12) 0%,
+              ellipse 38% 22% at 55% 45%,
+              rgba(38, 50, 60, 0.35) 0%,
               transparent 65%
             );
-          animation: sentinel-fluid-drift 28s ease-in-out infinite alternate;
+          animation: sentinel-sheen-drift 52s ease-in-out infinite alternate;
           will-change: transform;
         }
 
-        /* Subtle dark sheen reflection (slate & bronze tones only - NO white paths) */
-        .sentinel-sheen {
+        /* 3. Soft Ambient Liquid Swell */
+        .sentinel-fluid-ambient {
           position: absolute;
           inset: -15%;
-          opacity: 0.22;
-          filter: blur(60px);
+          opacity: 0.35;
+          filter: blur(75px);
           background:
             radial-gradient(
-              ellipse 60% 12% at 30% 25%,
-              rgba(57, 65, 73, 0.20) 0%,
-              transparent 68%
-            ),
-            radial-gradient(
-              ellipse 50% 10% at 65% 60%,
-              rgba(169, 107, 66, 0.14) 0%,
-              transparent 68%
+              ellipse 60% 40% at 50% 50%,
+              rgba(40, 36, 32, 0.50) 0%,
+              rgba(26, 24, 22, 0.20) 60%,
+              transparent 80%
             );
-          animation: sentinel-sheen-drift 36s ease-in-out infinite alternate;
+          animation: sentinel-ambient-swell 42s ease-in-out infinite alternate;
           will-change: transform;
         }
 
-        /* Dark edge vignette */
+        /* 4. Dark Edge Vignette */
         .sentinel-vignette {
           position: absolute;
           inset: 0;
           background: radial-gradient(
             ellipse at center,
-            transparent 30%,
-            rgba(20, 19, 18, 0.65) 100%
+            transparent 35%,
+            rgba(16, 15, 14, 0.70) 100%
           );
         }
 
-        /* LAYER 2: READABILITY SCRIM (Guarantees 100% contrast for data layers) */
+        /* 5. Dark Readability Scrim: Controlled contrast for text without flattening liquid depth */
         .sentinel-readability-scrim {
           position: absolute;
           inset: 0;
-          background: rgba(29, 28, 26, 0.35);
+          background: radial-gradient(
+            ellipse 85% 70% at 48% 45%,
+            rgba(20, 19, 18, 0.18) 0%,
+            rgba(18, 17, 16, 0.48) 100%
+          );
           pointer-events: none;
         }
 
+        /* Extremely slow, hypnotic fluid animations */
         @keyframes sentinel-fluid-drift {
           0% {
-            transform: translate3d(-1.5%, -1%, 0) scale(1);
+            transform: translate3d(-2%, -1.5%, 0) scale(1) rotate(0deg);
           }
           50% {
-            transform: translate3d(2%, 1.5%, 0) scale(1.025);
+            transform: translate3d(2.5%, 2%, 0) scale(1.04) rotate(0.8deg);
           }
           100% {
-            transform: translate3d(-1%, 2%, 0) scale(1.015);
+            transform: translate3d(-1.5%, 2.5%, 0) scale(1.02) rotate(-0.5deg);
           }
         }
 
         @keyframes sentinel-sheen-drift {
           0% {
-            transform: translate3d(1%, -1.5%, 0) scale(1);
+            transform: translate3d(1.5%, -2%, 0) scale(1) rotate(0deg);
+          }
+          50% {
+            transform: translate3d(-2%, 1%, 0) scale(1.03) rotate(-0.6deg);
           }
           100% {
-            transform: translate3d(-1.5%, 1.5%, 0) scale(1.03);
+            transform: translate3d(1%, 2%, 0) scale(1.01) rotate(0.4deg);
+          }
+        }
+
+        @keyframes sentinel-ambient-swell {
+          0% {
+            transform: scale(1);
+          }
+          100% {
+            transform: scale(1.06);
           }
         }
       `}</style>

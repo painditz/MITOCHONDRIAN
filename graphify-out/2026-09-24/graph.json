@@ -1799,7 +1799,7 @@
       "file_type": "code",
       "norm_label": "digitalwater()",
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L6"
+      "source_location": "L8"
     },
     {
       "id": "backend_ml_preprocessing_build_preprocessor",
@@ -8414,7 +8414,7 @@
       "file_type": "code",
       "norm_label": "sentinelatmosphere",
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L118"
+      "source_location": "L123"
     },
     {
       "id": "client_src_main",
@@ -23025,6 +23025,18 @@
       "type": "external"
     },
     {
+      "id": "tempfile",
+      "label": "tempfile",
+      "_origin": "semantic",
+      "community": 155,
+      "community_name": "test_human_review.py",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "tempfile",
+      "source_file": "",
+      "type": "external"
+    },
+    {
       "id": "client_src_components_triageimpact_triageimpact",
       "label": "client_src_components_triageimpact_triageimpact",
       "_origin": "semantic",
@@ -23057,6 +23069,30 @@
       "external": true,
       "file_type": "concept",
       "norm_label": "ref_three_examples_jsm_controls_orbitcontrols_js",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "app",
+      "label": "app",
+      "_origin": "semantic",
+      "community": 162,
+      "community_name": "os",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "app",
+      "source_file": "",
+      "type": "external"
+    },
+    {
+      "id": "fastapi_testclient",
+      "label": "fastapi_testclient",
+      "_origin": "semantic",
+      "community": 162,
+      "community_name": "os",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "fastapi_testclient",
       "source_file": "",
       "type": "external"
     },
@@ -23297,39 +23333,6 @@
       "external": true,
       "file_type": "concept",
       "norm_label": "uvicorn",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "tempfile",
-      "label": "tempfile",
-      "community": 155,
-      "community_name": "test_human_review.py",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "tempfile",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "app",
-      "label": "app",
-      "community": 162,
-      "community_name": "os",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "app",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "fastapi_testclient",
-      "label": "fastapi_testclient",
-      "community": 162,
-      "community_name": "os",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "fastapi_testclient",
       "source_file": "",
       "type": "external"
     }
@@ -33004,7 +33007,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L4",
+      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -49492,7 +49495,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L118",
+      "source_location": "L123",
       "weight": 1.0
     },
     {
@@ -49503,7 +49506,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L6",
+      "source_location": "L8",
       "weight": 1.0
     },
     {

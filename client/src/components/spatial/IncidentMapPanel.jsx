@@ -15,21 +15,21 @@ import { CorrelationReviewModal } from './CorrelationReviewModal';
 
 /* Base XY coordinate anchors (layout stability) */
 const BASE_XY_COORDINATES = {
-  'INC-101': [-3.0, 1.5],
-  'INC-102': [-0.6, 1.2],
-  'INC-103': [2.6, 1.0],
-  'INC-104': [1.5, 0.3],
-  'INC-105': [3.4, -0.6],
-  'INC-106': [-2.6, -1.2],
+  'INC-101': [-3.2, 1.4],
+  'INC-102': [-0.7, 1.1],
+  'INC-103': [2.7, 0.9],
+  'INC-104': [1.7, 0.2],
+  'INC-105': [3.5, -0.6],
+  'INC-106': [-2.8, -1.3],
   'INC-107': [-0.9, -0.6],
-  'INC-108': [0.6, -1.3],
-  'INC-109': [2.8, -1.5],
-  'INC-110': [-1.4, 0.3],
-  'INC-111': [-3.5, 0.0],
-  'INC-112': [-2.7, 1.9],
-  'INC-113': [0.4, 2.2],
-  'INC-114': [3.2, 1.7],
-  'INC-115': [-1.7, -1.8],
+  'INC-108': [0.7, -1.4],
+  'INC-109': [2.7, -1.7],
+  'INC-110': [-1.7, 0.4],
+  'INC-111': [-3.7, -0.2],
+  'INC-112': [-2.6, 2.3],
+  'INC-113': [0.6, 2.3],
+  'INC-114': [3.4, 2.0],
+  'INC-115': [-1.5, -2.1],
 };
 
 function hashString(str) {
@@ -191,47 +191,34 @@ function IncidentGraphNode({
         onSelect(incident);
       }}
     >
-      {/* LAYER 3: Soft Translucent Atmospheric Halo */}
-      <mesh scale={isSelected ? 2.6 : isHovered ? 2.1 : 1.7}>
-        <sphereGeometry args={[baseRadius, 20, 20]} />
-        <meshBasicMaterial
-          color={theme.halo}
-          transparent
-          opacity={isDimmed ? 0.04 : isSelected ? 0.35 : isHovered ? 0.24 : 0.10}
-          depthWrite={false}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
+      {/* Subtle Halo ONLY when Hovered or Selected */}
+      {(isSelected || isHovered) && (
+        <mesh scale={isSelected ? 1.75 : 1.35}>
+          <sphereGeometry args={[baseRadius, 18, 18]} />
+          <meshBasicMaterial
+            color={theme.core}
+            transparent
+            opacity={isSelected ? 0.22 : 0.12}
+            depthWrite={false}
+          />
+        </mesh>
+      )}
 
-      {/* LAYER 2: Inner Colored Glow */}
-      <mesh scale={isSelected ? 1.6 : isHovered ? 1.35 : 1.2}>
-        <sphereGeometry args={[baseRadius, 22, 22]} />
-        <meshBasicMaterial
-          color={theme.glow}
-          transparent
-          opacity={isDimmed ? 0.06 : isSelected ? 0.45 : isHovered ? 0.30 : 0.18}
-          depthWrite={false}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-
-      {/* LAYER 1: Physically Based Clearcoat Emissive Solid Core */}
+      {/* Crisp Solid Enterprise Node Core */}
       <mesh>
-        <sphereGeometry args={[baseRadius, 32, 32]} />
-        <meshPhysicalMaterial
+        <sphereGeometry args={[baseRadius, 24, 24]} />
+        <meshStandardMaterial
           color={theme.core}
           emissive={theme.core}
-          emissiveIntensity={isDimmed ? 0.35 : isSelected ? 3.5 : isHovered ? 2.2 : 1.3}
-          roughness={0.22}
-          metalness={0.35}
-          clearcoat={0.6}
-          clearcoatRoughness={0.16}
+          emissiveIntensity={isSelected ? 0.85 : isHovered ? 0.65 : 0.40}
+          roughness={0.35}
+          metalness={0.20}
         />
       </mesh>
 
-      {/* Local Spotlight on Hover/Select */}
-      {(isHovered || isSelected) && (
-        <pointLight color={theme.core} intensity={isSelected ? 1.6 : 0.8} distance={2.5} />
+      {/* Focused Accent Light on Selected only */}
+      {isSelected && (
+        <pointLight color={theme.core} intensity={0.9} distance={2.2} />
       )}
 
 
@@ -548,17 +535,21 @@ function CurvedGraphRelationships({
   const activeId = selectedIncident?.incident_id || selectedIncident?.id;
   const hoverId = hoveredIncident?.incident_id || hoveredIncident?.id;
 
-  const getEdgeColor = (type) => {
+  const getEdgeColor = (type, isHighlighted) => {
+    if (isHighlighted) {
+      return '#5EA8BF'; // Refined slightly brighter restrained blue-teal on hover
+    }
+    // Restrained blue/teal/slate at rest (clearly visible, subtle)
     switch (type) {
       case 'USER':
-        return '#C18A4A'; // Copper
+        return '#4E7E8E'; // Restrained soft blue-teal
       case 'EXTERNAL IP':
-        return '#B84D61'; // Burgundy / P1
+        return '#456B7D'; // Restrained slate-teal
       case 'TIME WINDOW':
-        return '#77818A'; // Slate
+        return '#385360'; // Subtle dark slate-blue
       case 'HOST':
       default:
-        return '#5C9480'; // Slate/Green
+        return '#3E687A'; // Restrained deep blue/teal/slate
     }
   };
 
@@ -571,13 +562,13 @@ function CurvedGraphRelationships({
 
         const isHighlighted = isSelectedEdge || isHoveredIncidentEdge || isDirectlyHovered;
 
-        let opacity = 0.20;
-        let color = getEdgeColor(edge.primaryType);
+        let opacity = 0.28;
+        let color = getEdgeColor(edge.primaryType, isHighlighted);
         let lineWidth = 0.85;
 
         if (isHighlighted) {
-          opacity = 0.88;
-          lineWidth = 2.2;
+          opacity = 0.75;
+          lineWidth = 1.5;
         } else if (activeId) {
           opacity = 0.04;
         }
@@ -703,11 +694,11 @@ function EvidenceTelemetryParticles({ edgeCurvesRef, selectedIncident }) {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.045}
+        size={0.030}
         sizeAttenuation
         transparent
-        opacity={0.75}
-        color="#35CFFF"
+        opacity={0.38}
+        color="#4A8A9E"
         blending={THREE.AdditiveBlending}
         depthWrite={false}
       />

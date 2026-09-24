@@ -474,9 +474,9 @@
     "semantic_hash": ""
   },
   "client/src/App.jsx": {
-    "mtime": 1790240844.9650762,
-    "seen": 1790241241.528507,
-    "ast_hash": "dfe9209651ea4c221e7d54a7f9a116b5",
+    "mtime": 1790257819.6920009,
+    "seen": 1790257976.3542383,
+    "ast_hash": "2d901ead3c50d51dd87675255396188d",
     "semantic_hash": ""
   },
   "client/src/components/RawAlertsExplorer.jsx": {
@@ -1494,15 +1494,15 @@
     "semantic_hash": ""
   },
   "client/src/components/spatial/DigitalWater.jsx": {
-    "mtime": 1790240833.9925177,
-    "seen": 1790241241.5383284,
-    "ast_hash": "9d80409bd1442e169c460524bd4a7868",
+    "mtime": 1790257806.452804,
+    "seen": 1790257976.3843112,
+    "ast_hash": "ae32316afded0f724d534e7aa78650f8",
     "semantic_hash": ""
   },
   "client/src/components/spatial/IncidentMapPanel.jsx": {
-    "mtime": 1790230352.2373333,
-    "seen": 1790231949.8348932,
-    "ast_hash": "343e64b5c9f3adbb6ba8b77a50265909",
+    "mtime": 1790257908.5473347,
+    "seen": 1790257976.3843112,
+    "ast_hash": "414f7baf52907d8eb30649ce79aaf475",
     "semantic_hash": ""
   },
   "client/src/components/telemetry/AlertEvidenceDrawer.jsx": {
