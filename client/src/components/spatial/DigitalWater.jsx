@@ -119,26 +119,33 @@ const waterFragmentShader = /* glsl */ `
     float waveElevation = smoothstep(-0.15, 0.35, vWave);
     vec3 color = mix(deepWater, blueWater, waveElevation * 0.7);
 
-    // Moving cyan wave crests
-    float crest = smoothstep(0.12, 0.40, vWave);
-    color = mix(color, cyanWater, crest * 0.4);
+    // Spatial center dampening factor: keeps outer edges active while calming the middle zone
+    float centerDist = length(vWorldPosition.xz);
+    float centerFactor = smoothstep(2.0, 10.0, centerDist);
 
-    // Moving moonlight telemetry streaks (cool cyan #62DFFF)
+    // Moving cyan wave crests (softened in center)
+    float crest = smoothstep(0.12, 0.40, vWave);
+    float crestIntensity = mix(0.12, 0.40, centerFactor);
+    color = mix(color, cyanWater, crest * crestIntensity);
+
+    // Moving moonlight telemetry streaks (cool cyan #62DFFF, softened in center)
     float highlight = sin(
       vWorldPosition.x * 1.35 +
       vWorldPosition.z * 0.75 +
       uTime * 0.65
     );
     highlight = smoothstep(0.85, 1.0, highlight);
-    color += highlightCyan * (highlight * 0.24);
+    float highlightIntensity = mix(0.06, 0.24, centerFactor);
+    color += highlightCyan * (highlight * highlightIntensity);
 
-    // Crisp specular sheen (white #DCEFF5)
+    // Crisp specular sheen (white #DCEFF5, softened in center)
     float sheen = sin(
       (vWorldPosition.x - vWorldPosition.z) * 1.5 +
       uTime * 0.48
     );
     sheen = smoothstep(0.94, 1.0, sheen);
-    color += specularWhite * (sheen * 0.32);
+    float sheenIntensity = mix(0.06, 0.32, centerFactor);
+    color += specularWhite * (sheen * sheenIntensity);
 
     // Strictly localized pinpoint incident reflections:
     // Bounded to radius < 1.0 with steep falloff to ensure ZERO global bleed
@@ -180,9 +187,11 @@ const reflectionLayerFragmentShader = /* glsl */ `
     float streak2 = sin((vUv.x * 2.0 - vUv.y) * 12.0 + uTime * 0.45) * 0.5 + 0.5;
     float combined = smoothstep(0.88, 1.0, streak * streak2);
 
-    // Subtle cool cyan highlight (#62DFFF)
+    // Subtle cool cyan highlight (#62DFFF) softened in center
     vec3 sheenColor = vec3(0.384, 0.875, 1.0);
-    gl_FragColor = vec4(sheenColor, combined * 0.05);
+    float centerDist = length(vWorldPosition.xz);
+    float centerFactor = smoothstep(2.5, 9.5, centerDist);
+    gl_FragColor = vec4(sheenColor, combined * 0.05 * centerFactor);
   }
 `;
 
@@ -380,6 +389,9 @@ export function DigitalWater({ incidents = [] }) {
         <WaterCameraController />
       </Canvas>
 
+      {/* Soft Center Readability Mask: Calms middle ripple, preserves atmospheric edges */}
+      <div className="sentinel-center-soften" />
+
       {/* Dark Readability Overlay between 3D water and application UI */}
       <div className="water-readability-overlay" />
 
@@ -400,15 +412,30 @@ export function DigitalWater({ incidents = [] }) {
           pointer-events: none;
         }
 
+        .sentinel-center-soften {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background: radial-gradient(
+            ellipse 55% 48% at 50% 50%,
+            rgba(8, 12, 15, 0.78) 0%,
+            rgba(8, 12, 15, 0.58) 32%,
+            rgba(8, 12, 15, 0.25) 58%,
+            transparent 78%
+          );
+          z-index: 2;
+        }
+
         .water-readability-overlay {
           position: absolute;
           inset: 0;
           background: radial-gradient(
             ellipse 85% 70% at 50% 40%,
-            rgba(2, 7, 11, 0.20) 0%,
-            rgba(2, 7, 11, 0.55) 100%
+            rgba(2, 7, 11, 0.15) 0%,
+            rgba(2, 7, 11, 0.50) 100%
           );
           pointer-events: none;
+          z-index: 1;
         }
       `}</style>
     </div>
