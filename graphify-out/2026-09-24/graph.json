@@ -1440,7 +1440,7 @@
       "file_type": "code",
       "norm_label": "curvedgraphrelationships()",
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L481"
+      "source_location": "L492"
     },
     {
       "id": "client_src_components_spatial_incidentmappanel_evidencetelemetryparticles",
@@ -1452,7 +1452,7 @@
       "file_type": "code",
       "norm_label": "evidencetelemetryparticles()",
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L645"
+      "source_location": "L656"
     },
     {
       "id": "client_src_components_spatial_incidentmappanel_findcorrelationevidence",
@@ -1464,7 +1464,7 @@
       "file_type": "code",
       "norm_label": "findcorrelationevidence()",
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L427"
+      "source_location": "L438"
     },
     {
       "id": "client_src_components_spatial_incidentmappanel_getincident3dposition",
@@ -1488,7 +1488,7 @@
       "file_type": "code",
       "norm_label": "getincidententities()",
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L379"
+      "source_location": "L390"
     },
     {
       "id": "client_src_components_spatial_incidentmappanel_getprioritytheme",
@@ -1524,7 +1524,7 @@
       "file_type": "code",
       "norm_label": "incidentdrilldownoverlay()",
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L256"
+      "source_location": "L267"
     },
     {
       "id": "client_src_components_spatial_incidentmappanel_incidentgraphnode",
@@ -1548,7 +1548,7 @@
       "file_type": "code",
       "norm_label": "incidentmappanel()",
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L739"
+      "source_location": "L750"
     },
     {
       "id": "client_src_components_spatial_incidentmappanel_parallaxcameracontroller",
@@ -1560,7 +1560,7 @@
       "file_type": "code",
       "norm_label": "parallaxcameracontroller()",
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L710"
+      "source_location": "L721"
     },
     {
       "id": "client_src_components_spatial_incidentmappanel_secondarytelemetryfield",
@@ -1740,7 +1740,7 @@
       "file_type": "code",
       "norm_label": "digitalwater()",
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L9"
+      "source_location": "L5"
     },
     {
       "id": "backend_ml_evaluate_evaluate_held_out_test_set",
@@ -8330,7 +8330,7 @@
       "file_type": "code",
       "norm_label": "sentinelatmosphere",
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L179"
+      "source_location": "L138"
     },
     {
       "id": "client_src_main",
@@ -25926,7 +25926,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L496",
+      "source_location": "L507",
       "weight": 1.0
     },
     {
@@ -25938,7 +25938,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L428",
+      "source_location": "L439",
       "weight": 1.0
     },
     {
@@ -25974,7 +25974,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L915",
+      "source_location": "L926",
       "weight": 1.0
     },
     {
@@ -25986,7 +25986,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L718",
+      "source_location": "L729",
       "weight": 1.0
     },
     {
@@ -33174,7 +33174,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L7",
+      "source_location": "L3",
       "weight": 1.0
     },
     {
@@ -49707,7 +49707,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L179",
+      "source_location": "L138",
       "weight": 1.0
     },
     {
@@ -49718,7 +49718,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L9",
+      "source_location": "L5",
       "weight": 1.0
     },
     {
@@ -49751,7 +49751,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L256",
+      "source_location": "L267",
       "weight": 1.0
     },
     {
@@ -49773,7 +49773,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L379",
+      "source_location": "L390",
       "weight": 1.0
     },
     {
@@ -49784,7 +49784,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L427",
+      "source_location": "L438",
       "weight": 1.0
     },
     {
@@ -49806,7 +49806,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L481",
+      "source_location": "L492",
       "weight": 1.0
     },
     {
@@ -49817,7 +49817,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L645",
+      "source_location": "L656",
       "weight": 1.0
     },
     {
@@ -49828,7 +49828,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L710",
+      "source_location": "L721",
       "weight": 1.0
     },
     {
@@ -49839,7 +49839,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "client/src/components/spatial/IncidentMapPanel.jsx",
-      "source_location": "L739",
+      "source_location": "L750",
       "weight": 1.0
     },
     {
@@ -53372,5 +53372,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "999ff172a21c1a6e1f30f6888f1641d81f50ab32"
+  "built_at_commit": "a6cefb934f86be742c7cbd2ab7fcb2688472dbfa"
 }
