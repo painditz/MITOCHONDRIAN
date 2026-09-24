@@ -78,9 +78,9 @@ export function getIncident3DPosition(incident) {
 }
 
 const PRIORITY_THEME = {
-  P1: { core: '#B64A5F', glow: '#B64A5F', halo: '#B64A5F', line: '#B64A5F' },
-  P2: { core: '#C58A52', glow: '#C58A52', halo: '#C58A52', line: '#C58A52' },
-  P3: { core: '#5F9480', glow: '#5F9480', halo: '#5F9480', line: '#5F9480' },
+  P1: { core: '#FF4655', glow: '#FF4655', halo: '#FF4655', line: '#FF4655' },
+  P2: { core: '#FFB52E', glow: '#FFB52E', halo: '#FFB52E', line: '#FFB52E' },
+  P3: { core: '#10B981', glow: '#10B981', halo: '#10B981', line: '#10B981' },
   P4: { core: '#78828A', glow: '#78828A', halo: '#78828A', line: '#78828A' },
 };
 
@@ -127,11 +127,11 @@ function SecondaryTelemetryField({ count = 55 }) {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.03}
+        size={0.032}
         sizeAttenuation
         transparent
-        opacity={0.22}
-        color="#2D5B72"
+        opacity={0.25}
+        color="#0284C7"
         depthWrite={false}
       />
     </points>
@@ -153,10 +153,10 @@ function IncidentGraphNode({
   const theme = getPriorityTheme(incident.priority);
   const risk = Number(incident.risk_score ?? incident.riskScore ?? 50);
 
-  // Smooth risk scale: 0.55 -> 1.35 based on normalized risk
+  // Moderate risk scale: node radius is clearly visible without being tiny or huge
   const riskNormalized = Math.min(risk / 100, 1);
-  const riskScale = THREE.MathUtils.lerp(0.55, 1.35, riskNormalized);
-  const baseRadius = 0.12 * riskScale;
+  const riskScale = THREE.MathUtils.lerp(0.85, 1.40, riskNormalized);
+  const baseRadius = 0.13 * riskScale;
 
   const id = incident.incident_id || incident.id;
   const prioShort = String(incident.priority || 'P1').slice(0, 2).toUpperCase();
@@ -164,7 +164,7 @@ function IncidentGraphNode({
 
   useFrame((_, delta) => {
     if (!group.current) return;
-    const targetScale = isSelected ? 1.25 : isHovered ? 1.10 : 1.0;
+    const targetScale = isSelected ? 1.30 : isHovered ? 1.15 : 1.0;
     group.current.scale.setScalar(
       THREE.MathUtils.damp(group.current.scale.x, targetScale, 10, delta)
     );
@@ -191,34 +191,45 @@ function IncidentGraphNode({
         onSelect(incident);
       }}
     >
-      {/* Subtle Halo ONLY when Hovered or Selected */}
-      {(isSelected || isHovered) && (
-        <mesh scale={isSelected ? 1.75 : 1.35}>
-          <sphereGeometry args={[baseRadius, 18, 18]} />
-          <meshBasicMaterial
-            color={theme.core}
-            transparent
-            opacity={isSelected ? 0.22 : 0.12}
-            depthWrite={false}
-          />
-        </mesh>
-      )}
+      {/* LAYER 3: Soft Surrounding Atmospheric Halo */}
+      <mesh scale={isSelected ? 2.5 : isHovered ? 2.05 : 1.65}>
+        <sphereGeometry args={[baseRadius, 16, 16]} />
+        <meshBasicMaterial
+          color={theme.halo}
+          transparent
+          opacity={isSelected ? 0.32 : isHovered ? 0.22 : 0.14}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
 
-      {/* Crisp Solid Enterprise Node Core */}
+      {/* LAYER 2: Soft Colored Glow */}
+      <mesh scale={isSelected ? 1.65 : isHovered ? 1.38 : 1.22}>
+        <sphereGeometry args={[baseRadius, 18, 18]} />
+        <meshBasicMaterial
+          color={theme.glow}
+          transparent
+          opacity={isSelected ? 0.48 : isHovered ? 0.35 : 0.22}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+
+      {/* LAYER 1: Solid Vibrant Core */}
       <mesh>
         <sphereGeometry args={[baseRadius, 24, 24]} />
         <meshStandardMaterial
           color={theme.core}
           emissive={theme.core}
-          emissiveIntensity={isSelected ? 0.85 : isHovered ? 0.65 : 0.40}
-          roughness={0.35}
-          metalness={0.20}
+          emissiveIntensity={isSelected ? 3.0 : isHovered ? 2.0 : 1.4}
+          roughness={0.28}
+          metalness={0.25}
         />
       </mesh>
 
-      {/* Focused Accent Light on Selected only */}
-      {isSelected && (
-        <pointLight color={theme.core} intensity={0.9} distance={2.2} />
+      {/* Local Point Light on hover or selected node */}
+      {(isHovered || isSelected) && (
+        <pointLight color={theme.core} intensity={isSelected ? 1.6 : 0.8} distance={2.5} />
       )}
 
 
@@ -537,19 +548,19 @@ function CurvedGraphRelationships({
 
   const getEdgeColor = (type, isHighlighted) => {
     if (isHighlighted) {
-      return '#5EA8BF'; // Refined slightly brighter restrained blue-teal on hover
+      return '#38BDF8'; // Bright cyan/blue on hover with subtle glow
     }
-    // Restrained blue/teal/slate at rest (clearly visible, subtle)
+    // Cyan/blue/slate family
     switch (type) {
       case 'USER':
-        return '#4E7E8E'; // Restrained soft blue-teal
+        return '#0284C7'; // Blue
       case 'EXTERNAL IP':
-        return '#456B7D'; // Restrained slate-teal
+        return '#3B82F6'; // Cobalt Blue
       case 'TIME WINDOW':
-        return '#385360'; // Subtle dark slate-blue
+        return '#64748B'; // Slate
       case 'HOST':
       default:
-        return '#3E687A'; // Restrained deep blue/teal/slate
+        return '#0EA5E9'; // Cyan
     }
   };
 
@@ -562,15 +573,15 @@ function CurvedGraphRelationships({
 
         const isHighlighted = isSelectedEdge || isHoveredIncidentEdge || isDirectlyHovered;
 
-        let opacity = 0.28;
+        let opacity = 0.42; // default: opacity 0.35–0.55
         let color = getEdgeColor(edge.primaryType, isHighlighted);
-        let lineWidth = 0.85;
+        let lineWidth = 1.3; // stroke: 1px–1.5px
 
         if (isHighlighted) {
-          opacity = 0.75;
-          lineWidth = 1.5;
+          opacity = 0.90; // hover: opacity ~0.9, slightly brighter, subtle glow
+          lineWidth = 2.0;
         } else if (activeId) {
-          opacity = 0.04;
+          opacity = 0.08; // unrelated edges: remain subdued
         }
 
         return (
@@ -644,7 +655,7 @@ function CurvedGraphRelationships({
 /* Moving Evidence Telemetry Particles along connected curves */
 function EvidenceTelemetryParticles({ edgeCurvesRef, selectedIncident }) {
   const pointsRef = useRef();
-  const particleCount = 12;
+  const particleCount = 14;
 
   const particleData = useMemo(() => {
     return Array.from({ length: particleCount }, (_, idx) => ({
@@ -694,11 +705,11 @@ function EvidenceTelemetryParticles({ edgeCurvesRef, selectedIncident }) {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.030}
+        size={0.042}
         sizeAttenuation
         transparent
-        opacity={0.38}
-        color="#4A8A9E"
+        opacity={0.80}
+        color="#38BDF8"
         blending={THREE.AdditiveBlending}
         depthWrite={false}
       />
@@ -875,12 +886,12 @@ export function IncidentMapPanel({
             }}
             onPointerMissed={() => onSelectIncident?.(null)}
           >
-            {/* Atmospheric Depth Fog: Far nodes softly fade into deep graphite */}
-            <fog attach="fog" args={['#1E1D1B', 6, 18]} />
+            {/* Atmospheric Depth Fog: keeps depth without washing out or graying nodes */}
+            <fog attach="fog" args={['#0E0D0D', 9, 24]} />
 
             {/* Ambient & Directional Lighting */}
-            <ambientLight intensity={0.52} color="#0C2538" />
-            <directionalLight position={[3, 8, 5]} intensity={0.75} color="#55C9EA" />
+            <ambientLight intensity={0.65} color="#0D2538" />
+            <directionalLight position={[3, 8, 5]} intensity={0.85} color="#38BDF8" />
 
             {/* Secondary Depth Points */}
             <SecondaryTelemetryField count={55} />
@@ -1103,7 +1114,7 @@ export function IncidentMapPanel({
           position: relative;
           width: 100%;
           height: 100%;
-          background: radial-gradient(circle at center, rgba(45, 43, 40, 0.35) 0%, rgba(36, 35, 33, 0.65) 100%);
+          background: radial-gradient(circle at center, rgba(14, 25, 38, 0.40) 0%, rgba(14, 13, 13, 0.90) 100%);
         }
 
         .map-viewport-stage canvas {
@@ -1184,15 +1195,15 @@ export function IncidentMapPanel({
         .prio-dot-label { gap: 0.35rem; color: #B9B3AA; }
 
         .dot { width: 6px; height: 6px; border-radius: 50%; }
-        .dot.p1 { background: #B64A5F; }
-        .dot.p2 { background: #C58A52; }
-        .dot.p3 { background: #5F9480; }
+        .dot.p1 { background: #FF4655; box-shadow: 0 0 6px rgba(255, 70, 85, 0.45); }
+        .dot.p2 { background: #FFB52E; box-shadow: 0 0 6px rgba(255, 181, 46, 0.45); }
+        .dot.p3 { background: #10B981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.45); }
         .dot.p4 { background: #78828A; }
 
         /* Minimalist Monospace Spatial Node Labels */
         .spatial-node-label {
-          background: rgba(45, 43, 40, 0.90);
-          border: 1px solid rgba(255, 255, 255, 0.12);
+          background: rgba(29, 28, 26, 0.92);
+          border: 1px solid rgba(255, 255, 255, 0.16);
           backdrop-filter: blur(14px);
           -webkit-backdrop-filter: blur(14px);
           padding: 0.25rem 0.55rem;
@@ -1201,19 +1212,19 @@ export function IncidentMapPanel({
           flex-direction: column;
           gap: 0.1rem;
           white-space: nowrap;
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.30);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.50);
           transition: border-color 160ms ease, box-shadow 160ms ease;
         }
 
         .spatial-node-label.hovered {
-          border-color: #C58A52;
-          box-shadow: 0 0 16px rgba(197, 138, 82, 0.25);
+          border-color: #38BDF8;
+          box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
         }
 
         .spatial-node-label.selected {
-          border-color: #C58A52;
-          background: rgba(45, 43, 40, 0.98);
-          box-shadow: 0 0 20px rgba(197, 138, 82, 0.35);
+          border-color: #FFB52E;
+          background: rgba(24, 23, 21, 0.98);
+          box-shadow: 0 0 20px rgba(255, 181, 46, 0.40);
         }
 
         .label-id-line {
@@ -1233,13 +1244,13 @@ export function IncidentMapPanel({
           font-size: 0.5rem;
         }
 
-        .label-prio.p1 { color: #B64A5F; font-weight: 700; }
-        .label-prio.p2 { color: #C58A52; font-weight: 700; }
-        .label-prio.p3 { color: #5F9480; font-weight: 700; }
-        .label-prio.p4 { color: #78828A; }
+        .label-prio.p1 { color: #FF4655; font-weight: 700; }
+        .label-prio.p2 { color: #FFB52E; font-weight: 700; }
+        .label-prio.p3 { color: #10B981; font-weight: 700; }
+        .label-prio.p4 { color: #94A3B8; }
 
         .label-risk {
-          color: #B9B3AA;
+          color: #F3EFE8;
           font-weight: 600;
         }
 

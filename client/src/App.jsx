@@ -256,7 +256,7 @@ export function App() {
       <style>{`
         .sentinel-app-root {
           min-height: 100vh;
-          background: #141312;
+          background: transparent;
           color: #F3EFE8;
           position: relative;
         }

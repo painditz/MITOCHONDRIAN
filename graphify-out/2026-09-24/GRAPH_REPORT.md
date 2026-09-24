@@ -1,17 +1,17 @@
 # Graph Report - MICROSOFT WINNER  (2026-09-24)
 
 ## Corpus Check
-- 270 files · ~531,073 words
+- 270 files · ~533,554 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 30 file(s) not represented in the graph (top: .toml 18, (none) 6, .css 3)
 
 ## Summary
-- 1958 nodes · 2624 edges · 166 communities (123 shown, 43 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 43 edges (avg confidence: 0.91)
+- 1963 nodes · 2641 edges · 166 communities (124 shown, 42 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 44 edges (avg confidence: 0.91)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `54a11560`
+- Built from commit: `999ff172`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -25,7 +25,7 @@
 - run-evals.js
 - Performance Checklist
 - Git Workflow and Versioning
-- DatasetValidationReport
+- test_pipeline.py
 - sdd-cache hook
 - Shipping and Launch
 - API and Interface Design
@@ -99,7 +99,7 @@
 - ref_node_test
 - test-driven-development/package.json
 - simplify-ignore.sh
-- test_pipeline.py
+- typing
 - Using agent-skills with Command Code
 - ci-cd-and-automation/package.json
 - config-parser.test.js
@@ -146,13 +146,13 @@
 - ai_briefer.py
 - NormalizedAlert
 - Microsoft Innovate 2026 — Problem Statement #25: "3,000 Alerts, One Analyst"
-- test_ml_pipeline.py
+- inference.py
 - run-evals-test.js
-- lucide-react
+- IncidentDetailModal.jsx
 - dependencies
 - .sync_normalized_asset_fields
 - validate-skills.js
-- json
+- verify_endpoints.py
 - devDependencies
 - client/package.json
 - IncidentIntelligence.jsx
@@ -160,9 +160,9 @@
 - AppLayout.jsx
 - scripts
 - models.py
-- inference.py
+- preprocessing.py
 - App.jsx
-- train.py
+- get_feature_names
 - test_human_review.py
 - IncidentInspectionModal.jsx
 - mockData.js
@@ -170,20 +170,20 @@
 - client_src_components_triageimpact_triageimpact
 - client_src_index
 - ref_three_examples_jsm_controls_orbitcontrols_js
-- os
-- generate_training_dataset
-- explain_alert_prediction
+- get
+- test_ml_pipeline.py
+- prepare_dataframe
 - CorrelationReviewModal.jsx
 
 ## God Nodes (most connected - your core abstractions)
 1. `react` - 55 edges
 2. `NormalizedAlert` - 34 edges
 3. `lucide-react` - 24 edges
-4. `correlate_normalized_alerts()` - 19 edges
+4. `correlate_normalized_alerts()` - 20 edges
 5. `generate_alerts()` - 19 edges
-6. `Incident` - 19 edges
-7. `Code Review and Quality` - 19 edges
-8. `RawAlert` - 18 edges
+6. `RawAlert` - 19 edges
+7. `Incident` - 19 edges
+8. `Code Review and Quality` - 19 edges
 9. `Security and Hardening` - 17 edges
 10. `build_authoritative_graph()` - 16 edges
 
@@ -202,7 +202,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (166 total, 43 thin omitted)
+## Communities (166 total, 42 thin omitted)
 
 ### Community 0 - ""3,000 Alerts, One Analyst" — SentinelOps AI"
 Cohesion: 0.25
@@ -239,6 +239,10 @@ Nodes (26): API, Backend Checklist, Cache checklist, Caching Strategies, Common 
 ### Community 8 - "Git Workflow and Versioning"
 Cohesion: 0.07
 Nodes (26): 1. Commit Early, Commit Often, 2. Atomic Commits, 3. Descriptive Messages, 4. Keep Concerns Separate, 5. Size Your Changes, Branch Naming, Branching Strategy, Change Summaries (+18 more)
+
+### Community 9 - "test_pipeline.py"
+Cohesion: 0.18
+Nodes (20): correlate_normalized_alerts(), Determines which alerts are related and groups them into unified incidents.…, generate_3000_alerts(), Default demonstration entry point producing exactly 3,000 synthetic alerts with…, RawAlert, normalize_alert(), normalize_batch(), parse_iso_timestamp() (+12 more)
 
 ### Community 10 - "sdd-cache hook"
 Cohesion: 0.08
@@ -524,9 +528,9 @@ Nodes (6): description, name, private, scripts, test, version
 Cohesion: 0.57
 Nodes (6): block_hash(), escape_glob(), file_id(), filter_file(), hash_cmd(), simplify-ignore.sh script
 
-### Community 83 - "test_pipeline.py"
-Cohesion: 0.17
-Nodes (18): correlate_normalized_alerts(), Determines which alerts are related and groups them into unified incidents.…, map_alerts_to_mitre(), Maps alert evidence to MITRE ATT&CK techniques ONLY when concrete evidence…, MitreTechnique, calculate_incident_priority(), Computes an explainable Risk Score (0 - 100) and Priority Tier. Crucial…, 5. MITRE ATT&CK Mapping: Only maps when supported by actual evidence. (+10 more)
+### Community 83 - "typing"
+Cohesion: 0.27
+Nodes (10): map_alerts_to_mitre(), Maps alert evidence to MITRE ATT&CK techniques ONLY when concrete evidence…, MitreTechnique, calculate_incident_priority(), Computes an explainable Risk Score (0 - 100) and Priority Tier. Crucial…, 5. MITRE ATT&CK Mapping: Only maps when supported by actual evidence., 4. Asset Criticality MUST matter! An incident on a Critical asset with few…, test_4_asset_criticality_prioritization() (+2 more)
 
 ### Community 84 - "Using agent-skills with Command Code"
 Cohesion: 0.33
@@ -557,8 +561,8 @@ Cohesion: 0.33
 Nodes (5): plugins, rules, react/only-export-components, react/rules-of-hooks, $schema
 
 ### Community 91 - "app.py"
-Cohesion: 0.06
-Nodes (52): add_incident_note(), AddAnalystNoteRequest, AiBriefReviewRequest, AnalystReviewRequest, CorrelationReviewRequest, EvidenceReviewRequest, get_correlation_graph(), get_incident_detail() (+44 more)
+Cohesion: 0.09
+Nodes (38): add_incident_note(), AddAnalystNoteRequest, AiBriefReviewRequest, AlertUploadBatch, AnalystReviewRequest, CorrelationReviewRequest, EvidenceReviewRequest, ingest_custom_batch() (+30 more)
 
 ### Community 92 - "ship.md"
 Cohesion: 0.40
@@ -597,12 +601,12 @@ Cohesion: 0.09
 Nodes (3): Button, IncidentField(), react
 
 ### Community 134 - "generate_alerts"
-Cohesion: 0.08
-Nodes (34): argparse, Dataset Validator for Problem Statement #25 ("3,000 Alerts, One Analyst").…, validate_dataset(), _build_attack_scenarios(), _build_scaled_attack_scenarios(), generate_3000_alerts(), generate_alerts(), Any (+26 more)
+Cohesion: 0.07
+Nodes (25): argparse, DatasetValidationReport, Dataset Validator for Problem Statement #25 ("3,000 Alerts, One Analyst").…, validate_dataset(), _build_attack_scenarios(), _build_scaled_attack_scenarios(), generate_alerts(), Any (+17 more)
 
 ### Community 135 - "ai_briefer.py"
-Cohesion: 0.23
-Nodes (12): enrich_incidents_with_briefs(), extract_structured_evidence(), generate_ai_synopsis(), generate_shift_brief(), get_or_load_ai_model(), Any, Generates an auditable, evidence-grounded Shift Handover Brief. Includes full…, Lazily loads the lightweight Seq2Seq transformer model on CPU. Designed… (+4 more)
+Cohesion: 0.28
+Nodes (11): enrich_incidents_with_briefs(), extract_structured_evidence(), generate_ai_synopsis(), generate_shift_brief(), get_or_load_ai_model(), Any, Generates an auditable, evidence-grounded Shift Handover Brief. Includes full…, Lazily loads the lightweight Seq2Seq transformer model on CPU. Designed… (+3 more)
 
 ### Community 136 - "NormalizedAlert"
 Cohesion: 0.26
@@ -612,17 +616,17 @@ Nodes (18): build_authoritative_graph(), extract_incident_entities(), parse_iso(
 Cohesion: 0.13
 Nodes (14): 10. Reproducibility Instructions, 11. Known Limitations & Boundaries, 1. Executive Summary & Why This Dataset Exists, 2. Dataset Generation Methodology & Single-Generator Architecture, 3. Realistic 19-Field Alert Schema, 4. Scenario-Driven Attack Progression, 5. Benign Noise & False-Positive Distribution, 6. Asset Criticality Hierarchy (+6 more)
 
-### Community 138 - "test_ml_pipeline.py"
+### Community 138 - "inference.py"
 Cohesion: 0.14
-Nodes (19): extract_features_from_normalized_alert(), get_or_load_pipeline(), Any, Loads the serialized scikit-learn artifact containing preprocessor and model., Converts a NormalizedAlert instance into feature row for the preprocessor., Scores a batch of normalized alerts with the real trained model. Attaches…, score_normalized_alerts(), Verifies that inference handles missing fields, empty strings, and null… (+11 more)
+Nodes (17): extract_features_from_normalized_alert(), format_feature_attribution(), get_or_load_pipeline(), Any, Production inference engine for SentinelOps AI. Applies the trained Random…, Loads the serialized scikit-learn artifact containing preprocessor and model., Converts a NormalizedAlert instance into feature row for the preprocessor., Scores a batch of normalized alerts with the real trained model. Attaches… (+9 more)
 
 ### Community 139 - "run-evals-test.js"
 Cohesion: 0.14
 Nodes (10): assert, behavioralEval(), completeCase(), fs, { materializeWorkspace, parseGrading }, os, path, RUNNER (+2 more)
 
-### Community 140 - "lucide-react"
-Cohesion: 0.14
-Nodes (15): AiBriefReviewPanel(), BRIEF_RATINGS, AnalystDecisionCenter(), REASON_OPTIONS, AnalystNotesPanel(), CHALLENGE_REASONS, EvidenceReviewPanel(), IncidentDetailModal() (+7 more)
+### Community 140 - "IncidentDetailModal.jsx"
+Cohesion: 0.12
+Nodes (17): AiBriefReviewPanel(), BRIEF_RATINGS, AnalystDecisionCenter(), REASON_OPTIONS, AnalystNotesPanel(), CHALLENGE_REASONS, EvidenceReviewPanel(), IncidentDetailModal() (+9 more)
 
 ### Community 141 - "dependencies"
 Cohesion: 0.25
@@ -632,9 +636,9 @@ Nodes (8): dependencies, canvas-confetti, lucide-react, react, react-dom, @react
 Cohesion: 0.33
 Nodes (6): lintSkill(), fs, { lintSkill }, main(), path, SKILLS_DIR
 
-### Community 144 - "json"
-Cohesion: 0.36
-Nodes (6): http_get(), http_post(), run_verification(), json, time, urllib_request
+### Community 144 - "verify_endpoints.py"
+Cohesion: 0.38
+Nodes (5): http_get(), http_post(), run_verification(), time, urllib_request
 
 ### Community 145 - "devDependencies"
 Cohesion: 0.33
@@ -645,8 +649,8 @@ Cohesion: 0.15
 Nodes (12): name, private, type, version, canvas-confetti, oxlint, react-dom, @react-three/drei (+4 more)
 
 ### Community 147 - "IncidentIntelligence.jsx"
-Cohesion: 0.14
-Nodes (16): IncidentIntelligence(), IncidentMergeModal(), IncidentSummaryStrip(), MyReviewQueueRail(), MitreDrawer(), BASE_TECHNIQUES, MitreIntelligence(), AiMlEvaluationLab() (+8 more)
+Cohesion: 0.16
+Nodes (14): IncidentIntelligence(), IncidentMergeModal(), IncidentSummaryStrip(), MyReviewQueueRail(), MitreDrawer(), BASE_TECHNIQUES, MitreIntelligence(), AiMlEvaluationLab() (+6 more)
 
 ### Community 148 - "IncidentMapPanel.jsx"
 Cohesion: 0.16
@@ -661,51 +665,51 @@ Cohesion: 0.40
 Nodes (5): scripts, build, dev, lint, preview
 
 ### Community 151 - "models.py"
-Cohesion: 0.19
-Nodes (18): MeasuredAnalystTest, MLEvaluationReport, MTTTMetrics, BaseModel, SimulationEstimate, TriageSessionRecord, calculate_measured_analyst_test(), calculate_mttt_metrics() (+10 more)
+Cohesion: 0.22
+Nodes (16): MeasuredAnalystTest, MLEvaluationReport, MTTTMetrics, BaseModel, SimulationEstimate, TriageSessionRecord, calculate_measured_analyst_test(), calculate_mttt_metrics() (+8 more)
 
-### Community 152 - "inference.py"
+### Community 152 - "preprocessing.py"
 Cohesion: 0.18
-Nodes (14): evaluate_held_out_test_set(), Any, Independent Evaluation Script for Alert Relevance Model. Evaluates the trained…, format_feature_attribution(), Production inference engine for SentinelOps AI. Applies the trained Random…, get_feature_names(), Feature Preprocessing and Explainability Engine for Alert Triage. Combines TF-…, Retrieves human-readable feature names across all transformer branches. (+6 more)
+Nodes (12): Independent Evaluation Script for Alert Relevance Model. Evaluates the trained…, Feature Preprocessing and Explainability Engine for Alert Triage. Combines TF-…, Supervised Model Training Script for Alert Relevance Triage. Trains an…, joblib, numpy, pandas, sklearn_compose, sklearn_ensemble (+4 more)
 
 ### Community 153 - "App.jsx"
 Cohesion: 0.18
 Nodes (10): App(), ArchitecturePipeline(), STAGES, PlaneTopology(), Navigation(), DigitalWater(), SentinelAtmosphere, rootElement (+2 more)
 
-### Community 154 - "train.py"
-Cohesion: 0.15
-Nodes (15): build_preprocessor(), map_to_generic_alert_type(), prepare_dataframe(), Maps specific alert types to realistic generic SOC alert types/categories,…, Converts raw or synthetic alert dictionaries into a clean Pandas DataFrame., Constructs a ColumnTransformer combining TF-IDF vectorization for telemetry…, Any, Supervised Model Training Script for Alert Relevance Triage. Trains an… (+7 more)
+### Community 154 - "get_feature_names"
+Cohesion: 0.25
+Nodes (9): evaluate_held_out_test_set(), Any, build_preprocessor(), get_feature_names(), Constructs a ColumnTransformer combining TF-IDF vectorization for telemetry…, Retrieves human-readable feature names across all transformer branches., Verifies ColumnTransformer preprocessing across categorical, numerical, and TF-…, test_2_preprocessing_pipeline() (+1 more)
 
 ### Community 155 - "test_human_review.py"
-Cohesion: 0.28
-Nodes (13): initialize_pipeline(), Incident, load_reviews(), Any, Safely loads saved analyst reviews from a local JSON file. Returns empty dict…, Persists the human-in-the-loop 2.0 review state for a specific incident.…, Rehydrates existing incidents in memory with previously saved human review…, rehydrate_incidents() (+5 more)
+Cohesion: 0.19
+Nodes (17): app, initialize_pipeline(), Incident, load_reviews(), Any, Safely loads saved analyst reviews from a local JSON file. Returns empty dict…, Persists the human-in-the-loop 2.0 review state for a specific incident.…, Rehydrates existing incidents in memory with previously saved human review… (+9 more)
 
 ### Community 156 - "IncidentInspectionModal.jsx"
 Cohesion: 0.60
 Nodes (4): getPriorityColor(), IncidentInspectionModal(), parseRiskFactors(), PRIORITY_COLORS
 
-### Community 162 - "os"
-Cohesion: 0.33
-Nodes (5): app, Synthetic Training Dataset Generator for Microsoft Problem Statement #25.…, fastapi_testclient, os, sys
+### Community 162 - "get"
+Cohesion: 0.11
+Nodes (19): get_correlation_graph(), get_incident_detail(), get_incident_queue(), get_ingestion_status(), get_ml_metrics(), get_mttt_metrics(), get_raw_alerts(), get_reviews_summary() (+11 more)
 
-### Community 163 - "generate_training_dataset"
-Cohesion: 0.33
-Nodes (7): generate_training_dataset(), Any, Transforms a RawAlert from the unified generator into an ML training sample.…, Generates labeled training alerts using the unified generator., transform_alert_to_training_sample(), Verifies synthetic dataset generation with proper label distribution and…, test_1_dataset_generator()
+### Community 163 - "test_ml_pipeline.py"
+Cohesion: 0.17
+Nodes (14): generate_training_dataset(), Any, Synthetic Training Dataset Generator for Microsoft Problem Statement #25.…, Transforms a RawAlert from the unified generator into an ML training sample.…, Generates labeled training alerts using the unified generator., transform_alert_to_training_sample(), Verifies metrics.json exists and contains calculated test-set metrics (not…, Verifies that backend/app.py loads the trained model and populates ML fields on… (+6 more)
 
-### Community 164 - "explain_alert_prediction"
-Cohesion: 0.33
-Nodes (7): explain_alert_prediction(), explain_transformed_sample(), Any, High-speed vectorized feature attribution for an already-transformed alert…, Computes local feature attributions for a single raw alert DataFrame row., DataFrame, ndarray
+### Community 164 - "prepare_dataframe"
+Cohesion: 0.18
+Nodes (13): explain_alert_prediction(), explain_transformed_sample(), map_to_generic_alert_type(), prepare_dataframe(), Any, High-speed vectorized feature attribution for an already-transformed alert…, Computes local feature attributions for a single raw alert DataFrame row., Maps specific alert types to realistic generic SOC alert types/categories,… (+5 more)
 
 ## Knowledge Gaps
 - **1077 isolated node(s):** `$schema`, `name`, `description`, `name`, `url` (+1072 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1265 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **43 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1267 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **42 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Step 2: Identify Simplification Opportunities` connect `Code Simplification` to `app.py`?**
-  _High betweenness centrality (0.088) - this node is a cross-community bridge._
+- **Why does `Step 2: Identify Simplification Opportunities` connect `Code Simplification` to `get`?**
+  _High betweenness centrality (0.090) - this node is a cross-community bridge._
 - **Are the 6 inferred relationships involving `NormalizedAlert` (e.g. with `correlate_normalized_alerts()` and `map_alerts_to_mitre()`) actually correct?**
   _`NormalizedAlert` has 6 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `$schema`, `name`, `description` to the rest of the system?**
