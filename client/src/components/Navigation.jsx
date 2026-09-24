@@ -23,6 +23,7 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
     { id: 'mitre', label: 'MITRE' },
     { id: 'triage', label: 'Triage' },
     { id: 'aiml', label: 'AI / ML' },
+    { id: 'telemetry', label: 'Raw Alerts' },
   ];
 
   return (
@@ -74,10 +75,10 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
         .daq-global-nav {
           width: 100%;
           height: 60px;
-          background: rgba(2, 7, 11, 0.75);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          border-bottom: 1px solid rgba(110, 190, 220, 0.16);
+          background: rgba(36, 35, 33, 0.82);
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.11);
           position: fixed;
           top: 0;
           left: 0;
@@ -107,13 +108,13 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
           font-size: 0.92rem;
           font-weight: 700;
           letter-spacing: 0.08em;
-          color: #f8fafc;
+          color: #F3EFE8;
         }
 
         .brand-accent {
           font-size: 0.65rem;
           font-weight: 700;
-          color: #35CFFF;
+          color: #A96B42;
           letter-spacing: 0.08em;
         }
 
@@ -129,7 +130,7 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
           font-family: 'Inter', system-ui, sans-serif;
           font-size: 14px;
           font-weight: 550;
-          color: #8293A1;
+          color: #B9B3AA;
           cursor: pointer;
           padding: 0.4rem 0;
           position: relative;
@@ -137,11 +138,11 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
         }
 
         .nav-link-btn:hover {
-          color: #f8fafc;
+          color: #F3EFE8;
         }
 
         .nav-link-btn.active {
-          color: #35CFFF;
+          color: #F3EFE8;
           font-weight: 600;
         }
 
@@ -152,7 +153,7 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
           left: 0;
           right: 0;
           height: 2px;
-          background-color: #35CFFF;
+          background-color: #A96B42;
           border-radius: 1px;
         }
 
@@ -160,15 +161,15 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
           display: flex;
           align-items: center;
           gap: 0.85rem;
-          font-size: 0.65rem;
-          color: #64748b;
+          font-size: 0.68rem;
+          color: #C8C2B9;
         }
 
         .system-status-indicator {
           display: flex;
           align-items: center;
           gap: 0.45rem;
-          color: #e2e8f0;
+          color: #F3EFE8;
           font-weight: 600;
           font-size: 0.68rem;
         }
@@ -176,9 +177,9 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
         .status-live-dot {
           width: 6px;
           height: 6px;
-          background-color: #10b981;
+          background-color: #5F9480;
           border-radius: 50%;
-          box-shadow: 0 0 8px #10b981;
+          box-shadow: 0 0 8px rgba(95, 148, 128, 0.45);
         }
 
         .nav-meta-sep {
@@ -186,15 +187,15 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
         }
 
         .utc-clock {
-          color: #94a3b8;
+          color: #B9B3AA;
           font-size: 0.68rem;
           letter-spacing: 0.05em;
         }
 
         .nav-settings-btn {
           background: transparent;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: #94a3b8;
+          border: 1px solid rgba(255, 255, 255, 0.11);
+          color: #B9B3AA;
           cursor: pointer;
           padding: 0.35rem;
           border-radius: 4px;
@@ -205,9 +206,9 @@ export function Navigation({ activeNav = 'operations', onSelectNav }) {
         }
 
         .nav-settings-btn:hover {
-          color: #ffffff;
-          border-color: rgba(53, 207, 255, 0.4);
-          background: rgba(53, 207, 255, 0.08);
+          color: #F3EFE8;
+          border-color: rgba(197, 138, 82, 0.5);
+          background: rgba(255, 255, 255, 0.085);
         }
 
         @media (max-width: 900px) {

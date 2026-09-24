@@ -1,8 +1,15 @@
 // client/src/components/IncidentQueueTable.jsx
 // Redesigned Incident Queue: Compact editorial table rows with P1-P4 filters
+// Authoritative data binding to the exact backend incident dataset
 import React, { useState } from 'react';
 
-export function IncidentQueueTable({ incidents = [], onSelectIncident }) {
+export function IncidentQueueTable({
+  incidents = [],
+  onSelectIncident,
+  loading = false,
+  error = null,
+  onRetry,
+}) {
   const [priorityFilter, setPriorityFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -13,7 +20,7 @@ export function IncidentQueueTable({ incidents = [], onSelectIncident }) {
     const matchesPrio = priorityFilter === 'ALL' || p === priorityFilter;
 
     const id = (inc.incident_id || inc.id || '').toLowerCase();
-    const asset = (inc.asset_name || inc.hostname || inc.asset || '').toLowerCase();
+    const asset = (inc.hostname || inc.asset_name || inc.asset || '').toLowerCase();
     const user = (inc.user || '').toLowerCase();
     const q = searchQuery.toLowerCase();
 
@@ -69,33 +76,60 @@ export function IncidentQueueTable({ incidents = [], onSelectIncident }) {
         </div>
 
         <div className="queue-table-rows">
-          {filteredIncidents.length === 0 ? (
+          {loading ? (
+            <div className="queue-status-banner loading mono">
+              <div className="queue-spinner" />
+              <span>LOADING INCIDENT INTELLIGENCE</span>
+            </div>
+          ) : error ? (
+            <div className="queue-status-banner error mono">
+              <span className="error-text">INCIDENT DATA UNAVAILABLE</span>
+              {onRetry && (
+                <button className="queue-retry-btn mono" onClick={onRetry}>
+                  RETRY
+                </button>
+              )}
+            </div>
+          ) : incidents.length === 0 ? (
+            <div className="queue-status-banner empty mono">
+              <span>NO INCIDENTS AVAILABLE</span>
+            </div>
+          ) : filteredIncidents.length === 0 ? (
             <div className="queue-empty-row mono">No incidents match the active filters.</div>
           ) : (
             filteredIncidents.map((inc) => {
               const id = inc.incident_id || inc.id;
-              const prio = String(inc.priority || 'P1').slice(0, 2);
+              const prio = String(inc.priority || 'P1').slice(0, 2).toUpperCase();
               const risk = Number(inc.risk_score ?? inc.riskScore ?? 0);
-              const asset = inc.asset_name || inc.hostname || inc.asset || 'CORP-HOST';
-              const crit = inc.asset_criticality || inc.criticality || 'HIGH';
+              const asset = inc.hostname || inc.asset_name || inc.asset || 'CORP-HOST';
+              const crit = inc.asset_criticality || inc.criticality || 'MEDIUM';
               const alertCount = inc.alert_count ?? inc.signalsCount ?? 1;
-              const mitreList = inc.mitre_techniques || inc.mitreTechniques || inc.mitre || [];
+
+              const mitreList = inc.mitre_mappings || inc.mitre_techniques || inc.mitreTechniques || [];
               const topMitre = Array.isArray(mitreList) && mitreList.length > 0
-                ? (typeof mitreList[0] === 'string' ? mitreList[0] : mitreList[0].id || mitreList[0].technique_id)
-                : 'T1078';
+                ? (typeof mitreList[0] === 'string'
+                    ? mitreList[0]
+                    : mitreList[0].technique_id || mitreList[0].id)
+                : 'NONE';
+
+              const auditStatus = inc.investigation_status || 'Pending Review';
+              const isConfirmed = auditStatus.toLowerCase().includes('confirm');
+              const isInvestigated = auditStatus.toLowerCase().includes('investigated');
 
               return (
                 <div
                   key={id}
                   className="queue-table-row flex-between"
                   onClick={() => onSelectIncident?.(inc)}
+                  role="button"
+                  tabIndex={0}
                 >
                   <span className="col-id mono font-bold text-white">{id}</span>
                   <span className="col-prio">
                     <span className={`prio-badge ${prio.toLowerCase()} mono`}>{prio}</span>
                   </span>
                   <span className="col-risk mono font-bold">
-                    <span className={risk >= 80 ? 'text-red' : risk >= 60 ? 'text-amber' : 'text-cyan'}>
+                    <span className={risk >= 80 ? 'text-red' : risk >= 60 ? 'text-amber' : risk >= 40 ? 'text-cyan' : 'text-slate'}>
                       {risk.toFixed(1)}
                     </span>
                   </span>
@@ -106,8 +140,8 @@ export function IncidentQueueTable({ incidents = [], onSelectIncident }) {
                   <span className="col-signals mono text-slate">{alertCount} ALERTS</span>
                   <span className="col-mitre mono text-cyan">{topMitre}</span>
                   <span className="col-status mono">
-                    <span className="status-dot-active" />
-                    <span>INVESTIGATE &rarr;</span>
+                    <span className={`status-dot ${isConfirmed || isInvestigated ? 'active' : ''}`} />
+                    <span>{auditStatus.toUpperCase()}</span>
                   </span>
                 </div>
               );
@@ -138,69 +172,71 @@ export function IncidentQueueTable({ incidents = [], onSelectIncident }) {
           color: #94a3b8;
           font-size: 0.68rem;
           font-weight: 700;
-          padding: 0.4rem 0.85rem;
+          padding: 0.45rem 0.85rem;
           border-radius: 4px;
           cursor: pointer;
           display: flex;
           align-items: center;
-          gap: 0.45rem;
-          transition: all 140ms ease;
+          gap: 0.5rem;
+          transition: all 160ms ease;
         }
 
         .queue-filter-tab:hover {
-          color: #ffffff;
-          border-color: rgba(56, 189, 248, 0.35);
+          border-color: rgba(33, 212, 255, 0.4);
+          color: #f8fafc;
         }
 
         .queue-filter-tab.active {
-          background: rgba(56, 189, 248, 0.15);
-          border-color: #38bdf8;
-          color: #38bdf8;
+          background: rgba(33, 212, 255, 0.14);
+          border-color: #21D4FF;
+          color: #21D4FF;
         }
-        .queue-filter-tab.active.p1 { border-color: #ff3b4d; color: #ff3b4d; background: rgba(255, 59, 77, 0.15); }
-        .queue-filter-tab.active.p2 { border-color: #ffb020; color: #ffb020; background: rgba(255, 176, 32, 0.15); }
-        .queue-filter-tab.active.p3 { border-color: #38bdf8; color: #38bdf8; background: rgba(56, 189, 248, 0.15); }
-        .queue-filter-tab.active.p4 { border-color: #94a3b8; color: #94a3b8; background: rgba(148, 163, 184, 0.15); }
 
         .tab-count {
           font-size: 0.62rem;
-          opacity: 0.75;
+          background: rgba(255, 255, 255, 0.08);
+          padding: 0.1rem 0.35rem;
+          border-radius: 3px;
+        }
+
+        .queue-search-box {
+          flex: 1;
+          max-width: 380px;
         }
 
         .queue-search-input {
-          background: rgba(7, 12, 18, 0.7);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          border-radius: 4px;
-          padding: 0.45rem 0.85rem;
+          width: 100%;
+          background: rgba(15, 23, 42, 0.6);
+          border: 1px solid rgba(255, 255, 255, 0.1);
           color: #f8fafc;
-          font-size: 0.72rem;
-          width: 280px;
+          font-size: 0.75rem;
+          padding: 0.55rem 0.85rem;
+          border-radius: 4px;
+          outline: none;
+          transition: border-color 160ms ease;
         }
 
         .queue-search-input:focus {
-          outline: none;
-          border-color: #38bdf8;
+          border-color: #21D4FF;
         }
 
         .queue-table-card {
-          background: rgba(7, 12, 18, 0.75);
-          backdrop-filter: blur(28px);
-          -webkit-backdrop-filter: blur(28px);
-          border: 1px solid rgba(255, 255, 255, 0.09);
+          background: rgba(5, 12, 18, 0.85);
+          border: 1px solid rgba(75, 190, 225, 0.16);
           border-radius: 8px;
           overflow: hidden;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
         }
 
         .queue-table-header {
-          background: rgba(15, 23, 42, 0.7);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
           padding: 0.85rem 1.25rem;
+          background: rgba(3, 10, 16, 0.9);
+          border-bottom: 1px solid rgba(75, 190, 225, 0.14);
           font-size: 0.64rem;
-          color: #64748b;
           font-weight: 700;
-          letter-spacing: 0.1em;
-          align-items: center;
+          color: #71838F;
+          letter-spacing: 0.08em;
         }
 
         .queue-table-rows {
@@ -210,76 +246,154 @@ export function IncidentQueueTable({ incidents = [], onSelectIncident }) {
 
         .queue-table-row {
           padding: 0.95rem 1.25rem;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-          cursor: pointer;
+          border-bottom: 1px solid rgba(75, 190, 225, 0.08);
           align-items: center;
-          font-size: 0.75rem;
-          transition: all 140ms ease;
-        }
-
-        .queue-table-row:hover {
-          background: rgba(56, 189, 248, 0.08);
-          border-color: rgba(56, 189, 248, 0.3);
+          cursor: pointer;
+          transition: background 140ms ease;
+          font-size: 0.78rem;
         }
 
         .queue-table-row:last-child {
           border-bottom: none;
         }
 
-        .col-id { width: 12%; }
-        .col-prio { width: 8%; }
-        .col-risk { width: 10%; }
-        .col-asset { width: 22%; }
-        .col-crit { width: 14%; }
-        .col-signals { width: 10%; }
-        .col-mitre { width: 12%; }
-        .col-status { width: 12%; text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 0.4rem; color: #38bdf8; }
+        .queue-table-row:hover {
+          background: rgba(33, 212, 255, 0.06);
+        }
+
+        .col-id { width: 110px; font-weight: 700; color: #F1F6F8; }
+        .col-prio { width: 75px; }
+        .col-risk { width: 100px; }
+        .col-asset { width: 220px; color: #A5B5BF; }
+        .col-crit { width: 120px; }
+        .col-signals { width: 110px; }
+        .col-mitre { width: 140px; }
+        .col-status { width: 180px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.68rem; color: #75D8F5; }
 
         .prio-badge {
           font-size: 0.62rem;
           font-weight: 700;
           padding: 0.15rem 0.45rem;
           border-radius: 3px;
+          border: 1px solid transparent;
         }
-        .prio-badge.p1 { background: rgba(255, 59, 77, 0.18); color: #ff3b4d; }
-        .prio-badge.p2 { background: rgba(255, 176, 32, 0.18); color: #ffb020; }
-        .prio-badge.p3 { background: rgba(56, 189, 248, 0.18); color: #38bdf8; }
-        .prio-badge.p4 { background: rgba(148, 163, 184, 0.18); color: #94a3b8; }
+
+        .prio-badge.p1 {
+          background: rgba(255, 77, 93, 0.12);
+          border-color: rgba(255, 77, 93, 0.35);
+          color: #FF4D5D;
+        }
+
+        .prio-badge.p2 {
+          background: rgba(255, 181, 46, 0.12);
+          border-color: rgba(255, 181, 46, 0.35);
+          color: #FFB52E;
+        }
+
+        .prio-badge.p3 {
+          background: rgba(33, 212, 255, 0.12);
+          border-color: rgba(33, 212, 255, 0.35);
+          color: #21D4FF;
+        }
+
+        .prio-badge.p4 {
+          background: rgba(183, 197, 207, 0.08);
+          border-color: rgba(183, 197, 207, 0.25);
+          color: #B7C5CF;
+        }
 
         .crit-badge {
-          font-size: 0.58rem;
+          font-size: 0.62rem;
           padding: 0.15rem 0.45rem;
           border-radius: 3px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          font-weight: 600;
         }
-        .crit-badge.critical { color: #ff3b4d; border-color: rgba(255, 59, 77, 0.3); }
-        .crit-badge.high { color: #ffb020; border-color: rgba(255, 176, 32, 0.3); }
-        .crit-badge.medium { color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); }
 
-        .status-dot-active {
+        .crit-badge.critical {
+          background: rgba(255, 77, 93, 0.1);
+          color: #FF4D5D;
+        }
+
+        .crit-badge.high {
+          background: rgba(255, 181, 46, 0.1);
+          color: #FFB52E;
+        }
+
+        .crit-badge.medium {
+          background: rgba(33, 212, 255, 0.1);
+          color: #21D4FF;
+        }
+
+        .crit-badge.low {
+          background: rgba(183, 197, 207, 0.08);
+          color: #B7C5CF;
+        }
+
+        .status-dot {
           width: 6px;
           height: 6px;
           border-radius: 50%;
-          background: #38bdf8;
+          background: #71838F;
+        }
+
+        .status-dot.active {
+          background: #10B981;
+          box-shadow: 0 0 6px #10B981;
+        }
+
+        .text-red { color: #FF4D5D; }
+        .text-amber { color: #FFB52E; }
+        .text-cyan { color: #21D4FF; }
+        .text-slate { color: #71838F; }
+
+        .queue-status-banner {
+          padding: 3rem 1.5rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 0.85rem;
+          color: #75D8F5;
+          letter-spacing: 0.12em;
+          font-size: 0.75rem;
+        }
+
+        .queue-status-banner.error {
+          color: #FF4D5D;
+        }
+
+        .queue-spinner {
+          width: 24px;
+          height: 24px;
+          border: 2px solid rgba(33, 212, 255, 0.2);
+          border-top-color: #21D4FF;
+          border-radius: 50%;
+          animation: qSpin 800ms linear infinite;
+        }
+
+        @keyframes qSpin {
+          to { transform: rotate(360deg); }
+        }
+
+        .queue-retry-btn {
+          background: rgba(255, 77, 93, 0.15);
+          border: 1px solid rgba(255, 77, 93, 0.4);
+          color: #FF4D5D;
+          padding: 0.4rem 1rem;
+          border-radius: 4px;
+          cursor: pointer;
+          font-weight: 700;
         }
 
         .queue-empty-row {
           padding: 2.5rem;
           text-align: center;
-          color: #64748b;
-          font-size: 0.8rem;
-        }
-
-        @media (max-width: 900px) {
-          .queue-table-card {
-            overflow-x: auto;
-          }
-          .queue-table-header, .queue-table-row {
-            min-width: 800px;
-          }
+          color: #71838F;
+          font-size: 0.75rem;
         }
       `}</style>
     </div>
   );
 }
+
 export default IncidentQueueTable;

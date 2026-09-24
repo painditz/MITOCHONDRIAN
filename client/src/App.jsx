@@ -1,86 +1,152 @@
 // client/src/App.jsx
-// SentinelOps AI - Spatial 3D Intelligence Experience & Product Views
-// Connected to Existing SentinelOps Backend APIs:
-// - /api/incidents (15 production correlated clusters)
-// - /api/overview (3,000 alerts, triage metrics, MTTT)
-// - /api/mttt (Simulation vs Measured Stopwatch Trials)
-// - /api/ml/metrics (Held-Out Synthetic Test evaluation)
-import React, { useState, useEffect } from 'react';
+// SentinelOps AI - Unified Enterprise Security Operations Console
+// Authoritative architecture: Operations is the master visual language across all workspaces.
+// Backend /api/incidents, /api/overview, /api/mttt, /api/ml/metrics, /api/alerts are the SINGLE sources of truth.
+import React, { useState, useEffect, useCallback } from 'react';
 import { Navigation } from './components/Navigation';
 import SentinelSpatial from './components/SentinelSpatial';
-import { ArchitectureSection } from './components/ArchitectureSection';
-import { Manifesto } from './components/Manifesto';
-import { IncidentQueueTable } from './components/IncidentQueueTable';
-import { MitreSection } from './components/MitreSection';
-import { TriageImpactSection } from './components/TriageImpactSection';
-import { AiMlEvaluationView } from './components/AiMlEvaluationView';
-import { RawAlertsExplorer } from './components/RawAlertsExplorer';
-import { IncidentInspectionModal } from './components/IncidentInspectionModal';
-import { ARCHITECTURE_DATA } from './data/mockData';
+import { IncidentIntelligence } from './components/incidents/IncidentIntelligence';
+import { IncidentDetailModal } from './components/incidents/IncidentDetailModal';
+import { ArchitecturePipeline } from './components/architecture/ArchitecturePipeline';
+import { MitreIntelligence } from './components/mitre/MitreIntelligence';
+import { TriageImpactWorkspace } from './components/triage/TriageImpactWorkspace';
+import { AiMlEvaluationLab } from './components/ml/AiMlEvaluationLab';
+import { RawTelemetryLake } from './components/telemetry/RawTelemetryLake';
+import { DigitalWater } from './components/spatial/DigitalWater';
 
 export function App() {
   const [activeNav, setActiveNav] = useState('operations');
-  const [incidents, setIncidents] = useState(ARCHITECTURE_DATA.incidents);
-  const [overviewMetrics, setOverviewMetrics] = useState(ARCHITECTURE_DATA.telemetry);
+  const [incidents, setIncidents] = useState([]);
+  const [loadingIncidents, setLoadingIncidents] = useState(true);
+  const [incidentsError, setIncidentsError] = useState(null);
+
+  const [overviewMetrics, setOverviewMetrics] = useState(null);
   const [selectedIncident, setSelectedIncident] = useState(null);
   const [showRawAlertsModal, setShowRawAlertsModal] = useState(false);
 
-  // Connect to existing SentinelOps backend data
-  useEffect(() => {
-    // 1. Fetch real production incidents from existing backend
+  // Authoritative fetch from Backend /api/incidents
+  const fetchIncidents = useCallback(() => {
+    setLoadingIncidents(true);
+    setIncidentsError(null);
     fetch('http://127.0.0.1:8000/api/incidents')
-      .then((res) => (res.ok ? res.json() : Promise.reject(res)))
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        return res.json();
+      })
       .then((data) => {
-        if (data?.incidents && Array.isArray(data.incidents) && data.incidents.length > 0) {
-          console.log(`[SentinelOps] Successfully loaded ${data.incidents.length} live incidents from backend API.`);
+        if (data?.incidents && Array.isArray(data.incidents)) {
           setIncidents(data.incidents);
+          setIncidentsError(null);
+        } else {
+          setIncidents([]);
+          setIncidentsError('DATA UNAVAILABLE');
         }
       })
       .catch((err) => {
-        console.warn('[SentinelOps] Backend API fallback active:', err?.message || err);
+        console.error('[SentinelOps] Incident API fetch error:', err);
+        setIncidents([]);
+        setIncidentsError('INCIDENT DATA UNAVAILABLE');
+      })
+      .finally(() => {
+        setLoadingIncidents(false);
       });
+  }, []);
 
-    // 2. Fetch live overview telemetry metrics
+  // Live overview telemetry metrics
+  const fetchOverview = useCallback(() => {
     fetch('http://127.0.0.1:8000/api/overview')
       .then((res) => (res.ok ? res.json() : Promise.reject(res)))
       .then((data) => {
         if (data) {
-          setOverviewMetrics((prev) => ({
-            ...prev,
-            totalAlerts: data.total_alerts || 3000,
-            clusters: data.grouped_incidents || 15,
-            p1Critical: data.critical_incidents || 7,
-            highCount: data.high_incidents || 2,
-            mediumCount: data.medium_incidents || 1,
-            lowCount: data.low_incidents || 5,
+          setOverviewMetrics({
+            totalAlerts: data.total_alerts,
+            clusters: data.grouped_incidents,
+            p1Critical: data.critical_incidents,
+            highCount: data.high_incidents,
+            mediumCount: data.medium_incidents,
+            lowCount: data.low_incidents,
             ...data,
-          }));
+          });
         }
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.error('[SentinelOps] Overview API fetch error:', err);
+      });
   }, []);
 
-  const handleIncidentSelect = (incident) => {
-    setSelectedIncident(incident);
-  };
+  useEffect(() => {
+    fetchIncidents();
+    fetchOverview();
+  }, [fetchIncidents, fetchOverview]);
 
-  const handleReviewAction = (id, action, notes) => {
-    console.log(`[SentinelOps Review] ${id}: ${action} notes: ${notes}`);
-    // Optional backend persistence
-    fetch(`http://127.0.0.1:8000/api/incidents/${id}/review`, {
+  const handleIncidentSelect = useCallback((incident) => {
+    if (!incident) {
+      setSelectedIncident(null);
+      return;
+    }
+    // Match against authoritative incidents array to ensure identical object reference
+    const id = incident.incident_id || incident.id;
+    setIncidents((currentList) => {
+      const live = currentList.find((i) => (i.incident_id || i.id) === id);
+      setSelectedIncident(live || incident);
+      return currentList;
+    });
+  }, []);
+
+  const handleReviewAction = useCallback((id, action, notes) => {
+    let backendAction = action.toLowerCase();
+    if (backendAction.includes('investigate')) backendAction = 'investigated';
+    else if (backendAction.includes('confirm')) backendAction = 'confirm';
+    else if (backendAction.includes('reject')) backendAction = 'reject';
+    else if (backendAction.includes('modify')) backendAction = 'modify';
+
+    return fetch(`http://127.0.0.1:8000/api/incidents/${id}/review`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        incident_id: id,
-        decision: action.toLowerCase(),
-        analyst_notes: notes || 'Reviewed via SentinelOps Console',
-        analyst_name: 'Security Operations Analyst',
+        action: backendAction,
+        note: notes || `Analyst audit: ${action} via SentinelOps Console`,
+        elapsed_seconds: 5.0,
       }),
-    }).catch(() => {});
-  };
+    })
+      .then((res) => (res.ok ? res.json() : Promise.reject(res)))
+      .then((data) => {
+        const statusMap = {
+          CONFIRMED: 'Confirmed by Analyst',
+          REJECTED: 'Rejected by Analyst',
+          MODIFIED: 'Modified by Analyst',
+          INVESTIGATED: 'Marked Investigated',
+        };
+        const newStatus = statusMap[action] || action;
+
+        // Persist update into both authoritative list and selected state
+        setIncidents((prev) =>
+          prev.map((inc) =>
+            (inc.incident_id || inc.id) === id
+              ? { ...inc, investigation_status: newStatus }
+              : inc
+          )
+        );
+
+        setSelectedIncident((prev) =>
+          prev && (prev.incident_id || prev.id) === id
+            ? { ...prev, investigation_status: newStatus }
+            : prev
+        );
+
+        return data;
+      })
+      .catch((err) => {
+        console.error('[SentinelOps Review Persistence Error]', err);
+        throw err;
+      });
+  }, []);
 
   return (
     <div className="sentinel-app-root">
+      {/* PERSISTENT GLOBAL 3D DIGITAL WATER ENVIRONMENT */}
+      <DigitalWater incidents={incidents} />
+
       {/* Global Top Navigation (Sticky Glass 60px) */}
       <Navigation
         activeNav={activeNav}
@@ -90,103 +156,98 @@ export function App() {
       />
 
       <main className="sentinel-main-stage">
-        {/* OPERATIONS MASTER VIEW (Hero + 3D Water + 3D Map + Complete Narrative Flow) */}
-        {activeNav === 'operations' && (
-          <SentinelSpatial
-            incidents={incidents}
-            onIncidentSelect={handleIncidentSelect}
-            metrics={overviewMetrics}
-          />
-        )}
-
-        {/* INCIDENTS QUEUE VIEW (Redesigned Compact Table with P1-P4 Filters) */}
-        {activeNav === 'incidents' && (
-          <div className="sub-view-container daq-container">
-            <div className="sub-view-header mono flex-between">
-              <div>
-                <span className="sub-view-tag">02 / INCIDENT QUEUE</span>
-                <span className="sub-view-sep">/</span>
-                <span className="sub-view-desc">CORRELATED SECURITY CLUSTERS</span>
-              </div>
-              <div className="align-center" style={{ gap: '1rem' }}>
-                <button
-                  className="open-raw-alerts-btn mono"
-                  onClick={() => setShowRawAlertsModal(true)}
-                >
-                  EXPLORE 3,000 RAW ALERTS &rarr;
-                </button>
-                <span className="sub-view-count mono">{incidents.length} INCIDENTS ACTIVE</span>
-              </div>
-            </div>
-
-            <IncidentQueueTable
+        {/* Animated View Transition Container (280–380ms) */}
+        <div key={activeNav} className="sentinel-view-transition-stage">
+          {/* OPERATIONS MASTER VIEW (Hero + 3D Water + 3D Map + Complete Narrative Flow) */}
+          {activeNav === 'operations' && (
+            <SentinelSpatial
               incidents={incidents}
-              onSelectIncident={handleIncidentSelect}
+              selectedIncident={selectedIncident}
+              onIncidentSelect={handleIncidentSelect}
+              metrics={overviewMetrics}
+              loading={loadingIncidents}
+              error={incidentsError}
+              onRetry={fetchIncidents}
             />
-          </div>
-        )}
+          )}
 
-        {/* ARCHITECTURE PIPELINE VIEW */}
-        {activeNav === 'architecture' && (
-          <div className="sub-view-container">
-            <ArchitectureSection
-              stages={ARCHITECTURE_DATA.stages}
-              telemetry={overviewMetrics}
-            />
-            <Manifesto />
-          </div>
-        )}
-
-        {/* MITRE ATT&CK VIEW */}
-        {activeNav === 'mitre' && (
-          <div className="sub-view-container daq-container">
-            <MitreSection />
-          </div>
-        )}
-
-        {/* TRIAGE IMPACT & MTTT VIEW */}
-        {activeNav === 'triage' && (
-          <div className="sub-view-container daq-container">
-            <TriageImpactSection telemetry={overviewMetrics} />
-          </div>
-        )}
-
-        {/* AI / ML VIEW */}
-        {activeNav === 'aiml' && (
-          <div className="sub-view-container daq-container">
-            <div className="sub-view-header mono flex-between">
-              <div>
-                <span className="sub-view-tag">06 / LOCAL AI &bull; FLAN-T5 &amp; ML EVALUATION</span>
-                <span className="sub-view-sep">/</span>
-                <span className="sub-view-desc">GROUP-AWARE BENCHMARK</span>
-              </div>
-              <span className="sub-view-count mono">ZERO DATA EGRESS</span>
+          {/* 1. INCIDENTS WORKSPACE */}
+          {activeNav === 'incidents' && (
+            <div className="sub-view-container daq-container">
+              <IncidentIntelligence
+                incidents={incidents}
+                onSelectIncident={handleIncidentSelect}
+                loading={loadingIncidents}
+                error={incidentsError}
+                onRetry={fetchIncidents}
+                onOpenRawAlerts={() => setActiveNav('telemetry')}
+                totalAlerts={overviewMetrics?.totalAlerts ?? null}
+              />
             </div>
+          )}
 
-            <AiMlEvaluationView />
-          </div>
-        )}
+          {/* 3. ARCHITECTURE PIPELINE WORKSPACE */}
+          {activeNav === 'architecture' && (
+            <ArchitecturePipeline telemetry={overviewMetrics} incidents={incidents} />
+          )}
+
+          {/* 4. MITRE ATT&CK WORKSPACE */}
+          {activeNav === 'mitre' && (
+            <div className="sub-view-container daq-container">
+              <MitreIntelligence
+                incidents={incidents}
+                onSelectIncident={handleIncidentSelect}
+              />
+            </div>
+          )}
+
+          {/* 5. TRIAGE IMPACT & MTTT WORKSPACE */}
+          {activeNav === 'triage' && (
+            <div className="sub-view-container daq-container">
+              <TriageImpactWorkspace />
+            </div>
+          )}
+
+          {/* 6. AI / ML EVALUATION LABORATORY */}
+          {activeNav === 'aiml' && (
+            <div className="sub-view-container daq-container">
+              <AiMlEvaluationLab />
+            </div>
+          )}
+
+          {/* 7. RAW ALERTS TELEMETRY LAKE */}
+          {activeNav === 'telemetry' && (
+            <div className="sub-view-container daq-container">
+              <RawTelemetryLake />
+            </div>
+          )}
+        </div>
       </main>
 
-      {/* FORENSIC INCIDENT INSPECTION MODAL */}
+      {/* 2. FORENSIC INCIDENT INVESTIGATION WORKSTATION */}
       {selectedIncident && (
-        <IncidentInspectionModal
+        <IncidentDetailModal
           incident={selectedIncident}
           onClose={() => setSelectedIncident(null)}
           onReviewAction={handleReviewAction}
         />
       )}
 
-      {/* RAW ALERTS MODAL EXPLORER */}
+      {/* RAW ALERTS MODAL EXPLORER (when opened as modal) */}
       {showRawAlertsModal && (
         <div className="raw-alerts-backdrop" onClick={() => setShowRawAlertsModal(false)}>
           <div className="raw-alerts-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-top-bar flex-between mono">
-              <span>RAW TELEMETRY ALERT EXPLORER &bull; 3,000 STREAM EVENTS</span>
-              <button className="close-btn" onClick={() => setShowRawAlertsModal(false)}>&times;</button>
+              <span>RAW TELEMETRY ALERT EXPLORER &bull; STREAM EVENTS</span>
+              <button
+                className="raw-modal-close-btn sentinel-interactive-btn"
+                onClick={() => setShowRawAlertsModal(false)}
+              >
+                ESC / CLOSE &times;
+              </button>
             </div>
-            <div className="modal-body-scroll">
-              <RawAlertsExplorer />
+            <div className="modal-scroll-area">
+              <RawTelemetryLake />
             </div>
           </div>
         </div>
@@ -194,82 +255,37 @@ export function App() {
 
       <style>{`
         .sentinel-app-root {
-          width: 100%;
           min-height: 100vh;
-          background-color: #030609;
-          color: #f8fafc;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .sentinel-main-stage {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
+          background: #242321;
+          color: #F3EFE8;
           position: relative;
         }
 
+        .sentinel-main-stage {
+          position: relative;
+          z-index: 10;
+        }
+
         .sub-view-container {
-          padding-top: 85px;
-          padding-bottom: 60px;
+          padding-top: 4.5rem;
+          padding-bottom: 5rem;
           min-height: calc(100vh - 60px);
-          max-width: 1320px;
+        }
+
+        .daq-container {
+          max-width: 1600px;
           margin: 0 auto;
-          width: 100%;
-          padding-left: clamp(1.5rem, 4vw, 3rem);
-          padding-right: clamp(1.5rem, 4vw, 3rem);
+          padding-left: clamp(1.5rem, 4vw, 3.5rem);
+          padding-right: clamp(1.5rem, 4vw, 3.5rem);
         }
 
-        .sub-view-header {
-          padding: 1.25rem 0;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          font-size: 0.72rem;
-          margin-bottom: 2rem;
-          align-items: center;
-        }
-
-        .sub-view-tag {
-          color: #38bdf8;
-          font-weight: 700;
-          letter-spacing: 0.1em;
-        }
-
-        .sub-view-sep {
-          color: #64748b;
-          margin: 0 0.5rem;
-        }
-
-        .sub-view-desc {
-          color: #94a3b8;
-        }
-
-        .sub-view-count {
-          color: #64748b;
-        }
-
-        .open-raw-alerts-btn {
-          background: rgba(56, 189, 248, 0.1);
-          border: 1px solid rgba(56, 189, 248, 0.35);
-          color: #38bdf8;
-          font-size: 0.65rem;
-          padding: 0.3rem 0.65rem;
-          border-radius: 4px;
-          cursor: pointer;
-          transition: all 140ms ease;
-        }
-
-        .open-raw-alerts-btn:hover {
-          background: rgba(56, 189, 248, 0.25);
-          color: #ffffff;
-        }
-
-        /* Raw Alerts Modal */
         .raw-alerts-backdrop {
           position: fixed;
           inset: 0;
-          background: rgba(0, 0, 0, 0.75);
-          backdrop-filter: blur(12px);
-          z-index: 1000;
+          background: rgba(20, 19, 18, 0.7);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          z-index: 2500;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -277,39 +293,48 @@ export function App() {
         }
 
         .raw-alerts-modal {
-          background: rgba(7, 12, 18, 0.95);
-          border: 1px solid rgba(56, 189, 248, 0.3);
-          box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
+          background: #2D2B28;
+          border: 1px solid rgba(255, 255, 255, 0.11);
           border-radius: 8px;
-          width: min(1200px, 95vw);
-          max-height: 88vh;
+          width: min(1500px, calc(100vw - 40px));
+          height: calc(100vh - 60px);
           display: flex;
           flex-direction: column;
+          box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
           overflow: hidden;
         }
 
         .modal-top-bar {
-          background: rgba(15, 23, 42, 0.8);
-          padding: 0.85rem 1.25rem;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          font-size: 0.72rem;
-          color: #38bdf8;
+          padding: 0.85rem 1.5rem;
+          background: rgba(255, 255, 255, 0.055);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.11);
+          font-size: 0.68rem;
+          color: #C58A52;
           font-weight: 700;
-          align-items: center;
         }
 
-        .modal-top-bar .close-btn {
+        .raw-modal-close-btn {
           background: transparent;
-          border: none;
-          color: #94a3b8;
-          font-size: 1.5rem;
+          border: 1px solid rgba(255, 255, 255, 0.11);
+          border-radius: 4px;
+          color: #B9B3AA;
+          font-family: inherit;
+          font-size: 0.65rem;
           cursor: pointer;
-          line-height: 1;
+          padding: 0.25rem 0.65rem;
+          transition: all 140ms ease;
         }
 
-        .modal-body-scroll {
-          padding: 1.5rem;
+        .raw-modal-close-btn:hover {
+          color: #F3EFE8;
+          border-color: #C58A52;
+          background: rgba(255, 255, 255, 0.08);
+        }
+
+        .modal-scroll-area {
+          flex: 1;
           overflow-y: auto;
+          padding: 1.5rem;
         }
       `}</style>
     </div>

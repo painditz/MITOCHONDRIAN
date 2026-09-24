@@ -8,10 +8,12 @@ export function RawAlertsExplorer() {
   const [search, setSearch] = useState('');
   const [severityFilter, setSeverityFilter] = useState('ALL');
   const [page, setPage] = useState(1);
-  const [totalAlerts, setTotalAlerts] = useState(3000);
+  const [totalAlerts, setTotalAlerts] = useState(0);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     setLoading(true);
+    setError(null);
     const offset = (page - 1) * 20;
     fetch(`http://127.0.0.1:8000/api/alerts?limit=20&offset=${offset}&search=${encodeURIComponent(search)}`)
       .then((r) => (r.ok ? r.json() : Promise.reject(r)))
@@ -19,18 +21,14 @@ export function RawAlertsExplorer() {
         if (data?.alerts) {
           setAlerts(data.alerts);
           if (data.total) setTotalAlerts(data.total);
+          setError(null);
         }
         setLoading(false);
       })
-      .catch(() => {
-        // Fallback demo alerts
-        setAlerts([
-          { alert_id: 'ALT-1001', alert_type: 'PowershellExecution', severity: 'High', hostname: 'CORP-ENDPOINT-01', user: 'jdoe', timestamp: '2026-09-19T14:22:10Z', description: 'Encoded PowerShell command executed' },
-          { alert_id: 'ALT-1002', alert_type: 'DCSyncReplication', severity: 'Critical', hostname: 'CORP-DC-01', user: 'svc-rep', timestamp: '2026-09-19T14:23:45Z', description: 'RPC bind to DRS replication endpoint' },
-          { alert_id: 'ALT-1003', alert_type: 'ForwardingRuleAdded', severity: 'Critical', hostname: 'CORP-EXCHANGE', user: 'marcus.vance', timestamp: '2026-09-19T14:25:00Z', description: 'Auto-forward rule to external proton.me' },
-          { alert_id: 'ALT-1004', alert_type: 'AnomalousEgress', severity: 'High', hostname: 'CORP-EXCHANGE', user: 'marcus.vance', timestamp: '2026-09-19T14:27:12Z', description: 'Outbound HTTPS data transfer to mega.nz' },
-          { alert_id: 'ALT-1005', alert_type: 'ProcessInjection', severity: 'Medium', hostname: 'CORP-WORKSTATION-04', user: 'sconnor', timestamp: '2026-09-19T14:29:30Z', description: 'Memory injection into svchost.exe' },
-        ]);
+      .catch((err) => {
+        console.error('[RawAlertsExplorer] Live telemetry API error:', err);
+        setAlerts([]);
+        setError('DATA UNAVAILABLE');
         setLoading(false);
       });
   }, [page, search]);
@@ -85,6 +83,8 @@ export function RawAlertsExplorer() {
         <div className="alerts-table-rows">
           {loading ? (
             <div className="alerts-loading-row mono">Streaming raw telemetry alerts...</div>
+          ) : error ? (
+            <div className="alerts-empty-row mono font-bold text-red" style={{ padding: '2rem' }}>DATA UNAVAILABLE</div>
           ) : filtered.length === 0 ? (
             <div className="alerts-empty-row mono">No alerts match search criteria.</div>
           ) : (

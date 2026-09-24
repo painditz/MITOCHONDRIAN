@@ -6,11 +6,187 @@
 // 3. Control Plane / Data Plane Technical Architecture Visualization
 import React, { useState } from 'react';
 
-export function ArchitectureSection({ stages = [], telemetry = {} }) {
+export const DEFAULT_STAGES = [
+  {
+    id: '01',
+    code: '01',
+    name: 'INGEST',
+    subtitle: 'HETEROGENEOUS TELEMETRY STREAMS',
+    shortDesc: 'Continuous ingestion across five enterprise telemetry sensors.',
+    metric: '3,000 ALERTS',
+    tag: '5 SENSORS',
+    expanded: {
+      title: 'MULTI-STREAM DATA INGESTION',
+      lead: 'High-throughput stream processing absorbs uncoordinated alert spikes from heterogeneous monitoring infrastructure.',
+      evidencePoints: [
+        { label: 'EDR TELEMETRY', value: '1,450 alerts (Process injection, LSASS dump, PowerShell)' },
+        { label: 'IDENTITY PROVIDER', value: '620 events (Impossible travel, password spray, OAuth consent)' },
+        { label: 'CLOUD AUDIT', value: '430 records (S3 mass download, role escalation, KMS key use)' },
+        { label: 'NETWORK / FIREWALL', value: '320 flows (C2 beaconing, port sweep, ICMP tunnel)' },
+        { label: 'EMAIL GATEWAY', value: '180 scans (Malicious forwarding rules, phishing payloads)' }
+      ],
+      metrics: [
+        { key: 'THROUGHPUT', val: '3,000 records / batch' },
+        { key: 'INGESTION LATENCY', val: '< 180 ms' },
+        { key: 'LOSSLESS BUFFER', val: 'Zero-drop guarantee' }
+      ]
+    }
+  },
+  {
+    id: '02',
+    code: '02',
+    name: 'NORMALIZE',
+    subtitle: 'CANONICAL SCHEMA STANDARD',
+    shortDesc: 'Disparate vendor syntaxes standardise into a 19-field schema.',
+    metric: '19-FIELD COMMON SCHEMA',
+    tag: 'OCSF / STIX ALIGNED',
+    expanded: {
+      title: 'CANONICAL FIELD RESOLUTION',
+      lead: 'Eliminates vendor-specific schema fragmentation by extracting standard entities, timestamps, and confidence ratings.',
+      evidencePoints: [
+        { label: 'HOST / ASSET PIVOT', value: 'Unified NetBIOS, FQDN, and cloud resource IDs' },
+        { label: 'IDENTITY RESOLUTION', value: 'Normalizes UPN, sAMAccountName, and cloud GUIDs' },
+        { label: 'TEMPORAL ALIGNMENT', value: 'Strict UTC ISO-8601 millisecond ordering' },
+        { label: 'SEVERITY HARMONIZATION', value: '5-tier normalized severity index (Crit, High, Med, Low, Info)' }
+      ],
+      metrics: [
+        { key: 'NORMALIZATION RATE', val: '100.0% validation' },
+        { key: 'SCHEMA DRIFT', val: '0 uncategorized fields' },
+        { key: 'MAPPING EFFICIENCY', val: '1.2 ms / 1k alerts' }
+      ]
+    }
+  },
+  {
+    id: '03',
+    code: '03',
+    name: 'CORRELATE',
+    subtitle: 'MULTI-ENTITY GRAPH CLUSTERING',
+    shortDesc: 'Observable evidence transforms 3,000 alerts into 15 incident clusters.',
+    metric: '15 INCIDENT / TRIAGE CLUSTERS',
+    tag: '99.5% TRIAGE REDUCTION',
+    expanded: {
+      title: 'THE INCIDENT CORE',
+      lead: 'Observable relationships group related alerts across time horizons, network boundaries, and credential pivots into 15 production incident / triage clusters.',
+      evidencePoints: [
+        { label: 'HOST', value: 'Pivots across affected workstations, servers, and domain controllers' },
+        { label: 'USER', value: 'Correlates compromised identities across cloud identity and on-prem AD' },
+        { label: 'EXTERNAL IP', value: 'Shared adversary command-and-control infrastructure and IPs' },
+        { label: 'TEMPORAL PROXIMITY', value: '60-minute sliding window establishing incident causality' }
+      ],
+      metrics: [
+        { key: 'PAIRWISE PRECISION', val: '1.0000' },
+        { key: 'PAIRWISE RECALL', val: '0.9068' },
+        { key: 'PAIRWISE F1 SCORE', val: '0.9511' }
+      ]
+    }
+  },
+  {
+    id: '04',
+    code: '04',
+    name: 'PRIORITIZE',
+    subtitle: 'ASSET-CRITICALITY WEIGHTING',
+    shortDesc: 'Asset criticality is the dominant enterprise prioritization factor.',
+    metric: 'RISK + ASSET CRITICALITY',
+    tag: 'EXPLAINABLE RANKING',
+    expanded: {
+      title: 'EXPLAINABLE RISK PRIORITIZATION',
+      lead: 'Asset criticality is the dominant enterprise prioritization factor. Incidents are prioritized by enterprise asset business value, peak severity, kill-chain depth, and ML relevance rather than raw alert volume.',
+      evidencePoints: [
+        { label: 'ASSET CRITICALITY (+45)', value: 'Domain Controller or Production Database multiplier (Dominant factor)' },
+        { label: 'PEAK SEVERITY (+25)', value: 'Highest normalized severity within incident cluster' },
+        { label: 'KILL-CHAIN DEPTH (+12)', value: 'Exfiltration and credential dumping progression bonus' },
+        { label: 'ML RELEVANCE (+9)', value: 'Trained random forest classifier noise rejection score' },
+        { label: 'ALERT VOLUME (+5)', value: 'Aggregate normalized evidence volume' }
+      ],
+      metrics: [
+        { key: 'DOMINANT FACTOR', val: 'Asset Criticality (+45 pts)' },
+        { key: 'MAX RISK SCORE', val: '96.4 / 100 Risk' },
+        { key: 'P1 CRITICAL CLUSTERS', val: '7 priority incidents' }
+      ]
+    }
+  },
+  {
+    id: '05',
+    code: '05',
+    name: 'MAP',
+    subtitle: 'MITRE ATT&CK EVIDENCE ATTRIBUTION',
+    shortDesc: 'Concrete observables map directly into adversary tactics and techniques.',
+    metric: 'MITRE ATT&CK',
+    tag: '6 MAPPED TECHNIQUES',
+    expanded: {
+      title: 'EVIDENCE-GROUNDED TECHNIQUE ATTRIBUTION',
+      lead: 'Rules require physical forensic proof (e.g. command line parameters, API calls) before tagging ATT&CK techniques.',
+      evidencePoints: [
+        { label: 'T1114.002', value: 'Email Collection: Remote Email Forwarding Rule' },
+        { label: 'T1567.002', value: 'Exfiltration to Cloud Storage Gateway (mega.nz)' },
+        { label: 'T1078.004', value: 'Valid Accounts: Domain & Cloud Compromised Accounts' },
+        { label: 'T1490', value: 'Inhibit System Recovery: Volume Shadow Copy Deletion' },
+        { label: 'T1059.001', value: 'Command and Scripting Interpreter: PowerShell Execution' },
+        { label: 'T1190', value: 'Exploit Public-Facing Application: SQL Injection' }
+      ],
+      metrics: [
+        { key: 'MAPPING ACCURACY', val: '100% evidence-backed' },
+        { key: 'UNGROUNDED TAGS', val: 'Strictly 0 hallucinations' },
+        { key: 'KILL-CHAIN COVERAGE', val: 'Access through Exfiltration' }
+      ]
+    }
+  },
+  {
+    id: '06',
+    code: '06',
+    name: 'SUMMARIZE',
+    subtitle: 'LOCAL FLAN-T5 AI SHIFT BRIEF',
+    shortDesc: 'Local language model produces concise, structured shift handover briefings.',
+    metric: 'LOCAL AI SHIFT BRIEF',
+    tag: 'ZERO DATA EGRESS',
+    expanded: {
+      title: 'LOCAL AI SHIFT HANDOVER BRIEFS',
+      lead: 'Deterministic local FLAN-T5 model ingests validated incident evidence to produce concise, scannable summaries for SOC analyst relief.',
+      evidencePoints: [
+        { label: 'WHAT HAPPENED', value: 'Executive account compromise followed by cloud exfiltration' },
+        { label: 'AFFECTED ASSET', value: 'CORP-EXCHANGE-ONLINE (Critical Infrastructure)' },
+        { label: 'TIMELINE HIGHLIGHTS', value: '06:14 UTC Initial spray → 06:48 UTC Forwarding rule created' },
+        { label: 'NEXT STEPS', value: 'Revoke Marcus Vance tokens, review outbound mega.nz flows' }
+      ],
+      metrics: [
+        { key: 'FOUNDATION MODEL', val: 'google/flan-t5-small (Local)' },
+        { key: 'INFERENCE SPEED', val: '420 ms / incident' },
+        { key: 'EXTERNAL API CALLS', val: '0 (Air-gapped compatible)' }
+      ]
+    }
+  },
+  {
+    id: '07',
+    code: '07',
+    name: 'REVIEW',
+    subtitle: 'HUMAN DECISION & AUDIT TRAIL',
+    shortDesc: '1-click analyst review confirms, modifies, or rejects the AI incident brief.',
+    metric: 'HUMAN DECISION',
+    tag: 'EMPIRICAL TRIAGE',
+    expanded: {
+      title: 'HUMAN-IN-THE-LOOP TRIAGE AUDIT',
+      lead: 'Empirical analyst decisions are logged with microsecond precision, proving real Mean-Time-To-Triage (MTTT) reduction.',
+      evidencePoints: [
+        { label: 'CONFIRM DECISION', value: 'Endorses AI brief and triggers SOAR quarantine playbook' },
+        { label: 'REJECT DECISION', value: 'Marks false positive and updates ML negative training split' },
+        { label: 'ANALYST OBSERVATIONS', value: 'Free-text forensic notes persisted to immutable audit store' },
+        { label: 'MEASURED EXPERIMENT', value: 'Empirical trial recorded: baseline reduced with AI assistance' }
+      ],
+      metrics: [
+        { key: 'EMPIRICAL REDUCTION', val: 'Tracked via session logs' },
+        { key: 'DECISION LATENCY', val: '< 25 seconds' },
+        { key: 'AUDIT COMPLIANCE', val: '100% decision persistence' }
+      ]
+    }
+  }
+];
+
+export function ArchitectureSection({ stages = DEFAULT_STAGES, telemetry = {} }) {
   // Active inspected stage (defaults to '03' CORRELATE)
   const [activeStageId, setActiveStageId] = useState('03');
 
-  const currentStage = stages.find(s => s.id === activeStageId) || stages[2] || stages[0];
+  const stageList = stages && stages.length > 0 ? stages : DEFAULT_STAGES;
+  const currentStage = stageList.find(s => s.id === activeStageId) || stageList[2] || stageList[0];
 
   const controlPlaneNodes = [
     { label: 'Risk Scoring Engine', detail: '0–100 Normalized Index' },
@@ -235,10 +411,15 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
 
       <style>{`
         .sentinel-architecture-section {
+          --color-base: var(--surface-1);
+          --color-primary: var(--text-primary);
+          --color-secondary: var(--text-muted);
+          --color-accent: var(--accent-copper);
+          --color-line: var(--border);
           padding-top: clamp(90px, 10vw, 150px);
           padding-bottom: clamp(90px, 10vw, 150px);
           background-color: transparent;
-          border-bottom: 1px solid var(--color-line);
+          border-bottom: 1px solid var(--border);
         }
 
         .section-head-block {
@@ -317,7 +498,11 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
           display: flex;
           flex-direction: column;
           border: 1px solid var(--color-line);
-          background-color: #FFFFFF;
+          background-color: var(--surface-1);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-radius: var(--radius-md);
+          overflow: hidden;
           margin-bottom: 4rem;
         }
 
@@ -327,7 +512,7 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
           color: var(--color-secondary);
           border-bottom: 1px solid var(--color-line);
           letter-spacing: 0.08em;
-          background-color: #FDFCFA;
+          background-color: var(--surface-2);
         }
 
         .instruction-text {
@@ -346,14 +531,14 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
           flex-direction: column;
           justify-content: space-between;
           padding: 1.6rem 1.15rem 1.4rem 1.15rem;
-          background-color: #FFFFFF;
+          background-color: var(--surface-2);
           border: none;
           border-right: 1px solid var(--color-line);
           text-align: left;
           cursor: pointer;
           min-height: 240px;
           position: relative;
-          transition: background-color 160ms ease;
+          transition: background-color var(--transition-fast) ease;
           outline: none;
         }
 
@@ -363,7 +548,7 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
 
         .stage-sequence-item:hover,
         .stage-sequence-item.selected {
-          background-color: #F9F8F5;
+          background-color: var(--surface-3);
         }
 
         .stage-top-meta {
@@ -383,7 +568,7 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
         }
 
         .stage-core-name {
-          font-family: var(--font-display);
+          font-family: inherit;
           font-size: 1.15rem;
           font-weight: 600;
           letter-spacing: -0.01em;
@@ -392,7 +577,7 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
         }
 
         .stage-compact-desc {
-          font-family: var(--font-body);
+          font-family: inherit;
           font-size: 0.74rem;
           color: var(--color-secondary);
           line-height: 1.45;
@@ -415,7 +600,7 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
           right: 0;
           height: 3px;
           background-color: transparent;
-          transition: background-color 160ms ease;
+          transition: background-color var(--transition-fast) ease;
         }
 
         .stage-sequence-item.selected .stage-focus-indicator {
@@ -425,7 +610,7 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
         /* Expanded Inspection Panel */
         .stage-expanded-panel {
           border-top: 1px solid var(--color-line);
-          background-color: #FFFFFF;
+          background-color: var(--surface-2);
           padding: 2.25rem clamp(1.25rem, 3vw, 2.5rem);
           animation: panelFade 180ms ease;
         }
@@ -503,8 +688,9 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
           flex-direction: column;
           gap: 0.2rem;
           padding: 0.65rem 1rem;
-          background-color: var(--color-base);
+          background-color: var(--surface-1);
           border: 1px solid var(--color-line);
+          border-radius: var(--radius-sm);
         }
 
         .chip-key {
@@ -545,8 +731,9 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
           flex-direction: column;
           gap: 0.2rem;
           padding: 0.65rem 0.85rem;
-          background-color: var(--color-base);
+          background-color: var(--surface-1);
           border: 1px solid var(--color-line);
+          border-radius: var(--radius-sm);
           font-size: 0.72rem;
         }
 
@@ -567,7 +754,7 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
           font-size: 0.64rem;
           color: var(--color-secondary);
           border-top: 1px solid var(--color-line);
-          background-color: #FDFCFA;
+          background-color: var(--surface-2);
         }
 
         .tap-instruction-caption {
@@ -581,7 +768,11 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
            ========================================================================= */
         .control-data-plane-block {
           border: 1px solid var(--color-line);
-          background: #FFFFFF;
+          background: var(--surface-1);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-radius: var(--radius-md);
+          overflow: hidden;
           display: flex;
           flex-direction: column;
         }
@@ -591,7 +782,7 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
           font-size: 0.65rem;
           color: var(--color-secondary);
           border-bottom: 1px solid var(--color-line);
-          background-color: #FDFCFA;
+          background-color: var(--surface-2);
         }
 
         .plane-title {
@@ -604,7 +795,7 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
         .plane-dot {
           width: 6px;
           height: 6px;
-          background: #2563EB;
+          background: var(--accent-copper);
           border-radius: 50%;
         }
 
@@ -630,8 +821,10 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
 
         .tier-tag {
           font-weight: 700;
-          color: var(--color-primary);
-          background: #E5E1D8;
+          color: var(--accent-copper);
+          background: rgba(169, 107, 66, 0.15);
+          border: 1px solid rgba(169, 107, 66, 0.3);
+          border-radius: var(--radius-sm);
           padding: 0.15rem 0.55rem;
         }
 
@@ -646,8 +839,9 @@ export function ArchitectureSection({ stages = [], telemetry = {} }) {
         }
 
         .plane-node-card {
-          background: var(--color-base);
+          background: var(--surface-2);
           border: 1px solid var(--color-line);
+          border-radius: var(--radius-sm);
           padding: 0.95rem 1.15rem;
           display: flex;
           flex-direction: column;

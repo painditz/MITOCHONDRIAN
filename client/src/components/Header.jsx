@@ -58,7 +58,8 @@ export function Header({ currentSection = '01 / OPERATIONS' }) {
         .enterprise-header {
           width: 100%;
           height: 100%;
-          background: #FFFFFF;
+          background: var(--surface-1);
+          border-bottom: 1px solid var(--border);
           padding: 0 1.5rem;
           user-select: none;
         }
@@ -70,17 +71,17 @@ export function Header({ currentSection = '01 / OPERATIONS' }) {
 
         .header-section {
           font-weight: 700;
-          color: #0052FF;
+          color: var(--accent-copper);
         }
 
         .header-divider {
-          color: rgba(10, 13, 18, 0.20);
+          color: var(--border);
         }
 
         .header-page {
           font-weight: 600;
           letter-spacing: 0.04em;
-          color: #0A0D12;
+          color: var(--text-primary);
         }
 
         .header-center {
@@ -93,21 +94,21 @@ export function Header({ currentSection = '01 / OPERATIONS' }) {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          background: #F8F9FA;
-          border: 1px solid rgba(10, 13, 18, 0.10);
-          border-radius: 4px;
+          background: var(--surface-2);
+          border: 1px solid var(--border);
+          border-radius: var(--radius-sm);
           padding: 0 0.65rem;
           height: 30px;
-          transition: border-color 120ms ease;
+          transition: border-color var(--transition-fast) ease;
         }
 
         .search-field-wrap:focus-within {
-          border-color: #0052FF;
-          background: #FFFFFF;
+          border-color: var(--accent-copper);
+          background: var(--surface-3);
         }
 
         .search-icon {
-          color: #6C757D;
+          color: var(--text-muted);
           flex-shrink: 0;
         }
 
@@ -116,20 +117,20 @@ export function Header({ currentSection = '01 / OPERATIONS' }) {
           background: transparent;
           border: none;
           outline: none;
-          color: #0A0D12;
+          color: var(--text-primary);
           font-family: inherit;
           font-size: 0.72rem;
         }
 
         .search-input::placeholder {
-          color: #868E96;
+          color: var(--text-muted);
         }
 
         .search-shortcut {
           font-size: 0.56rem;
-          color: #6C757D;
-          background: #FFFFFF;
-          border: 1px solid rgba(10, 13, 18, 0.10);
+          color: var(--text-muted);
+          background: var(--surface-1);
+          border: 1px solid var(--border);
           padding: 0.05rem 0.3rem;
           border-radius: 2px;
         }
@@ -140,27 +141,27 @@ export function Header({ currentSection = '01 / OPERATIONS' }) {
 
         .utc-pill {
           padding: 0.2rem 0.55rem;
-          background: #F8F9FA;
-          border: 1px solid rgba(10, 13, 18, 0.08);
+          background: var(--surface-2);
+          border: 1px solid var(--border);
           border-radius: 3px;
           font-size: 0.66rem;
-          color: #495057;
+          color: var(--text-secondary);
         }
 
         .system-pill {
           gap: 0.4rem;
           padding: 0.2rem 0.55rem;
-          background: #F8F9FA;
-          border: 1px solid rgba(10, 13, 18, 0.08);
+          background: var(--surface-2);
+          border: 1px solid var(--border);
           border-radius: 3px;
           font-size: 0.64rem;
-          color: #495057;
+          color: var(--text-secondary);
         }
 
         .system-dot {
           width: 6px;
           height: 6px;
-          background: #16A34A;
+          background: var(--system-active);
           border-radius: 50%;
         }
 
@@ -170,17 +171,17 @@ export function Header({ currentSection = '01 / OPERATIONS' }) {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #F8F9FA;
-          border: 1px solid rgba(10, 13, 18, 0.08);
-          border-radius: 3px;
-          color: #495057;
+          background: var(--surface-2);
+          border: 1px solid var(--border);
+          border-radius: var(--radius-sm);
+          color: var(--text-secondary);
           cursor: pointer;
-          transition: color 120ms ease, border-color 120ms ease;
+          transition: color var(--transition-fast) ease, border-color var(--transition-fast) ease;
         }
 
         .header-settings-btn:hover {
-          color: #0A0D12;
-          border-color: rgba(10, 13, 18, 0.20);
+          color: var(--text-primary);
+          border-color: var(--accent-copper);
         }
       `}</style>
     </header>

@@ -1,78 +1,117 @@
 // client/src/components/spatial/IncidentMapPanel.jsx
-// Dedicated Glass Panel: Real 3D Incident Intelligence Correlation Map
+// Dedicated Glass Panel: Real 3D Incident Intelligence Correlation Space
 // Features:
-// 1. 3-Layer Incident Nodes: Bright Core, Soft Glow, Atmospheric Halo
-// 2. Real 3D Spatial Depth (Foreground z > 1, Midground z ~ 0, Background z < -1.5)
-// 3. Faint Depth Fog & Secondary Telemetry Background Points (#3A6578)
-// 4. Sparse Relationship Lines (Selected: 0.55 opacity, Unrelated: 0.06 opacity)
-// 5. Compact Glass Labels: ID (monospace), Priority, Risk score (monospace numeric)
-// 6. Smooth Camera Focus on Click + Hover Reactions (1.0 -> 1.12 scale)
-// 7. Strictly Isolated Three.js Viewport (Interacting NEVER moves water or page camera)
-
+// 1. Three Spatial Depth Planes: FOREGROUND (P1), MIDGROUND (P2), BACKGROUND (P3/P4) derived dynamically from risk/priority
+// 2. Real 3D Meshes: Physically based MeshStandardMaterial Core + Inner Glow + Soft Translucent Halo
+// 3. 3D Curved Relationship Arcs with depth curvature
+// 4. Moving Evidence Telemetry Particles traveling along correlated relationships
+// 5. Subtle Camera Parallax via pointer damping + Atmospheric Depth Fog (#020A10)
+// 6. Restrained Label System (uncluttered, expanding on hover/selection)
 import React, { useRef, useState, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Html, Line, OrbitControls } from '@react-three/drei';
+import { CorrelationReviewModal } from './CorrelationReviewModal';
 
-/* Spatial Z-coordinates giving actual foreground, midground, and background layers */
-const INCIDENT_POSITIONS = {
-  'INC-101': [-3.2, 1.6, -1.2],   // Mid-Back
-  'INC-102': [-0.6, 1.4, 0.6],    // Foreground-Mid
-  'INC-103': [2.8, 1.1, -2.0],    // Background
-  'INC-104': [1.6, 0.4, 1.2],     // Foreground
-  'INC-105': [3.6, -0.7, 1.5],    // Foreground
-  'INC-106': [-2.8, -1.3, -1.5],  // Background
-  'INC-107': [-1.0, -0.6, 1.8],   // Foreground
-  'INC-108': [0.6, -1.4, 0.0],    // Midground
-  'INC-109': [3.0, -1.6, 0.4],    // Midground
-  'INC-110': [-1.5, 0.4, -1.6],   // Background
-  'INC-111': [-3.8, 0.0, 2.0],    // Foreground
-  'INC-112': [-2.9, 2.1, 0.8],    // Midground
-  'INC-113': [0.4, 2.4, -1.1],    // Background
-  'INC-114': [3.4, 1.8, -2.5],    // Deep Background
-  'INC-115': [-1.8, -2.0, -1.0],  // Mid-Back
+/* Base XY coordinate anchors (layout stability) */
+const BASE_XY_COORDINATES = {
+  'INC-101': [-3.0, 1.5],
+  'INC-102': [-0.6, 1.2],
+  'INC-103': [2.6, 1.0],
+  'INC-104': [1.5, 0.3],
+  'INC-105': [3.4, -0.6],
+  'INC-106': [-2.6, -1.2],
+  'INC-107': [-0.9, -0.6],
+  'INC-108': [0.6, -1.3],
+  'INC-109': [2.8, -1.5],
+  'INC-110': [-1.4, 0.3],
+  'INC-111': [-3.5, 0.0],
+  'INC-112': [-2.7, 1.9],
+  'INC-113': [0.4, 2.2],
+  'INC-114': [3.2, 1.7],
+  'INC-115': [-1.7, -1.8],
 };
 
+function hashString(str) {
+  let hash = 0;
+  const s = String(str || 'INC');
+  for (let i = 0; i < s.length; i++) {
+    hash = (hash << 5) - hash + s.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+export function getIncident3DPosition(incident) {
+  const id = incident.incident_id || incident.id || 'INC';
+  const risk = Number(incident.risk_score ?? 50);
+  const prio = String(incident.priority || 'P3').slice(0, 2).toUpperCase();
+
+  // 1. Stable X & Y base position
+  let x = 0;
+  let y = 0;
+  if (BASE_XY_COORDINATES[id]) {
+    [x, y] = BASE_XY_COORDINATES[id];
+  } else {
+    const h = hashString(id);
+    x = ((h % 1000) / 1000 - 0.5) * 7.5;
+    y = (((h >> 3) % 1000) / 1000 - 0.5) * 4.5;
+  }
+
+  // 2. Dynamic Spatial Depth Plane (Z-axis derived directly from risk & priority)
+  // FOREGROUND: P1/Critical (Z: +0.8 to +1.8)
+  // MIDGROUND: P2/High (Z: -0.2 to +0.4)
+  // BACKGROUND: P3/P4 (Z: -1.6 to -2.6)
+  let z = 0;
+  if (prio === 'P1' || risk >= 75) {
+    z = 0.8 + (Math.min(risk - 75, 25) / 25) * 1.0;
+  } else if (prio === 'P2' || risk >= 55) {
+    z = -0.2 + ((risk - 55) / 20) * 0.6;
+  } else {
+    z = -2.6 + (Math.min(risk, 55) / 55) * 1.0;
+  }
+
+  // Slight deterministic stagger to prevent exact planar collision
+  const jitterZ = ((hashString(id + '-z') % 100) / 100 - 0.5) * 0.25;
+
+  return [x, y, z + jitterZ];
+}
+
 const PRIORITY_THEME = {
-  P1: { core: '#FF4655', glow: '#FF4655', halo: 'rgba(255, 70, 85, 0.20)', line: '#ff4655' },
-  P2: { core: '#FFB52E', glow: '#FFB52E', halo: 'rgba(255, 181, 46, 0.16)', line: '#ffb52e' },
-  P3: { core: '#21D4FF', glow: '#21D4FF', halo: 'rgba(33, 212, 255, 0.16)', line: '#21d4ff' },
-  P4: { core: '#B7C5CF', glow: '#B7C5CF', halo: 'rgba(183, 197, 207, 0.10)', line: '#8ba2b0' },
+  P1: { core: '#B64A5F', glow: '#B64A5F', halo: '#B64A5F', line: '#B64A5F' },
+  P2: { core: '#C58A52', glow: '#C58A52', halo: '#C58A52', line: '#C58A52' },
+  P3: { core: '#5F9480', glow: '#5F9480', halo: '#5F9480', line: '#5F9480' },
+  P4: { core: '#78828A', glow: '#78828A', halo: '#78828A', line: '#78828A' },
 };
 
 function getPriorityTheme(prio) {
   if (!prio) return PRIORITY_THEME.P4;
-  const p = prio.slice(0, 2).toUpperCase();
+  const p = String(prio).slice(0, 2).toUpperCase();
   return PRIORITY_THEME[p] || PRIORITY_THEME.P4;
 }
 
-/* ============================================================
-   SECONDARY TELEMETRY OBSERVATIONS (Background Depth Points)
-   ============================================================ */
-
-function SecondaryTelemetryField({ count = 65 }) {
+/* Secondary Background Depth Particles */
+function SecondaryTelemetryField({ count = 55 }) {
   const pointsRef = useRef();
 
-  const { positions, drift } = useMemo(() => {
+  const { positions } = useMemo(() => {
     const pos = new Float32Array(count * 3);
-    const dr = new Float32Array(count);
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
       pos[i3] = (Math.random() - 0.5) * 12;
       pos[i3 + 1] = (Math.random() - 0.5) * 8;
-      pos[i3 + 2] = (Math.random() - 0.5) * 7 - 0.5;
-      dr[i] = 0.05 + Math.random() * 0.1;
+      pos[i3 + 2] = (Math.random() - 0.5) * 7 - 1.0;
     }
-    return { positions: pos, drift: dr };
+    return { positions: pos };
   }, [count]);
 
-  useFrame((state, delta) => {
+  useFrame((state) => {
     if (!pointsRef.current) return;
     const array = pointsRef.current.geometry.attributes.position.array;
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
-      array[i3 + 1] += Math.sin(state.clock.elapsedTime * 0.3 + i) * 0.001;
-      array[i3] += Math.cos(state.clock.elapsedTime * 0.2 + i) * 0.001;
+      array[i3 + 1] += Math.sin(state.clock.elapsedTime * 0.25 + i) * 0.0008;
+      array[i3] += Math.cos(state.clock.elapsedTime * 0.18 + i) * 0.0008;
     }
     pointsRef.current.geometry.attributes.position.needsUpdate = true;
   });
@@ -88,43 +127,50 @@ function SecondaryTelemetryField({ count = 65 }) {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.032}
+        size={0.03}
         sizeAttenuation
         transparent
-        opacity={0.25}
-        color="#3A6578"
+        opacity={0.22}
+        color="#2D5B72"
         depthWrite={false}
       />
     </points>
   );
 }
 
-/* ============================================================
-   3-LAYER INCIDENT NODE COMPONENT
-   ============================================================ */
-
-function IncidentGraphNode({ incident, isSelected, isHovered, onSelect, onHover }) {
+/* 3-Layer Physically Based Incident Node */
+function IncidentGraphNode({
+  incident,
+  position,
+  isSelected,
+  isHovered,
+  isDimmed,
+  isTopAnchor,
+  onSelect,
+  onHover,
+}) {
   const group = useRef();
   const theme = getPriorityTheme(incident.priority);
   const risk = Number(incident.risk_score ?? incident.riskScore ?? 50);
 
-  // Dynamic importance sizing: Higher risk = slightly larger; Lower risk = smaller
-  const baseRadius = Math.max(0.10, Math.min(0.22, 0.09 + (risk / 600)));
+  // Smooth risk scale: 0.55 -> 1.35 based on normalized risk
+  const riskNormalized = Math.min(risk / 100, 1);
+  const riskScale = THREE.MathUtils.lerp(0.55, 1.35, riskNormalized);
+  const baseRadius = 0.12 * riskScale;
 
   const id = incident.incident_id || incident.id;
-  const position = INCIDENT_POSITIONS[id] || [0, 0, 0];
+  const prioShort = String(incident.priority || 'P1').slice(0, 2).toUpperCase();
+  const assetLabel = incident.asset_name || incident.hostname || incident.asset || 'CORP-HOST';
 
-  // Foreground indicator: Z > 0.5
-  const isForeground = position[2] > 0.5;
-  const isKeyIncident = ['INC-101', 'INC-102', 'INC-103', 'INC-108'].includes(id);
-
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (!group.current) return;
-    const targetScale = isSelected ? 1.35 : isHovered ? 1.12 : 1.0;
+    const targetScale = isSelected ? 1.25 : isHovered ? 1.10 : 1.0;
     group.current.scale.setScalar(
       THREE.MathUtils.damp(group.current.scale.x, targetScale, 10, delta)
     );
   });
+
+  const showLabel = isHovered || isSelected || isTopAnchor;
 
   return (
     <group
@@ -145,64 +191,73 @@ function IncidentGraphNode({ incident, isSelected, isHovered, onSelect, onHover 
         onSelect(incident);
       }}
     >
-      {/* LAYER 3: Very Subtle Surrounding Atmospheric Halo */}
-      <mesh scale={isSelected ? 3.0 : isHovered ? 2.3 : 1.75}>
-        <sphereGeometry args={[baseRadius, 16, 16]} />
+      {/* LAYER 3: Soft Translucent Atmospheric Halo */}
+      <mesh scale={isSelected ? 2.6 : isHovered ? 2.1 : 1.7}>
+        <sphereGeometry args={[baseRadius, 20, 20]} />
         <meshBasicMaterial
           color={theme.halo}
           transparent
-          opacity={isSelected ? 0.28 : isHovered ? 0.20 : 0.10}
+          opacity={isDimmed ? 0.04 : isSelected ? 0.35 : isHovered ? 0.24 : 0.10}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
 
-      {/* LAYER 2: Soft Colored Glow */}
-      <mesh scale={isSelected ? 1.8 : isHovered ? 1.45 : 1.25}>
-        <sphereGeometry args={[baseRadius, 18, 18]} />
+      {/* LAYER 2: Inner Colored Glow */}
+      <mesh scale={isSelected ? 1.6 : isHovered ? 1.35 : 1.2}>
+        <sphereGeometry args={[baseRadius, 22, 22]} />
         <meshBasicMaterial
           color={theme.glow}
           transparent
-          opacity={isSelected ? 0.45 : isHovered ? 0.35 : 0.22}
+          opacity={isDimmed ? 0.06 : isSelected ? 0.45 : isHovered ? 0.30 : 0.18}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
 
-      {/* LAYER 1: Small Bright Core */}
+      {/* LAYER 1: Physically Based Clearcoat Emissive Solid Core */}
       <mesh>
-        <sphereGeometry args={[baseRadius, 20, 20]} />
-        <meshStandardMaterial
+        <sphereGeometry args={[baseRadius, 32, 32]} />
+        <meshPhysicalMaterial
           color={theme.core}
           emissive={theme.core}
-          emissiveIntensity={isSelected ? 4.5 : isHovered ? 3.2 : 2.0}
-          roughness={0.25}
-          metalness={0.3}
+          emissiveIntensity={isDimmed ? 0.35 : isSelected ? 3.5 : isHovered ? 2.2 : 1.3}
+          roughness={0.22}
+          metalness={0.35}
+          clearcoat={0.6}
+          clearcoatRoughness={0.16}
         />
       </mesh>
 
-      {/* Local Point Light strictly under hovered/selected node */}
+      {/* Local Spotlight on Hover/Select */}
       {(isHovered || isSelected) && (
         <pointLight color={theme.core} intensity={isSelected ? 1.6 : 0.8} distance={2.5} />
       )}
 
-      {/* Compact Professional Glass Label */}
-      {(isHovered || isSelected || (isKeyIncident && isForeground)) && (
+
+      {/* Monospace Spatial Label: Restrained, shown only on hover/select/top-anchor */}
+      {showLabel && (
         <Html
           center
-          distanceFactor={9}
+          distanceFactor={8.8}
           position={[0, baseRadius + 0.36, 0]}
           style={{ pointerEvents: 'none' }}
         >
-          <div className={`compact-glass-node-label ${isSelected ? 'selected' : ''} ${isHovered ? 'hovered' : ''}`}>
-            <div className="node-label-id mono">{id}</div>
-            <div className="node-label-meta">
-              <span className={`prio-tag-text ${incident.priority?.slice(0, 2).toLowerCase()}`}>
-                {incident.priority?.slice(0, 2)}
-              </span>
-              <span className="dot-sep">&bull;</span>
-              <span className="risk-tag-text mono">{Number(risk).toFixed(1)}</span>
+          <div
+            className={`spatial-node-label mono ${isSelected ? 'selected' : ''} ${
+              isHovered ? 'hovered' : ''
+            }`}
+          >
+            <div className="label-id-line">
+              <span className="label-id">{id}</span>
+              <span className="label-sep">&bull;</span>
+              <span className={`label-prio ${prioShort.toLowerCase()}`}>{prioShort}</span>
+              <span className="label-sep">&bull;</span>
+              <span className="label-risk">{risk.toFixed(1)}</span>
             </div>
+            {isSelected && (
+              <div className="label-asset-line">{assetLabel}</div>
+            )}
           </div>
         </Html>
       )}
@@ -210,166 +265,709 @@ function IncidentGraphNode({ incident, isSelected, isHovered, onSelect, onHover 
   );
 }
 
-/* ============================================================
-   RELATIONSHIP LINES (Thin Cyan/Blue, Sparse & Elegant)
-   ============================================================ */
+/* Drilldown overlay: Displays underlying alert signals and entity pivots around selected incident */
+function IncidentDrilldownOverlay({ drilldown, selectedIncident }) {
+  if (!selectedIncident) return null;
 
-function SparseGraphEdges({ incidents, selectedIncident }) {
-  const edges = useMemo(() => {
-    const list = [];
-    for (let i = 0; i < incidents.length; i++) {
-      for (let j = i + 1; j < incidents.length; j++) {
-        const a = incidents[i];
-        const b = incidents[j];
-        const idA = a.incident_id || a.id;
-        const idB = b.incident_id || b.id;
+  // Center coordinate for focused forensic drilldown
+  const cx = 0;
+  const cy = 0;
+  const cz = 0;
 
-        const pa = INCIDENT_POSITIONS[idA];
-        const pb = INCIDENT_POSITIONS[idB];
-        if (!pa || !pb) continue;
-
-        const dist = new THREE.Vector3(...pa).distanceTo(new THREE.Vector3(...pb));
-        // Sparse threshold: only connect close correlation entities
-        if (dist < 4.2) {
-          list.push({ idA, idB, pa, pb, dist });
-        }
-      }
+  const entityNodes = useMemo(() => {
+    if (drilldown?.nodes && drilldown.nodes.length > 0) {
+      return drilldown.nodes.filter((n) => n.type && n.type.startsWith('ENTITY_'));
     }
-    return list;
-  }, [incidents]);
+    // Fallback: extract from selectedIncident directly
+    const nodes = [];
+    const host = selectedIncident.hostname || selectedIncident.primary_asset || selectedIncident.asset;
+    if (host) {
+      nodes.push({ id: `HOST:${host}`, type: 'ENTITY_HOST', title: 'Host', label: host });
+    }
+    const user = selectedIncident.user;
+    if (user) {
+      nodes.push({ id: `USER:${user}`, type: 'ENTITY_USER', title: 'User Account', label: user });
+    }
+    const ip = selectedIncident.source_ip || selectedIncident.external_ip || selectedIncident.destination_ip;
+    if (ip) {
+      nodes.push({ id: `IP:${ip}`, type: 'ENTITY_IP', title: 'Threat IP', label: ip });
+    }
+    return nodes;
+  }, [drilldown, selectedIncident]);
+
+  const alertNodes = useMemo(() => {
+    if (drilldown?.nodes && drilldown.nodes.length > 0) {
+      return drilldown.nodes.filter((n) => n.type === 'ALERT');
+    }
+    if (Array.isArray(selectedIncident.alerts)) {
+      return selectedIncident.alerts.slice(0, 8).map((a) => ({
+        id: a.alert_id || a.id,
+        type: 'ALERT',
+        severity: a.severity || 'Medium',
+      }));
+    }
+    return [];
+  }, [drilldown, selectedIncident]);
 
   return (
     <group>
-      {edges.map((edge) => {
-        const selId = selectedIncident?.incident_id || selectedIncident?.id;
-        const isSelectedEdge = selId && (edge.idA === selId || edge.idB === selId);
+      {/* 1. Entity Pivot Nodes (Hosts, Users, Threat IPs) */}
+      {entityNodes.map((ent, idx) => {
+        const angle = (idx / Math.max(entityNodes.length, 1)) * Math.PI * 2;
+        const x = cx + Math.cos(angle) * 1.5;
+        const y = cy + Math.sin(angle) * 1.1;
+        const z = cz + 0.15;
 
-        // Opacity specs: Selected: 0.55, Default: 0.10 - 0.22, Unrelated when selection active: 0.06
-        const opacity = isSelectedEdge ? 0.55 : selId ? 0.06 : THREE.MathUtils.lerp(0.22, 0.10, edge.dist / 4.2);
-        const color = isSelectedEdge ? '#21D4FF' : '#38bdf8';
-        const lineWidth = isSelectedEdge ? 1.2 : 0.6;
+        const isUser = ent.type === 'ENTITY_USER';
+        const isIp = ent.type === 'ENTITY_IP';
+        const color = isUser ? '#C18A4A' : isIp ? '#B84D61' : '#57CFEF';
 
         return (
-          <Line
-            key={`${edge.idA}-${edge.idB}`}
-            points={[edge.pa, edge.pb]}
-            color={color}
-            transparent
-            opacity={opacity}
-            lineWidth={lineWidth}
-          />
+          <group key={ent.id} position={[x, y, z]}>
+            <mesh>
+              <sphereGeometry args={[0.075, 16, 16]} />
+              <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.6} />
+            </mesh>
+            <Line
+              points={[[cx, cy, cz], [x, y, z]]}
+              color={color}
+              transparent
+              opacity={0.55}
+              lineWidth={1.2}
+            />
+            <Html distanceFactor={14} center>
+              <div className="drilldown-entity-badge mono" style={{ borderColor: color }}>
+                <span className="entity-type-lbl">{ent.title}:</span>
+                <span className="entity-val-lbl">{ent.label}</span>
+              </div>
+            </Html>
+          </group>
+        );
+      })}
+
+      {/* 2. Alert Telemetry Signal Nodes */}
+      {alertNodes.map((alt, idx) => {
+        const angle = (idx / Math.max(alertNodes.length, 1)) * Math.PI * 2 + 0.25;
+        const x = cx + Math.cos(angle) * 2.5;
+        const y = cy + Math.sin(angle) * 1.8;
+        const z = cz - 0.2;
+
+        const sev = String(alt.severity || 'Medium').toLowerCase();
+        const sevColor =
+          sev === 'critical'
+            ? '#B84D61'
+            : sev === 'high'
+            ? '#C18A4A'
+            : sev === 'low'
+            ? '#77818A'
+            : '#5C9480';
+
+        return (
+          <group key={alt.id} position={[x, y, z]}>
+            <mesh>
+              <sphereGeometry args={[0.045, 12, 12]} />
+              <meshStandardMaterial color={sevColor} emissive={sevColor} emissiveIntensity={0.5} />
+            </mesh>
+            <Line
+              points={[[cx, cy, cz], [x, y, z]]}
+              color="#B9B3AA"
+              transparent
+              opacity={0.18}
+              lineWidth={0.6}
+            />
+            <Html distanceFactor={14} center>
+              <div className="drilldown-alert-badge mono">
+                <span className="alt-id-lbl">{alt.id}</span>
+                <span className={`alt-sev-pill ${sev}`}>{alt.severity}</span>
+              </div>
+            </Html>
+          </group>
         );
       })}
     </group>
   );
 }
 
-/* ============================================================
-   CAMERA CONTROLLER (Focus on Selected Incident)
-   ============================================================ */
+/* Observable Correlation Entity Extractor */
+function getIncidentEntities(inc) {
+  const hosts = new Set();
+  const users = new Set();
+  const externalIps = new Set();
 
-function PanelCameraController({ selectedIncident, controlsRef }) {
+  if (inc.primary_asset) {
+    const rawHost = inc.primary_asset.split(' ')[0].trim();
+    if (rawHost && !rawHost.includes('AST-') && rawHost.length > 2) {
+      hosts.add(rawHost);
+    }
+  }
+  if (inc.hostname) hosts.add(inc.hostname.trim());
+
+  if (inc.user && !inc.user.toUpperCase().includes('SYSTEM') && !inc.user.includes('Automated')) {
+    users.add(inc.user.trim());
+  }
+
+  // Extract from nested alerts if present
+  if (Array.isArray(inc.alerts)) {
+    inc.alerts.forEach((alert) => {
+      if (alert.hostname) hosts.add(alert.hostname.trim());
+      if (alert.user && !alert.user.toUpperCase().includes('SYSTEM') && !alert.user.includes('Automated')) {
+        users.add(alert.user.trim());
+      }
+      [alert.source_ip, alert.destination_ip].forEach((ip) => {
+        if (!ip) return;
+        const clean = ip.trim();
+        if (
+          !clean.startsWith('10.') &&
+          !clean.startsWith('192.168.') &&
+          !clean.startsWith('127.') &&
+          !clean.startsWith('172.16.')
+        ) {
+          externalIps.add(clean);
+        }
+      });
+    });
+  }
+
+  return {
+    hosts: Array.from(hosts),
+    users: Array.from(users),
+    externalIps: Array.from(externalIps),
+    scenarioId: inc.scenario_id || null,
+  };
+}
+
+/* Pairwise Observable Correlation Evidence Finder */
+function findCorrelationEvidence(incA, incB) {
+  const entA = getIncidentEntities(incA);
+  const entB = getIncidentEntities(incB);
+
+  // 1. Shared User (Identity pivot)
+  for (const u of entA.users) {
+    if (entB.users.includes(u)) {
+      return {
+        type: 'USER',
+        title: 'Shared user',
+        label: u,
+        color: '#C58A52', // Warm copper
+      };
+    }
+  }
+
+  // 2. Shared Host (Infrastructure pivot)
+  for (const h of entA.hosts) {
+    if (entB.hosts.includes(h)) {
+      return {
+        type: 'HOST',
+        title: 'Shared host',
+        label: h,
+        color: '#57CFEF', // Cyan / Slate
+      };
+    }
+  }
+
+  // 3. Shared External IP (Adversary infrastructure pivot)
+  for (const ip of entA.externalIps) {
+    if (entB.externalIps.includes(ip)) {
+      return {
+        type: 'EXTERNAL IP',
+        title: 'Shared external IP',
+        label: ip,
+        color: '#B64A5F', // Burgundy / P1
+      };
+    }
+  }
+
+  // 4. Shared Attack Campaign Scenario
+  if (entA.scenarioId && entA.scenarioId === entB.scenarioId) {
+    return {
+      type: 'CAMPAIGN',
+      title: 'Shared attack campaign',
+      label: entA.scenarioId,
+      color: '#E0A854', // Muted Gold
+    };
+  }
+
+  return null;
+}
+
+/* 3D Curved Relationship Arcs strictly powered by AUTHORITATIVE backend correlation evidence */
+function CurvedGraphRelationships({
+  incidents,
+  authoritativeEdges = [],
+  selectedIncident,
+  hoveredIncident,
+  edgeCurvesRef,
+  onReviewEdge,
+}) {
+  const [hoveredEdgeId, setHoveredEdgeId] = useState(null);
+
+  const edges = useMemo(() => {
+    const list = [];
+    const positionsMap = {};
+    incidents.forEach((inc) => {
+      const id = inc.incident_id || inc.id;
+      positionsMap[id] = new THREE.Vector3(...getIncident3DPosition(inc));
+    });
+
+    // Authoritative edges sourced directly from backend /api/graph
+    if (Array.isArray(authoritativeEdges) && authoritativeEdges.length > 0) {
+      authoritativeEdges.forEach((e) => {
+        const pA = positionsMap[e.source];
+        const pB = positionsMap[e.target];
+        if (!pA || !pB) return;
+
+        const dist = pA.distanceTo(pB);
+        const mid = new THREE.Vector3().addVectors(pA, pB).multiplyScalar(0.5);
+        // Subtle depth bow outward toward camera
+        mid.z += Math.min(dist * 0.12, 0.45);
+        const curve = new THREE.QuadraticBezierCurve3(pA, mid, pB);
+        const curvePoints = curve.getPoints(20);
+
+        list.push({
+          id: e.id || `${e.source}--${e.target}`,
+          idA: e.source,
+          idB: e.target,
+          pA,
+          pB,
+          mid,
+          curve,
+          curvePoints,
+          dist,
+          evidence: e.evidence || [],
+          primaryType: e.primary_evidence_type || 'HOST',
+        });
+      });
+    }
+
+    if (edgeCurvesRef) {
+      edgeCurvesRef.current = list;
+    }
+    return list;
+  }, [incidents, authoritativeEdges, edgeCurvesRef]);
+
+  const activeId = selectedIncident?.incident_id || selectedIncident?.id;
+  const hoverId = hoveredIncident?.incident_id || hoveredIncident?.id;
+
+  const getEdgeColor = (type) => {
+    switch (type) {
+      case 'USER':
+        return '#C18A4A'; // Copper
+      case 'EXTERNAL IP':
+        return '#B84D61'; // Burgundy / P1
+      case 'TIME WINDOW':
+        return '#77818A'; // Slate
+      case 'HOST':
+      default:
+        return '#5C9480'; // Slate/Green
+    }
+  };
+
+  return (
+    <group>
+      {edges.map((edge) => {
+        const isSelectedEdge = activeId && (edge.idA === activeId || edge.idB === activeId);
+        const isHoveredIncidentEdge = hoverId && (edge.idA === hoverId || edge.idB === hoverId);
+        const isDirectlyHovered = hoveredEdgeId === edge.id;
+
+        const isHighlighted = isSelectedEdge || isHoveredIncidentEdge || isDirectlyHovered;
+
+        let opacity = 0.20;
+        let color = getEdgeColor(edge.primaryType);
+        let lineWidth = 0.85;
+
+        if (isHighlighted) {
+          opacity = 0.88;
+          lineWidth = 2.2;
+        } else if (activeId) {
+          opacity = 0.04;
+        }
+
+        return (
+          <group key={edge.id}>
+            {/* The visible curved correlation line */}
+            <Line
+              points={edge.curvePoints}
+              color={color}
+              transparent
+              opacity={opacity}
+              lineWidth={lineWidth}
+            />
+
+            {/* Invisible hover hit-zone sphere at midpoint */}
+            <mesh
+              position={[edge.mid.x, edge.mid.y, edge.mid.z]}
+              onPointerOver={(e) => {
+                e.stopPropagation();
+                setHoveredEdgeId(edge.id);
+              }}
+              onPointerOut={(e) => {
+                e.stopPropagation();
+                setHoveredEdgeId(null);
+              }}
+            >
+              <sphereGeometry args={[0.35, 8, 8]} />
+              <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+            </mesh>
+
+            {/* Compact Observable Correlation Evidence Card on Hover/Selection */}
+            {(isDirectlyHovered || (isSelectedEdge && edge.dist < 6.0)) && (
+              <Html position={[edge.mid.x, edge.mid.y, edge.mid.z]} center distanceFactor={14}>
+                <div className="edge-evidence-tooltip mono">
+                  <div className="tooltip-eyebrow">CORRELATION EVIDENCE</div>
+                  {edge.evidence && edge.evidence.length > 0 ? (
+                    edge.evidence.map((ev, i) => (
+                      <div key={i} className="tooltip-entry">
+                        <span className="tooltip-type">{ev.title || ev.type}:</span>
+                        <span className="tooltip-val">{ev.value}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="tooltip-entry">
+                      <span className="tooltip-val">Observable Link</span>
+                    </div>
+                  )}
+
+                  {/* Explicit Review Action (Part 6 & 7) */}
+                  <div className="tooltip-review-action">
+                    <button
+                      type="button"
+                      className="edge-review-btn mono sentinel-interactive-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onReviewEdge?.(edge);
+                      }}
+                    >
+                      [ REVIEW ]
+                    </button>
+                  </div>
+                </div>
+              </Html>
+            )}
+          </group>
+        );
+      })}
+    </group>
+  );
+}
+
+/* Moving Evidence Telemetry Particles along connected curves */
+function EvidenceTelemetryParticles({ edgeCurvesRef, selectedIncident }) {
+  const pointsRef = useRef();
+  const particleCount = 12;
+
+  const particleData = useMemo(() => {
+    return Array.from({ length: particleCount }, (_, idx) => ({
+      edgeIndex: idx,
+      progress: (idx / particleCount) * 1.0,
+      speed: 0.18 + (idx % 3) * 0.08,
+    }));
+  }, [particleCount]);
+
+  const positions = useMemo(() => new Float32Array(particleCount * 3), [particleCount]);
+
+  useFrame((state, delta) => {
+    if (!pointsRef.current || !edgeCurvesRef.current || !edgeCurvesRef.current.length) return;
+    const edges = edgeCurvesRef.current;
+    const array = pointsRef.current.geometry.attributes.position.array;
+
+    const activeId = selectedIncident?.incident_id || selectedIncident?.id;
+    // Prefer active edges if selection exists
+    const activeEdges = activeId
+      ? edges.filter((e) => e.idA === activeId || e.idB === activeId)
+      : edges;
+
+    if (!activeEdges.length) return;
+
+    for (let i = 0; i < particleCount; i++) {
+      const p = particleData[i];
+      p.progress = (p.progress + delta * p.speed) % 1.0;
+      const targetEdge = activeEdges[i % activeEdges.length];
+      const pt = targetEdge.curve.getPoint(p.progress);
+
+      const i3 = i * 3;
+      array[i3] = pt.x;
+      array[i3 + 1] = pt.y;
+      array[i3 + 2] = pt.z;
+    }
+    pointsRef.current.geometry.attributes.position.needsUpdate = true;
+  });
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={particleCount}
+          array={positions}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.045}
+        sizeAttenuation
+        transparent
+        opacity={0.75}
+        color="#35CFFF"
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </points>
+  );
+}
+
+/* Camera Controller: Smooth pointer parallax & focus target */
+function ParallaxCameraController({ selectedIncident, controlsRef }) {
   const { camera } = useThree();
   const baseTarget = useMemo(() => new THREE.Vector3(0, 0, 0), []);
-  const basePosition = useMemo(() => new THREE.Vector3(0, 0.4, 9.5), []);
+  const baseCamPos = useMemo(() => new THREE.Vector3(0, 0.2, 9.2), []);
 
   useEffect(() => {
     if (!controlsRef.current) return;
     if (selectedIncident) {
-      const id = selectedIncident.incident_id || selectedIncident.id;
-      const p = INCIDENT_POSITIONS[id] || [0, 0, 0];
+      const p = getIncident3DPosition(selectedIncident);
       controlsRef.current.target.set(p[0], p[1], p[2]);
     } else {
       controlsRef.current.target.copy(baseTarget);
     }
   }, [selectedIncident, controlsRef, baseTarget]);
 
+  // Gentle pointer parallax on camera position
+  useFrame((state, delta) => {
+    if (selectedIncident) return; // Freeze parallax when inspecting a focused node
+    const targetX = state.pointer.x * 0.12;
+    const targetY = state.pointer.y * 0.08;
+
+    camera.position.x = THREE.MathUtils.damp(camera.position.x, baseCamPos.x + targetX, 3.5, delta);
+    camera.position.y = THREE.MathUtils.damp(camera.position.y, baseCamPos.y + targetY, 3.5, delta);
+  });
+
   return null;
 }
 
-/* ============================================================
-   MAIN INCIDENT MAP PANEL
-   ============================================================ */
-
-export function IncidentMapPanel({ incidents = [], selectedIncident, onSelectIncident }) {
+/* Main Dedicated 3D Incident Intelligence Map Panel */
+export function IncidentMapPanel({
+  incidents = [],
+  selectedIncident,
+  onSelectIncident,
+  loading = false,
+  error = null,
+  onRetry,
+}) {
   const [hoveredNode, setHoveredNode] = useState(null);
+  const [authoritativeGraph, setAuthoritativeGraph] = useState(null);
+  const [reviewingEdge, setReviewingEdge] = useState(null);
   const controlsRef = useRef();
+  const edgeCurvesRef = useRef([]);
+
+  // Fetch authoritative graph contract directly from backend /api/graph
+  useEffect(() => {
+    let isMounted = true;
+    const targetId = selectedIncident?.incident_id || selectedIncident?.id;
+    const url = targetId
+      ? `http://127.0.0.1:8000/api/graph?incident_id=${targetId}`
+      : 'http://127.0.0.1:8000/api/graph';
+
+    fetch(url)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (isMounted && data && data.status === 'success') {
+          setAuthoritativeGraph(data);
+        }
+      })
+      .catch((err) => {
+        console.warn('[IncidentMapPanel] Authoritative graph fetch failed:', err);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedIncident]);
+
+  // Top anchor incident (highest risk foreground node)
+  const topAnchorId = useMemo(() => {
+    if (!incidents.length) return null;
+    const sorted = [...incidents].sort(
+      (a, b) => Number(b.risk_score ?? 0) - Number(a.risk_score ?? 0)
+    );
+    return sorted[0]?.incident_id || sorted[0]?.id;
+  }, [incidents]);
+
+  const activeId = selectedIncident?.incident_id || selectedIncident?.id;
 
   return (
     <div className="incident-intelligence-panel" aria-label="Incident Intelligence Map">
-      {/* Header: Clean Enterprise Typography */}
+      {/* Header: Clean Enterprise Typography & Distinct View A / View B Labeling */}
       <div className="map-panel-header flex-between">
         <div className="map-title-group">
-          <div className="map-eyebrow-tag mono">INCIDENT INTELLIGENCE MAP</div>
-          <div className="map-sub-title">3D CORRELATION VIEW</div>
+          <div className="map-eyebrow-tag mono">
+            {selectedIncident ? 'INCIDENT DRILLDOWN' : 'INCIDENT OVERVIEW'}
+          </div>
+          <div className="map-sub-title">
+            {selectedIncident ? `${activeId} FORENSIC ENTITY GRAPH` : '15 PRODUCTION INCIDENTS • CORRELATION TOPOLOGY'}
+          </div>
         </div>
-        <div className="map-badge-count mono">
-          <span className="live-dot-green" />
-          <span>{incidents.length || 15} INCIDENTS</span>
+
+        <div className="map-header-right align-center">
+          {/* Explicit View Switcher */}
+          <div className="map-view-switcher mono">
+            <button
+              className={`view-toggle-pill ${!selectedIncident ? 'active' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelectIncident?.(null);
+              }}
+              title="View all 15 production incidents and correlation topology"
+            >
+              15 INCIDENTS
+            </button>
+            <button
+              className={`view-toggle-pill ${selectedIncident ? 'active' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (!selectedIncident && incidents.length > 0) {
+                  onSelectIncident?.(incidents[0]);
+                }
+              }}
+              title="Forensic entity drilldown (root incident -> host -> user -> external IP -> correlated alerts)"
+            >
+              {selectedIncident ? `${activeId} DRILLDOWN` : 'DRILLDOWN'}
+            </button>
+          </div>
+
+          <div className="map-badge-count mono">
+            <span className="live-dot-green" />
+            <span>
+              {loading
+                ? 'SYNCING...'
+                : selectedIncident
+                ? `DRILLDOWN: ${activeId}`
+                : `${incidents.length} PRODUCTION INCIDENTS`}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* 3D WebGL Canvas: Isolated to this panel */}
+      {/* 3D WebGL Canvas: Isolated to this window */}
       <div className="map-viewport-stage">
-        <Canvas
-          dpr={[1, 1.5]}
-          camera={{
-            position: [0, 0.4, 9.5],
-            fov: 40,
-            near: 0.1,
-            far: 50,
-          }}
-          gl={{
-            antialias: true,
-            alpha: true,
-            powerPreference: 'high-performance',
-          }}
-          onPointerMissed={() => onSelectIncident(null)}
-        >
-          {/* Faint Depth Fog (Pure Cold Dark Blue-Black #02070B) */}
-          <fog attach="fog" args={['#02070B', 8, 22]} />
+        {loading ? (
+          <div className="map-status-overlay loading mono">
+            <div className="map-loading-spinner" />
+            <span>LOADING INCIDENT INTELLIGENCE</span>
+          </div>
+        ) : error ? (
+          <div className="map-status-overlay error mono">
+            <span className="error-title">INCIDENT DATA UNAVAILABLE</span>
+            <span className="error-desc">{error}</span>
+            {onRetry && (
+              <button className="map-retry-btn mono" onClick={onRetry}>
+                RETRY
+              </button>
+            )}
+          </div>
+        ) : incidents.length === 0 ? (
+          <div className="map-status-overlay empty mono">
+            <span>NO INCIDENTS AVAILABLE</span>
+          </div>
+        ) : (
+          <Canvas
+            dpr={[1, 1.5]}
+            camera={{
+              position: [0, 0.2, 9.2],
+              fov: 42,
+              near: 0.1,
+              far: 40,
+            }}
+            gl={{
+              antialias: true,
+              alpha: true,
+              powerPreference: 'high-performance',
+            }}
+            onPointerMissed={() => onSelectIncident?.(null)}
+          >
+            {/* Atmospheric Depth Fog: Far nodes softly fade into deep graphite */}
+            <fog attach="fog" args={['#1E1D1B', 6, 18]} />
 
-          {/* Clean cool ambient & directional lighting (Zero red/orange glow) */}
-          <ambientLight intensity={0.4} color="#063047" />
-          <directionalLight position={[4, 8, 6]} intensity={0.65} color="#21D4FF" />
+            {/* Ambient & Directional Lighting */}
+            <ambientLight intensity={0.52} color="#0C2538" />
+            <directionalLight position={[3, 8, 5]} intensity={0.75} color="#55C9EA" />
 
-          {/* Secondary Telemetry Background Points */}
-          <SecondaryTelemetryField count={65} />
+            {/* Secondary Depth Points */}
+            <SecondaryTelemetryField count={55} />
 
-          {/* Sparse Relationship Lines */}
-          <SparseGraphEdges incidents={incidents} selectedIncident={selectedIncident} />
-
-          {/* 3-Layer Incident Nodes */}
-          {incidents.map((inc) => {
-            const id = inc.incident_id || inc.id;
-            const isSel = (selectedIncident?.incident_id || selectedIncident?.id) === id;
-            const isHov = (hoveredNode?.incident_id || hoveredNode?.id) === id;
-            return (
-              <IncidentGraphNode
-                key={id}
-                incident={inc}
-                isSelected={isSel}
-                isHovered={isHov}
-                onSelect={onSelectIncident}
-                onHover={setHoveredNode}
+            {/* Authoritative Curved 3D Relationship Arcs from backend /api/graph (Shown in View A: 15 Incidents Overview) */}
+            {!selectedIncident && (
+              <CurvedGraphRelationships
+                incidents={incidents}
+                authoritativeEdges={authoritativeGraph?.edges || []}
+                selectedIncident={selectedIncident}
+                hoveredIncident={hoveredNode}
+                edgeCurvesRef={edgeCurvesRef}
+                onReviewEdge={setReviewingEdge}
               />
-            );
-          })}
+            )}
 
-          <PanelCameraController selectedIncident={selectedIncident} controlsRef={controlsRef} />
-          <OrbitControls
-            ref={controlsRef}
-            enableDamping
-            dampingFactor={0.08}
-            rotateSpeed={0.6}
-            zoomSpeed={0.8}
-            minDistance={4}
-            maxDistance={18}
-          />
-        </Canvas>
+            {/* Evidence Flow Particles (Shown in View A) */}
+            {!selectedIncident && (
+              <EvidenceTelemetryParticles
+                edgeCurvesRef={edgeCurvesRef}
+                selectedIncident={selectedIncident}
+              />
+            )}
+
+            {/* 3-Layer Incident Nodes:
+                VIEW A: Render all 15 incidents across depth planes.
+                VIEW B: Render the selected root incident at [0,0,0] as the anchor of the forensic entity tree. */}
+            {incidents
+              .filter((inc) => !selectedIncident || (inc.incident_id || inc.id) === activeId)
+              .map((inc) => {
+                const id = inc.incident_id || inc.id;
+                const pos = selectedIncident ? [0, 0, 0] : getIncident3DPosition(inc);
+                const isSel = activeId === id;
+                const isHov = (hoveredNode?.incident_id || hoveredNode?.id) === id;
+                const isDim = false;
+                const isAnchor = id === topAnchorId;
+
+                return (
+                  <IncidentGraphNode
+                    key={id}
+                    incident={inc}
+                    position={pos}
+                    isSelected={isSel}
+                    isHovered={isHov}
+                    isDimmed={isDim}
+                    isTopAnchor={isAnchor}
+                    onSelect={onSelectIncident}
+                    onHover={setHoveredNode}
+                  />
+                );
+              })}
+
+            {/* Forensic Drilldown Overlay when an incident is selected (VIEW B) */}
+            {selectedIncident && (
+              <IncidentDrilldownOverlay
+                drilldown={authoritativeGraph?.drilldown}
+                selectedIncident={selectedIncident}
+              />
+            )}
+
+            <ParallaxCameraController
+              selectedIncident={selectedIncident}
+              controlsRef={controlsRef}
+            />
+            <OrbitControls
+              ref={controlsRef}
+              enableDamping
+              dampingFactor={0.08}
+              rotateSpeed={0.5}
+              zoomSpeed={0.7}
+              minDistance={3.5}
+              maxDistance={16}
+            />
+          </Canvas>
+        )}
       </div>
 
-      {/* Panel Bottom Controls & Priority Legend */}
+      {/* Footer Controls & Priority Legend */}
       <div className="map-panel-footer flex-between mono">
         <div className="map-hints align-center">
           <span className="hint-chip">DRAG <b>ROTATE</b></span>
@@ -395,36 +993,44 @@ export function IncidentMapPanel({ incidents = [], selectedIncident, onSelectInc
         </div>
       </div>
 
+      {/* 3D Graph Correlation Human Review Modal (Part 6 & 7) */}
+      {reviewingEdge && (
+        <CorrelationReviewModal
+          edgeData={reviewingEdge}
+          onClose={() => setReviewingEdge(null)}
+          onCorrelationReviewed={(res) => {
+            console.log('[Correlation Review Logged]', res);
+          }}
+        />
+      )}
+
       <style>{`
         .incident-intelligence-panel {
-          position: absolute;
-          right: 3.5vw;
-          top: 13vh;
-          width: clamp(480px, 42vw, 680px);
-          height: clamp(400px, 55vh, 560px);
-          background: rgba(3, 10, 16, 0.68);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          border: 1px solid rgba(48, 184, 230, 0.24);
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35), 0 0 30px rgba(48, 184, 230, 0.08);
+          position: relative;
+          width: 100%;
+          height: 100%;
+          background: rgba(255, 255, 255, 0.055);
+          backdrop-filter: blur(24px);
+          -webkit-backdrop-filter: blur(24px);
+          border: 1px solid rgba(255, 255, 255, 0.11);
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
           border-radius: 8px;
           display: flex;
           flex-direction: column;
-          z-index: 10;
           overflow: hidden;
           pointer-events: auto;
           transition: border-color 220ms ease, box-shadow 220ms ease;
         }
 
         .incident-intelligence-panel:hover {
-          border-color: rgba(48, 184, 230, 0.4);
-          box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5), 0 0 40px rgba(48, 184, 230, 0.14);
+          border-color: rgba(255, 255, 255, 0.22);
+          box-shadow: 0 24px 70px rgba(0, 0, 0, 0.30);
         }
 
         .map-panel-header {
-          padding: 0.95rem 1.25rem;
-          background: rgba(3, 10, 16, 0.82);
-          border-bottom: 1px solid rgba(110, 190, 220, 0.16);
+          padding: 0.85rem 1.25rem;
+          background: rgba(255, 255, 255, 0.045);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
           align-items: center;
         }
 
@@ -432,15 +1038,53 @@ export function IncidentMapPanel({ incidents = [], selectedIncident, onSelectInc
           font-size: 0.64rem;
           font-weight: 700;
           letter-spacing: 0.18em;
-          color: #21D4FF;
+          color: #C58A52;
         }
 
         .map-sub-title {
           font-size: 0.85rem;
           font-weight: 600;
-          color: #f8fafc;
+          color: #F3EFE8;
           letter-spacing: -0.01em;
           margin-top: 0.15rem;
+        }
+
+        .map-header-right {
+          display: flex;
+          align-items: center;
+          gap: 0.65rem;
+        }
+
+        .map-view-switcher {
+          display: inline-flex;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 6px;
+          padding: 2px;
+          gap: 2px;
+        }
+
+        .view-toggle-pill {
+          background: transparent;
+          border: none;
+          color: #B9B3AA;
+          font-size: 0.60rem;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          padding: 0.22rem 0.55rem;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: all 160ms ease;
+        }
+
+        .view-toggle-pill:hover {
+          color: #F3EFE8;
+          background: rgba(255, 255, 255, 0.08);
+        }
+
+        .view-toggle-pill.active {
+          background: #A96B42;
+          color: #FFFFFF;
         }
 
         .map-badge-count {
@@ -448,19 +1092,19 @@ export function IncidentMapPanel({ incidents = [], selectedIncident, onSelectInc
           align-items: center;
           gap: 0.45rem;
           font-size: 0.65rem;
-          background: rgba(33, 212, 255, 0.08);
-          border: 1px solid rgba(33, 212, 255, 0.25);
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.10);
           padding: 0.25rem 0.6rem;
           border-radius: 999px;
-          color: #e2e8f0;
+          color: #F3EFE8;
         }
 
         .live-dot-green {
           width: 6px;
           height: 6px;
           border-radius: 50%;
-          background: #10b981;
-          box-shadow: 0 0 8px #10b981;
+          background: #5F9480;
+          box-shadow: 0 0 8px rgba(95, 148, 128, 0.45);
         }
 
         .map-viewport-stage {
@@ -468,7 +1112,7 @@ export function IncidentMapPanel({ incidents = [], selectedIncident, onSelectInc
           position: relative;
           width: 100%;
           height: 100%;
-          background: radial-gradient(circle at center, rgba(6, 48, 71, 0.18) 0%, rgba(2, 7, 11, 0.85) 100%);
+          background: radial-gradient(circle at center, rgba(45, 43, 40, 0.35) 0%, rgba(36, 35, 33, 0.65) 100%);
         }
 
         .map-viewport-stage canvas {
@@ -477,85 +1121,262 @@ export function IncidentMapPanel({ incidents = [], selectedIncident, onSelectInc
           height: 100% !important;
         }
 
+        .map-status-overlay {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 0.75rem;
+          font-size: 0.72rem;
+          letter-spacing: 0.12em;
+          color: #C58A52;
+          background: rgba(36, 35, 33, 0.90);
+        }
+
+        .map-loading-spinner {
+          width: 24px;
+          height: 24px;
+          border: 2px solid rgba(197, 138, 82, 0.2);
+          border-top-color: #C58A52;
+          border-radius: 50%;
+          animation: mapSpin 800ms linear infinite;
+        }
+
+        @keyframes mapSpin {
+          to { transform: rotate(360deg); }
+        }
+
+        .map-status-overlay.error {
+          color: #B64A5F;
+        }
+
+        .error-title {
+          font-weight: 700;
+        }
+
+        .error-desc {
+          font-size: 0.62rem;
+          color: #B9B3AA;
+        }
+
+        .map-retry-btn {
+          background: rgba(182, 74, 95, 0.15);
+          border: 1px solid rgba(182, 74, 95, 0.35);
+          color: #F3EFE8;
+          padding: 0.35rem 0.85rem;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 0.65rem;
+          font-weight: 700;
+          transition: all 140ms ease;
+        }
+
+        .map-retry-btn:hover {
+          background: #B64A5F;
+          color: #ffffff;
+        }
+
         .map-panel-footer {
           padding: 0.65rem 1.25rem;
-          background: rgba(3, 10, 16, 0.85);
-          border-top: 1px solid rgba(110, 190, 220, 0.14);
+          background: rgba(255, 255, 255, 0.045);
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
           font-size: 0.62rem;
-          color: #64748b;
+          color: #B9B3AA;
         }
 
         .map-hints { gap: 0.6rem; }
-        .hint-chip b { color: #94a3b8; font-weight: 600; }
-        .hint-sep { opacity: 0.4; }
+        .hint-chip b { color: #F3EFE8; font-weight: 600; }
+        .hint-sep { opacity: 0.3; }
         .map-prio-legend { gap: 0.85rem; }
-        .prio-dot-label { gap: 0.35rem; color: #94a3b8; }
+        .prio-dot-label { gap: 0.35rem; color: #B9B3AA; }
 
         .dot { width: 6px; height: 6px; border-radius: 50%; }
-        .dot.p1 { background: #FF4655; box-shadow: 0 0 6px #FF4655; }
-        .dot.p2 { background: #FFB52E; box-shadow: 0 0 6px #FFB52E; }
-        .dot.p3 { background: #21D4FF; box-shadow: 0 0 6px #21D4FF; }
-        .dot.p4 { background: #B7C5CF; }
+        .dot.p1 { background: #B64A5F; }
+        .dot.p2 { background: #C58A52; }
+        .dot.p3 { background: #5F9480; }
+        .dot.p4 { background: #78828A; }
 
-        /* Compact Professional Glass Node Labels */
-        .compact-glass-node-label {
-          background: rgba(3, 10, 16, 0.84);
-          border: 1px solid rgba(100, 180, 210, 0.22);
+        /* Minimalist Monospace Spatial Node Labels */
+        .spatial-node-label {
+          background: rgba(45, 43, 40, 0.90);
+          border: 1px solid rgba(255, 255, 255, 0.12);
           backdrop-filter: blur(14px);
           -webkit-backdrop-filter: blur(14px);
-          padding: 0.25rem 0.5rem;
+          padding: 0.25rem 0.55rem;
           border-radius: 4px;
           display: flex;
           flex-direction: column;
           gap: 0.1rem;
           white-space: nowrap;
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-          transition: border-color 160ms ease;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.30);
+          transition: border-color 160ms ease, box-shadow 160ms ease;
         }
 
-        .compact-glass-node-label.hovered {
-          border-color: rgba(33, 212, 255, 0.55);
-          box-shadow: 0 0 16px rgba(33, 212, 255, 0.25);
+        .spatial-node-label.hovered {
+          border-color: #C58A52;
+          box-shadow: 0 0 16px rgba(197, 138, 82, 0.25);
         }
 
-        .compact-glass-node-label.selected {
-          border-color: #21D4FF;
-          background: rgba(4, 18, 30, 0.92);
-          box-shadow: 0 0 20px rgba(33, 212, 255, 0.35);
+        .spatial-node-label.selected {
+          border-color: #C58A52;
+          background: rgba(45, 43, 40, 0.98);
+          box-shadow: 0 0 20px rgba(197, 138, 82, 0.35);
         }
 
-        .node-label-id {
-          font-size: 0.68rem;
-          font-weight: 700;
-          color: #f8fafc;
-          letter-spacing: 0.05em;
-        }
-
-        .node-label-meta {
+        .label-id-line {
           display: flex;
           align-items: center;
-          gap: 0.25rem;
-          font-size: 0.58rem;
+          gap: 0.3rem;
+          font-size: 0.65rem;
         }
 
-        .prio-tag-text.p1 { color: #FF4655; font-weight: 700; }
-        .prio-tag-text.p2 { color: #FFB52E; font-weight: 700; }
-        .prio-tag-text.p3 { color: #21D4FF; font-weight: 700; }
-        .prio-tag-text.p4 { color: #B7C5CF; }
-
-        .dot-sep { opacity: 0.4; }
-        .risk-tag-text { color: #e2e8f0; font-weight: 600; }
-
-        @media (max-width: 1024px) {
-          .incident-intelligence-panel {
-            position: relative;
-            top: auto;
-            right: auto;
-            width: 100%;
-            height: 440px;
-            margin-top: 2rem;
-          }
+        .label-id {
+          font-weight: 700;
+          color: #F3EFE8;
         }
+
+        .label-sep {
+          opacity: 0.35;
+          font-size: 0.5rem;
+        }
+
+        .label-prio.p1 { color: #B64A5F; font-weight: 700; }
+        .label-prio.p2 { color: #C58A52; font-weight: 700; }
+        .label-prio.p3 { color: #5F9480; font-weight: 700; }
+        .label-prio.p4 { color: #78828A; }
+
+        .label-risk {
+          color: #B9B3AA;
+          font-weight: 600;
+        }
+
+        .label-asset-line {
+          font-size: 0.55rem;
+          color: #C58A52;
+        }
+
+        /* Observable Correlation Evidence Hover Card */
+        .edge-evidence-tooltip {
+          background: rgba(29, 28, 26, 0.96);
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65), 0 0 14px rgba(169, 107, 66, 0.25);
+          border-radius: 4px;
+          padding: 0.4rem 0.75rem;
+          pointer-events: none;
+          white-space: nowrap;
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          text-align: left;
+          animation: tooltipFadeIn 180ms ease both;
+        }
+
+        @keyframes tooltipFadeIn {
+          from { opacity: 0; transform: translateY(4px) scale(0.96); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .edge-evidence-tooltip .tooltip-eyebrow {
+          font-size: 0.54rem;
+          font-weight: 700;
+          letter-spacing: 0.16em;
+          color: #A96B42;
+          margin-bottom: 2px;
+          text-transform: uppercase;
+        }
+
+        .edge-evidence-tooltip .tooltip-type {
+          font-size: 0.62rem;
+          color: #B9B3AA;
+          margin-bottom: 2px;
+        }
+
+        .edge-evidence-tooltip .tooltip-value {
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: #F3EFE8;
+          letter-spacing: -0.01em;
+        }
+
+        .tooltip-review-action {
+          margin-top: 6px;
+          padding-top: 5px;
+          border-top: 1px solid rgba(255, 255, 255, 0.12);
+          text-align: center;
+        }
+
+        .edge-review-btn {
+          background: rgba(169, 107, 66, 0.22);
+          border: 1px solid #A96B42;
+          color: #F3EFE8;
+          font-size: 0.60rem;
+          font-weight: 800;
+          padding: 3px 8px;
+          border-radius: 3px;
+          cursor: pointer;
+          letter-spacing: 0.08em;
+          transition: all 140ms ease;
+        }
+
+        .edge-review-btn:hover {
+          background: #A96B42;
+          color: #1D1C1A;
+        }
+
+        .map-view-reset-btn {
+          background: rgba(184, 77, 97, 0.25);
+          border: 1px solid rgba(184, 77, 97, 0.45);
+          color: #F3EFE8;
+          font-size: 0.55rem;
+          padding: 0.15rem 0.45rem;
+          border-radius: 3px;
+          margin-left: 0.45rem;
+          cursor: pointer;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          transition: all 140ms ease;
+        }
+
+        .map-view-reset-btn:hover {
+          background: #B84D61;
+          color: #FFFFFF;
+          border-color: #B84D61;
+        }
+
+        /* 3D Drilldown Badges */
+        .drilldown-entity-badge {
+          background: rgba(29, 28, 26, 0.95);
+          border: 1px solid rgba(255, 255, 255, 0.22);
+          border-radius: 4px;
+          padding: 2px 6px;
+          font-size: 0.52rem;
+          color: #F3EFE8;
+          white-space: nowrap;
+          display: flex;
+          gap: 4px;
+          pointer-events: none;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+        .entity-type-lbl { color: #B9B3AA; }
+        .entity-val-lbl { color: #F3EFE8; font-weight: 600; }
+
+        .drilldown-alert-badge {
+          background: rgba(24, 23, 21, 0.90);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 3px;
+          padding: 1px 4px;
+          font-size: 0.48rem;
+          color: #B9B3AA;
+          white-space: nowrap;
+          display: flex;
+          gap: 3px;
+          pointer-events: none;
+        }
+        .alt-sev-pill.critical { color: #B84D61; font-weight: 700; }
+        .alt-sev-pill.high { color: #C18A4A; font-weight: 700; }
+        .alt-sev-pill.medium { color: #5C9480; }
+        .alt-sev-pill.low { color: #77818A; }
       `}</style>
     </div>
   );

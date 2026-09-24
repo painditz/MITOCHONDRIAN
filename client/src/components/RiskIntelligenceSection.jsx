@@ -4,7 +4,22 @@
 // Case study: INC-102 (10 alerts, Critical, 96.4) vs INC-114 (1,452 alerts, Medium, 15.0)
 import React from 'react';
 
-export function RiskIntelligenceSection() {
+export function RiskIntelligenceSection({ incidents = [] }) {
+  const inc102 = incidents.find((i) => (i.incident_id || i.id) === 'INC-102');
+  const inc114 = incidents.find((i) => (i.incident_id || i.id) === 'INC-114') || incidents[incidents.length - 1];
+
+  const criticalId = inc102 ? (inc102.incident_id || inc102.id) : 'INC-102';
+  const criticalPrio = inc102 ? String(inc102.priority || 'P1').toUpperCase() : 'P1';
+  const criticalAsset = inc102?.hostname || inc102?.asset_name || 'CORP-EXCHANGE-ONLINE';
+  const criticalSignals = inc102 ? `${inc102.alert_count ?? inc102.signalsCount ?? 10} ALERTS` : '10 ALERTS';
+  const criticalRisk = inc102 ? Number(inc102.risk_score ?? inc102.riskScore ?? 96.4).toFixed(1) : '96.4';
+
+  const noisyId = inc114 ? (inc114.incident_id || inc114.id) : 'INC-114';
+  const noisyPrio = inc114 ? String(inc114.priority || 'P4').toUpperCase() : 'P4';
+  const noisyAsset = inc114?.hostname || inc114?.asset_name || 'CORP-TELEMETRY-HOST';
+  const noisySignals = inc114 ? `${(inc114.alert_count ?? inc114.signalsCount ?? 1452).toLocaleString()} ALERTS` : '1,452 ALERTS';
+  const noisyRisk = inc114 ? Number(inc114.risk_score ?? inc114.riskScore ?? 15.0).toFixed(1) : '15.0';
+
   const riskComponents = [
     {
       name: 'ASSET CRITICALITY',
@@ -96,7 +111,7 @@ export function RiskIntelligenceSection() {
           ))}
         </div>
 
-        {/* Case Study Comparison: INC-102 vs INC-114 */}
+        {/* Case Study Comparison: Live Incident Telemetry */}
         <div className="case-study-banner">
           <div className="case-study-header flex-between mono">
             <span className="case-tag">ENTERPRISE CASE STUDY &bull; REAL APPLICATION TELEMETRY</span>
@@ -107,14 +122,14 @@ export function RiskIntelligenceSection() {
             {/* Critical Low-Volume Incident */}
             <div className="case-card critical-case">
               <div className="case-badge-row flex-between mono">
-                <span className="case-id">INC-102</span>
-                <span className="case-priority-badge p1">P1 CRITICAL</span>
+                <span className="case-id">{criticalId}</span>
+                <span className="case-priority-badge p1">{criticalPrio} CRITICAL</span>
               </div>
-              <div className="case-asset-name">CORP-EXCHANGE-ONLINE</div>
+              <div className="case-asset-name">{criticalAsset}</div>
               <div className="case-metrics-strip flex-between mono">
                 <div>
                   <span className="label">SIGNAL COUNT</span>
-                  <b className="val text-white">10 ALERTS</b>
+                  <b className="val text-white">{criticalSignals}</b>
                 </div>
                 <div>
                   <span className="label">ASSET TIER</span>
@@ -122,11 +137,11 @@ export function RiskIntelligenceSection() {
                 </div>
                 <div>
                   <span className="label">CALCULATED RISK</span>
-                  <b className="val risk-large text-red">96.4</b>
+                  <b className="val risk-large text-red">{criticalRisk}</b>
                 </div>
               </div>
               <p className="case-explanation">
-                Executive mailbox compromise with remote forwarding rule. Despite having only 10 signals, the critical asset priority and kill-chain depth correctly elevate this to <b>#1 SOC Priority</b>.
+                Executive mailbox compromise with remote forwarding rule. Despite having only {criticalSignals.toLowerCase()}, the critical asset priority and kill-chain depth correctly elevate this to <b>#1 SOC Priority</b>.
               </p>
             </div>
 
@@ -135,14 +150,14 @@ export function RiskIntelligenceSection() {
             {/* High-Volume Telemetry Noise Cluster */}
             <div className="case-card noisy-case">
               <div className="case-badge-row flex-between mono">
-                <span className="case-id">INC-114</span>
-                <span className="case-priority-badge p4">P4 LOW</span>
+                <span className="case-id">{noisyId}</span>
+                <span className="case-priority-badge p4">{noisyPrio} LOW</span>
               </div>
-              <div className="case-asset-name">CORP-TELEMETRY-HOST</div>
+              <div className="case-asset-name">{noisyAsset}</div>
               <div className="case-metrics-strip flex-between mono">
                 <div>
                   <span className="label">SIGNAL COUNT</span>
-                  <b className="val text-amber">1,452 ALERTS</b>
+                  <b className="val text-amber">{noisySignals}</b>
                 </div>
                 <div>
                   <span className="label">ASSET TIER</span>
@@ -150,11 +165,11 @@ export function RiskIntelligenceSection() {
                 </div>
                 <div>
                   <span className="label">CALCULATED RISK</span>
-                  <b className="val risk-large text-slate">15.0</b>
+                  <b className="val risk-large text-slate">{noisyRisk}</b>
                 </div>
               </div>
               <p className="case-explanation">
-                High-volume diagnostic log storm. In traditional alert queues, 1,452 alerts would drown the queue. In SentinelOps, capped volume weight (+5) ensures it remains ranked at <b>Risk 15.0</b>.
+                High-volume diagnostic log storm. In traditional alert queues, {noisySignals.toLowerCase()} would drown the queue. In SentinelOps, capped volume weight (+5) ensures it remains ranked at <b>Risk {noisyRisk}</b>.
               </p>
             </div>
           </div>

@@ -84,7 +84,8 @@ export function Sidebar({ activeNav = 'overview', onSelectNav }) {
         .enterprise-sidebar {
           width: 100%;
           height: 100%;
-          background: #FFFFFF;
+          background: var(--surface-1);
+          border-right: 1px solid var(--border);
           display: flex;
           flex-direction: column;
           padding: 1.25rem 0.85rem;
@@ -102,18 +103,18 @@ export function Sidebar({ activeNav = 'overview', onSelectNav }) {
           font-size: 0.88rem;
           font-weight: 800;
           letter-spacing: 0.06em;
-          color: #0A0D12;
+          color: var(--text-primary);
         }
 
         .brand-sub {
           font-size: 0.55rem;
           letter-spacing: 0.10em;
-          color: #6C757D;
+          color: var(--text-muted);
         }
 
         .sidebar-divider {
           height: 1px;
-          background: rgba(10, 13, 18, 0.06);
+          background: var(--border);
           margin: 0.65rem 0.25rem;
         }
 
@@ -134,15 +135,15 @@ export function Sidebar({ activeNav = 'overview', onSelectNav }) {
         }
 
         .section-num {
-          color: #0052FF;
+          color: var(--accent-copper);
         }
 
         .section-slash {
-          color: rgba(10, 13, 18, 0.25);
+          color: var(--border);
         }
 
         .section-label {
-          color: #495057;
+          color: var(--text-muted);
         }
 
         .sidebar-nav-list {
@@ -158,37 +159,37 @@ export function Sidebar({ activeNav = 'overview', onSelectNav }) {
           padding: 0.45rem 0.5rem;
           background: transparent;
           border: 1px solid transparent;
-          border-radius: 3px;
-          color: #495057;
+          border-radius: var(--radius-sm);
+          color: var(--text-secondary);
           font-family: inherit;
           font-size: 0.74rem;
           font-weight: 500;
           cursor: pointer;
-          transition: background 120ms ease, color 120ms ease;
+          transition: background var(--transition-fast) ease, color var(--transition-fast) ease;
           text-align: left;
         }
 
         .sidebar-nav-btn:hover {
-          background: #F1F3F5;
-          color: #0A0D12;
+          background: var(--surface-2);
+          color: var(--text-primary);
         }
 
         .sidebar-nav-btn.active {
-          background: #F1F3F5;
-          color: #0A0D12;
+          background: var(--surface-3);
+          color: var(--text-primary);
           font-weight: 600;
-          border-left: 2px solid #0052FF;
+          border-left: 2px solid var(--accent-copper);
         }
 
         .nav-index {
           font-size: 0.60rem;
-          color: #868E96;
+          color: var(--text-muted);
           width: 24px;
           flex-shrink: 0;
         }
 
         .sidebar-nav-btn.active .nav-index {
-          color: #0052FF;
+          color: var(--accent-copper);
         }
 
         .nav-label {

@@ -6,7 +6,20 @@
     "train_samples": 3401,
     "val_samples": 793,
     "test_samples": 806,
-    "total_samples": 5000
+    "total_samples": 5000,
+    "number_of_groups": 15
+  },
+  "model_status": "TRAINED & EVALUATED (HELD-OUT TEST)",
+  "feature_count": 107,
+  "feature_safety": {
+    "forbidden_features_checked": [
+      "is_false_positive",
+      "ground_truth_incident_id",
+      "scenario_id",
+      "group_id"
+    ],
+    "forbidden_features_found": 0,
+    "status": "PASS \u2014 Zero Ground-Truth Leakage"
   },
   "metrics": {
     "accuracy": 0.9938,
@@ -21,6 +34,72 @@
     "false_negatives": 5,
     "true_positives": 25
   },
+  "roc_curve_points": [
+    {
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.2333
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.3
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.3333
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.4
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.4667
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.5333
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.6667
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.7667
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.8333
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.8667
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 0.0219,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 0.0412,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 0.1314,
+      "tpr": 1.0
+    },
+    {
+      "fpr": 1.0,
+      "tpr": 1.0
+    }
+  ],
   "top_feature_importances": [
     {
       "feature": "severity_Low",
@@ -63,5 +142,5 @@
       "importance": 0.0254
     }
   ],
-  "evaluation_timestamp": "2026-09-19T05:18:16.589742+00:00"
+  "evaluation_timestamp": "2026-09-22T16:30:11.383487+00:00"
 }

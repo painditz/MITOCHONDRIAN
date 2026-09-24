@@ -1,5 +1,6 @@
 // client/src/components/StatusBar.jsx
 // DAQ-inspired minimal, architectural system telemetry bar
+// Dark glass architecture matching SentinelOps master tokens
 import React from 'react';
 
 export function StatusBar({ telemetry }) {
@@ -16,25 +17,25 @@ export function StatusBar({ telemetry }) {
         </span>
         <span className="status-sep">|</span>
         <span className="status-item">
-          ALERTS: <strong className="text-dark">{alertsCount}</strong>
+          ALERTS: <strong className="text-light">{alertsCount}</strong>
         </span>
         <span className="status-sep">|</span>
         <span className="status-item">
-          CLUSTERS: <strong className="text-dark">{clustersCount}</strong>
+          CLUSTERS: <strong className="text-light">{clustersCount}</strong>
         </span>
         <span className="status-sep">|</span>
         <span className="status-item">
-          MITRE: <strong className="text-dark">{mitreCount} MAPPED</strong>
+          MITRE: <strong className="text-light">{mitreCount} MAPPED</strong>
         </span>
       </div>
 
       <div className="status-right align-center">
         <span className="status-item">
-          CORRELATION: <strong className="text-blue">ACTIVE</strong>
+          CORRELATION: <strong className="text-copper">ACTIVE</strong>
         </span>
         <span className="status-sep">|</span>
         <span className="status-item">
-          ENVIRONMENT: <strong className="text-dark">HYBRID ENTERPRISE</strong>
+          ENVIRONMENT: <strong className="text-light">HYBRID ENTERPRISE</strong>
         </span>
       </div>
 
@@ -42,10 +43,13 @@ export function StatusBar({ telemetry }) {
         .enterprise-status-bar {
           width: 100%;
           height: 100%;
-          background: #FFFFFF;
+          background: rgba(36, 35, 33, 0.85);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
           padding: 0 1.5rem;
           font-size: 0.64rem;
-          color: #6C757D;
+          color: #817B73;
           user-select: none;
         }
 
@@ -54,28 +58,29 @@ export function StatusBar({ telemetry }) {
         }
 
         .status-indicator {
-          gap: 0.4rem;
-          color: #0A0D12;
+          gap: 0.45rem;
+          color: #F3EFE8;
           font-weight: 600;
         }
 
         .status-pulse-dot {
           width: 6px;
           height: 6px;
-          background: #16A34A;
+          background: #5F9E88;
+          box-shadow: 0 0 6px rgba(95, 158, 136, 0.6);
           border-radius: 50%;
         }
 
         .status-sep {
-          color: rgba(10, 13, 18, 0.15);
+          color: rgba(255, 255, 255, 0.12);
         }
 
-        .text-dark {
-          color: #0A0D12;
+        .text-light {
+          color: #F3EFE8;
         }
 
-        .text-blue {
-          color: #0052FF;
+        .text-copper {
+          color: #A96B42;
         }
       `}</style>
     </footer>

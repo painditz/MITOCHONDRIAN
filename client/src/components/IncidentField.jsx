@@ -163,8 +163,10 @@ export function IncidentField({ incidents = [], onSelectIncident, activeIncident
           width: 100%;
           height: 100%;
           min-height: 480px;
-          background: #FFFFFF;
-          border: 1px solid var(--color-line);
+          background: var(--surface-1);
+          border: 1px solid var(--border);
+          border-radius: var(--radius-md);
+          overflow: hidden;
           display: flex;
           flex-direction: column;
           position: relative;
@@ -173,14 +175,15 @@ export function IncidentField({ incidents = [], onSelectIncident, activeIncident
 
         .blueprint-top-strip {
           padding: 0.75rem 1.25rem;
-          border-bottom: 1px solid var(--color-line);
+          border-bottom: 1px solid var(--border);
+          background: var(--surface-2);
           font-size: 0.64rem;
-          color: var(--color-secondary);
+          color: var(--text-muted);
         }
 
         .strip-title {
           gap: 0.4rem;
-          color: var(--color-primary);
+          color: var(--text-primary);
           font-weight: 700;
           letter-spacing: 0.08em;
         }
@@ -188,14 +191,14 @@ export function IncidentField({ incidents = [], onSelectIncident, activeIncident
         .live-dot {
           width: 5px;
           height: 5px;
-          background-color: #16A34A;
+          background-color: var(--system-active);
           border-radius: 50%;
         }
 
         .field-canvas-container {
           flex: 1;
           position: relative;
-          background: #FFFFFF;
+          background: transparent;
           min-height: 400px;
         }
 
@@ -208,7 +211,7 @@ export function IncidentField({ incidents = [], onSelectIncident, activeIncident
         }
 
         .relationship-hairline {
-          transition: stroke 160ms ease, stroke-width 160ms ease, opacity 160ms ease;
+          transition: stroke var(--transition-fast) ease, stroke-width var(--transition-fast) ease, opacity var(--transition-fast) ease;
         }
 
         /* Spatial Incident Nodes */
@@ -238,9 +241,9 @@ export function IncidentField({ incidents = [], onSelectIncident, activeIncident
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #FFFFFF;
+          background: #1D1C1A;
           transition: all 140ms ease;
-          box-shadow: 0 1px 4px rgba(10, 13, 18, 0.05);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
 
         .marker-inner-dot {
@@ -254,8 +257,8 @@ export function IncidentField({ incidents = [], onSelectIncident, activeIncident
           align-items: center;
           gap: 0.3rem;
           margin-top: 0.35rem;
-          background: #F3F1EC;
-          border: 1px solid var(--color-line);
+          background: var(--surface-2);
+          border: 1px solid var(--border);
           padding: 0.08rem 0.4rem;
           border-radius: 2px;
           font-size: 0.60rem;
@@ -316,9 +319,10 @@ export function IncidentField({ incidents = [], onSelectIncident, activeIncident
         /* Bottom Legend Strip */
         .blueprint-bottom-bar {
           padding: 0.65rem 1.25rem;
-          border-top: 1px solid var(--color-line);
+          border-top: 1px solid var(--border);
+          background: var(--surface-2);
           font-size: 0.60rem;
-          color: var(--color-secondary);
+          color: var(--text-muted);
         }
 
         .legend-pills-row {
@@ -336,7 +340,7 @@ export function IncidentField({ incidents = [], onSelectIncident, activeIncident
         }
 
         .legend-instruction {
-          color: var(--color-accent);
+          color: var(--accent-copper);
           font-weight: 600;
           letter-spacing: 0.04em;
         }

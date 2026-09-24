@@ -6,8 +6,8 @@
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: #02070B;
-  color: #F8FAFC;
+  background: transparent;
+  color: #F3EFE8;
   user-select: none;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
@@ -23,84 +23,96 @@
   scroll-behavior: smooth;
 }
 
-/* 100vh Atmospheric Hero Viewport */
+/* ============================================================
+   100vh ATMOSPHERIC HERO VIEWPORT
+   Two-column layout: Left Hero Content + KPI Rail, Right 3D Map
+   ============================================================ */
 .sentinel-hero-viewport {
   position: relative;
   width: 100%;
   min-height: 100vh;
-  height: 100vh;
+  padding: 85px 4.5vw 120px 4.5vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
   overflow: hidden;
 }
 
-/* ============================================================
-   LEFT HERO BLOCK
-   ============================================================ */
-.sentinel-hero-block {
+/* Subtle atmospheric vignette behind left copy */
+.hero-atmosphere-backdrop {
   position: absolute;
-  left: 5vw;
-  top: 13vh;
-  max-width: 620px;
-  pointer-events: auto;
+  top: 0;
+  left: 0;
+  width: 58vw;
+  height: 100vh;
+  background: radial-gradient(ellipse at 15% 45%, rgba(36, 35, 33, 0.65) 0%, rgba(36, 35, 33, 0.20) 65%, rgba(36, 35, 33, 0) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Left Hero Column: In natural document flow, zero overlap */
+.sentinel-hero-block.hero-copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 580px;
   z-index: 10;
-  padding: 1.5rem 2rem 1.5rem 1.5rem;
-  border-radius: 12px;
-  background: radial-gradient(circle at top left, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 85%);
+  pointer-events: auto;
 }
 
 .sentinel-hero-eyebrow {
-  font-family: 'Inter', -apple-system, sans-serif;
-  color: #57CFEF;
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
+  color: #A96B42;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
   margin-bottom: 0.85rem;
   text-transform: uppercase;
-  text-shadow: 0 0 12px rgba(87, 207, 239, 0.35);
 }
 
 .sentinel-hero-title {
   margin: 0;
-  font-family: 'Inter', -apple-system, sans-serif;
-  font-size: clamp(48px, 6vw, 92px);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: clamp(48px, 5.8vw, 92px);
   font-weight: 700;
-  line-height: 0.90;
-  letter-spacing: -0.055em;
-  color: #ffffff;
-  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.75);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  color: #F3EFE8;
 }
 
 .sentinel-hero-title .hero-subline {
-  color: #B8C8D5;
+  color: #F3EFE8;
   font-weight: 700;
+  letter-spacing: -0.035em;
 }
 
 .sentinel-hero-title .hero-accent-one {
-  color: #57CFEF;
+  color: #A96B42;
 }
 
 .sentinel-hero-lead {
   margin: 1.25rem 0 0;
-  color: #cbd5e1;
-  font-size: clamp(1rem, 1.3vw, 1.2rem);
+  color: #C8C2B9;
+  font-size: clamp(0.98rem, 1.25vw, 1.15rem);
   line-height: 1.5;
   font-weight: 400;
   max-width: 440px;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
 }
 
 .sentinel-triage-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  margin-top: 1.25rem;
+  margin-top: 1.35rem;
   padding: 0.4rem 0.85rem;
-  background: rgba(3, 10, 16, 0.68);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(110, 190, 220, 0.16);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+  background: rgba(30, 29, 27, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
   border-radius: 999px;
-  color: #e2e8f0;
+  color: #F3EFE8;
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -110,8 +122,8 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 10px #10b981;
+  background: #5F9480;
+  box-shadow: 0 0 10px rgba(95, 148, 128, 0.5);
   animation: live-dot-pulse 1.8s ease-in-out infinite;
 }
 
@@ -127,23 +139,29 @@
 }
 
 /* ============================================================
-   LEFT GLASS METRICS PANEL (Below Hero Area)
+   COMPACT KPI INFORMATION RAIL (In normal flow, margin-top: 24px)
+   Height: 72–78px. Never overlaps heading.
    ============================================================ */
-.sentinel-glass-metrics {
-  position: absolute;
-  left: 5vw;
-  top: 48vh;
+.sentinel-glass-metrics.hero-metrics {
+  position: relative;
+  margin-top: 24px;
   display: flex;
   align-items: center;
-  background: rgba(3, 10, 16, 0.68);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(110, 190, 220, 0.16);
+  height: 76px;
+  background: rgba(30, 29, 27, 0.90);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
-  padding: 0.85rem 1.25rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+  padding: 0.6rem 1.15rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
   pointer-events: auto;
-  z-index: 10;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.sentinel-glass-metrics.hero-metrics:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
 }
 
 .metric-col {
@@ -163,54 +181,62 @@
 
 .metric-sep {
   width: 1px;
-  height: 34px;
-  background: rgba(255, 255, 255, 0.08);
+  height: 32px;
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .metric-tag {
   font-size: 8.5px;
   font-weight: 700;
   letter-spacing: 0.16em;
-  color: #64748B;
+  color: #C8C2B9;
   text-transform: uppercase;
   margin-bottom: 0.25rem;
 }
 
 .metric-number {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
-  font-family: 'Inter', system-ui, sans-serif;
-  color: #f8fafc;
+  color: #F3EFE8;
   line-height: 1;
 }
 
-.metric-tag.p1-tag, .metric-number.p1-val { color: #FF4655; }
-.metric-tag.p2-tag, .metric-number.p2-val { color: #FFB52E; }
-.metric-tag.p3-tag, .metric-number.p3-val { color: #21D4FF; }
-.metric-tag.p4-tag, .metric-number.p4-val { color: #B7C5CF; }
+.metric-tag.p1-tag, .metric-number.p1-val { color: #B64A5F; }
+.metric-tag.p2-tag, .metric-number.p2-val { color: #C58A52; }
+.metric-tag.p3-tag, .metric-number.p3-val { color: #5F9480; }
+.metric-tag.p4-tag, .metric-number.p4-val { color: #78828A; }
 
 /* Mini Activity Waveform */
 .mini-waveform {
-  width: 28px;
-  height: 2.5px;
+  width: 26px;
+  height: 2px;
   border-radius: 2px;
   margin-top: 0.35rem;
-  opacity: 0.6;
+  opacity: 0.65;
 }
-.mini-waveform.cyan { background: #21D4FF; }
-.mini-waveform.white { background: #f8fafc; }
-.mini-waveform.red { background: #FF4655; }
-.mini-waveform.amber { background: #FFB52E; }
-.mini-waveform.slate { background: #B7C5CF; }
+.mini-waveform.cyan { background: #C58A52; }
+.mini-waveform.white { background: #F3EFE8; }
+.mini-waveform.red { background: #B64A5F; }
+.mini-waveform.amber { background: #C58A52; }
+.mini-waveform.slate { background: #78828A; }
+
+/* Right Column: 3D Map Wrapper */
+.sentinel-hero-map-wrapper {
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+  width: clamp(480px, 42vw, 680px);
+  height: clamp(420px, 58vh, 580px);
+}
 
 /* ============================================================
    BOTTOM 7-STAGE CONNECTED WORKFLOW DOCK
    ============================================================ */
 .sentinel-workflow-dock {
   position: absolute;
-  bottom: 3.5vh;
-  left: 4vw;
-  right: 4vw;
+  bottom: 3vh;
+  left: 4.5vw;
+  right: 4.5vw;
   pointer-events: auto;
   z-index: 12;
 }
@@ -219,114 +245,290 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
-  width: 100%;
-  overflow-x: auto;
-  padding: 0.4rem 0;
-  scrollbar-width: none;
-}
-
-.workflow-modules-track::-webkit-scrollbar {
-  display: none;
+  gap: 0.55rem;
+  background: rgba(30, 29, 27, 0.90);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 0.65rem 1rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
 }
 
 .workflow-stage-card {
   flex: 1;
-  min-width: 140px;
-  background: rgba(3, 10, 16, 0.68);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(110, 190, 220, 0.16);
-  border-radius: 6px;
-  padding: 0.75rem 0.9rem;
-  transition: all 180ms ease;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+  display: flex;
+  flex-direction: column;
+  padding: 0.45rem 0.75rem;
+  background: rgba(22, 21, 20, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 5px;
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), border-color 220ms ease, box-shadow 220ms ease;
+  cursor: pointer;
 }
 
 .workflow-stage-card:hover {
-  background: rgba(5, 16, 26, 0.85);
-  border-color: rgba(48, 184, 230, 0.35);
-  transform: translateY(-2px);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4), 0 0 25px rgba(48, 184, 230, 0.12);
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(36, 35, 33, 0.98);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.workflow-stage-card.active {
+  border-color: #A96B42;
+  background: rgba(45, 42, 38, 0.98);
+  box-shadow: 0 0 16px rgba(169, 107, 66, 0.25);
 }
 
 .stage-top {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  margin-bottom: 0.25rem;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
 }
 
 .stage-num {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
+  font-size: 9.5px;
   font-weight: 700;
-  color: #21D4FF;
-  letter-spacing: 0.08em;
+  color: #A96B42;
+  letter-spacing: 0.1em;
 }
 
 .stage-name {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 12.5px;
-  font-weight: 650;
-  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  color: #F3EFE8;
   letter-spacing: 0.06em;
 }
 
 .stage-desc {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 11px;
-  font-weight: 400;
-  color: #94A3B8;
+  font-size: 9.5px;
+  color: #C8C2B9;
   line-height: 1.35;
-  white-space: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .workflow-connector-arrow {
-  color: #21D4FF;
-  opacity: 0.45;
-  font-size: 0.95rem;
-  font-weight: 600;
-  flex-shrink: 0;
-  user-select: none;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 11px;
+  padding: 0 0.1rem;
+  transition: opacity 200ms ease, transform 200ms ease;
 }
 
-/* Scroll Down Prompt Hint */
+.workflow-stage-card:hover + .workflow-connector-arrow {
+  opacity: 1;
+  color: #A96B42;
+  transform: translateX(2px);
+}
+
+/* Expanded Architectural Stage Drawer */
+.workflow-expanded-drawer {
+  margin-top: 0.55rem;
+  background: rgba(30, 29, 27, 0.94);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 6px;
+  padding: 0.65rem 1rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  animation: drawerSlideDown 240ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes drawerSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.drawer-header {
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+}
+
+.drawer-title-group {
+  gap: 0.5rem;
+}
+
+.drawer-step {
+  font-size: 10px;
+  font-weight: 700;
+  color: #A96B42;
+  background: rgba(169, 107, 66, 0.12);
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  border: 1px solid rgba(169, 107, 66, 0.35);
+}
+
+.drawer-name {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #F3EFE8;
+}
+
+.drawer-right {
+  gap: 0.75rem;
+}
+
+.drawer-metric {
+  font-size: 9.5px;
+  color: #C58A52;
+  letter-spacing: 0.04em;
+}
+
+.drawer-close-btn {
+  background: transparent;
+  border: none;
+  color: #817B73;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.1rem 0.3rem;
+  transition: color 150ms ease;
+}
+
+.drawer-close-btn:hover {
+  color: #F3EFE8;
+}
+
+.drawer-detail-text {
+  font-size: 11px;
+  line-height: 1.45;
+  color: #B9B3AA;
+  margin: 0;
+}
+
 .scroll-down-hint {
   position: absolute;
-  bottom: 0.8vh;
+  bottom: 0.75vh;
   left: 50%;
   transform: translateX(-50%);
-  gap: 0.5rem;
-  font-size: 0.58rem;
-  color: #64748B;
-  letter-spacing: 0.14em;
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+  color: #817B73;
+  gap: 0.45rem;
   pointer-events: none;
   z-index: 10;
 }
 
 .scroll-arrow-anim {
-  animation: bounce-arrow 1.6s infinite ease-in-out;
-  color: #21D4FF;
-  font-size: 0.85rem;
+  animation: bounce-down 2s ease-in-out infinite;
 }
 
-@keyframes bounce-arrow {
+@keyframes bounce-down {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(4px); }
+  50% { transform: translateY(3px); }
 }
 
 /* ============================================================
-   RESPONSIVE LAYOUT
+   COORDINATED PAGE ENTRY ANIMATIONS
+   Staggered soft materialization sequence
    ============================================================ */
-@media (max-width: 1200px) {
-  .sentinel-hero-title {
-    font-size: clamp(38px, 5vw, 64px);
+@keyframes heroFadeUp16 {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroFadeUp12 {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mapFadeScale {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.anim-enter-eyebrow {
+  animation: heroFadeUp16 600ms cubic-bezier(0.16, 1, 0.3, 1) 150ms both;
+}
+
+.anim-enter-title {
+  animation: heroFadeUp16 700ms cubic-bezier(0.16, 1, 0.3, 1) 250ms both;
+}
+
+.anim-enter-lead {
+  animation: heroFadeUp16 650ms cubic-bezier(0.16, 1, 0.3, 1) 380ms both;
+}
+
+.anim-enter-status {
+  animation: heroFadeUp12 600ms cubic-bezier(0.16, 1, 0.3, 1) 480ms both;
+}
+
+.anim-enter-kpi {
+  animation: heroFadeUp12 650ms cubic-bezier(0.16, 1, 0.3, 1) 580ms both;
+}
+
+.anim-enter-map {
+  animation: mapFadeScale 800ms cubic-bezier(0.16, 1, 0.3, 1) 320ms both;
+}
+
+.anim-enter-workflow {
+  animation: heroFadeUp12 700ms cubic-bezier(0.16, 1, 0.3, 1) 680ms both;
+}
+
+/* ============================================================
+   SCROLL REVEAL SECTIONS (IntersectionObserver)
+   18px -> 0, duration 600ms, animated once
+   ============================================================ */
+.scroll-reveal-section {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.scroll-reveal-section.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN RULES
+   Desktop: Left hero + KPI / Right Map
+   Narrower Desktop & Mobile: Graceful flex wrapping
+   ============================================================ */
+@media (max-width: 1180px) {
+  .sentinel-hero-viewport {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 95px;
+    padding-bottom: 140px;
+    min-height: auto;
+    height: auto;
   }
 
-  .sentinel-glass-metrics {
-    top: auto;
-    bottom: 12vh;
+  .sentinel-hero-map-wrapper {
+    width: 100%;
+    height: 480px;
+    margin-top: 2rem;
+  }
+
+  .hero-atmosphere-backdrop {
+    width: 100vw;
   }
 
   .sentinel-workflow-dock {
@@ -334,41 +536,44 @@
     bottom: auto;
     left: auto;
     right: auto;
-    margin-top: 2rem;
-    padding: 0 5vw;
-  }
-}
-
-@media (max-width: 900px) {
-  .sentinel-hero-block {
-    position: relative;
-    left: auto;
-    top: auto;
-    padding: 6rem 1.5rem 1rem;
-    max-width: 100%;
-  }
-
-  .sentinel-glass-metrics {
-    position: relative;
-    left: auto;
-    top: auto;
-    margin: 1rem 1.5rem;
-    width: calc(100% - 3rem);
-    overflow-x: auto;
-  }
-
-  .sentinel-workflow-dock {
-    margin: 1rem 0;
-    padding: 0 1.5rem;
+    margin-top: 2.5rem;
+    width: 100%;
   }
 
   .workflow-modules-track {
-    flex-direction: column;
-    align-items: stretch;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .sentinel-glass-metrics.hero-metrics {
+    height: auto;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0.85rem;
   }
 
-  .workflow-connector-arrow {
-    text-align: center;
-    transform: rotate(90deg);
+  .metric-sep {
+    display: none;
+  }
+
+  .sentinel-hero-title {
+    font-size: 38px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-enter-eyebrow,
+  .anim-enter-title,
+  .anim-enter-lead,
+  .anim-enter-status,
+  .anim-enter-kpi,
+  .anim-enter-map,
+  .anim-enter-workflow,
+  .scroll-reveal-section {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

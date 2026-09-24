@@ -12,33 +12,28 @@ export function AiShiftHandoverSection({ selectedIncident, onOpenFullDetail }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitFeedback, setSubmitFeedback] = useState('');
 
-  const activeInc = selectedIncident || {
-    incident_id: 'INC-102',
-    id: 'INC-102',
-    priority: 'P1',
-    risk_score: 96.4,
-    asset_name: 'CORP-EXCHANGE-ONLINE',
-    user: 'marcus.vance.cfo',
-    observable: '185.220.101.5',
-    alert_count: 10,
-    ai_brief: 'Executive account compromise followed by unauthorized cloud data exfiltration involving Exchange Online asset. Automated mailbox forwarding rule directing correspondence to external storage endpoint.',
-  };
+  const activeInc = selectedIncident;
 
   const handleReviewAction = (action) => {
+    if (!activeInc) return;
     setReviewDecision(action);
     setIsSubmitting(true);
     setSubmitFeedback('');
 
-    const incId = activeInc.incident_id || activeInc.id || 'INC-102';
+    const incId = activeInc.incident_id || activeInc.id;
+    let backendAction = action.toLowerCase();
+    if (backendAction.includes('investigate')) backendAction = 'investigated';
+    else if (backendAction.includes('confirm')) backendAction = 'confirm';
+    else if (backendAction.includes('reject')) backendAction = 'reject';
+    else if (backendAction.includes('modify')) backendAction = 'modify';
 
     fetch(`http://127.0.0.1:8000/api/incidents/${incId}/review`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        incident_id: incId,
-        decision: action.toLowerCase(),
-        analyst_notes: analystNote || `Analyst verified action: ${action}`,
-        analyst_name: 'Security Operations Analyst',
+        action: backendAction,
+        note: analystNote || `Analyst audit: ${action} recorded`,
+        elapsed_seconds: 5.0,
       }),
     })
       .then((res) => (res.ok ? res.json() : Promise.reject(res)))
@@ -92,46 +87,62 @@ export function AiShiftHandoverSection({ selectedIncident, onOpenFullDetail }) {
               <span className="egress-guarantee mono">ZERO DATA EGRESS GUARANTEE</span>
             </div>
 
-            <div className="brief-target-strip flex-between mono">
-              <span>TARGET: <b>{activeInc.incident_id || activeInc.id}</b> ({activeInc.priority})</span>
-              <span>ASSET: <b>{activeInc.asset_name || activeInc.asset}</b></span>
-            </div>
-
-            <div className="brief-body-content">
-              <div className="brief-segment">
-                <span className="segment-label mono">INCIDENT SUMMARY</span>
-                <p className="segment-text">
-                  {activeInc.ai_brief || activeInc.brief || 'Executive account compromise followed by cloud data exfiltration involving Exchange Online asset. Automated mailbox forwarding rule to mega.nz.'}
-                </p>
+            {!activeInc ? (
+              <div className="brief-empty-notice mono" style={{ padding: '3rem 1.5rem', textAlign: 'center', color: '#71838F' }}>
+                SELECT AN INCIDENT IN THE 3D MAP OR QUEUE TO INSPECT ITS FLAN-T5 BRIEF &amp; HUMAN ACTIONS.
               </div>
-
-              <div className="brief-segment">
-                <span className="segment-label mono">EVIDENCE OBSERVABLES</span>
-                <div className="evidence-chips-row mono">
-                  <span>USER: {activeInc.user || 'marcus.vance.cfo'}</span>
-                  <span>IP: {activeInc.observable || '185.220.101.5'}</span>
-                  <span>SIGNALS: {activeInc.alert_count || 10} ALERTS</span>
+            ) : (
+              <>
+                <div className="brief-target-strip flex-between mono">
+                  <span>TARGET: <b>{activeInc.incident_id || activeInc.id}</b> ({activeInc.priority})</span>
+                  <span>ASSET: <b>{activeInc.hostname || activeInc.asset_name || activeInc.asset}</b></span>
                 </div>
-              </div>
 
-              <div className="brief-segment">
-                <span className="segment-label mono">RECOMMENDED ANALYST ATTENTION</span>
-                <p className="segment-action-text mono">
-                  &bull; Revoke active session tokens for {activeInc.user || 'marcus.vance.cfo'}<br />
-                  &bull; Block egress to destination ASN endpoint {activeInc.observable || '185.220.101.5'}<br />
-                  &bull; Delete unauthorized forward rule in Exchange Online
-                </p>
-              </div>
-            </div>
+                <div className="brief-body-content">
+                  <div className="brief-segment">
+                    <span className="segment-label mono">INCIDENT SUMMARY</span>
+                    <p className="segment-text">
+                      {activeInc.shift_brief?.what_happened || activeInc.ai_brief || activeInc.brief || 'Brief unavailable'}
+                    </p>
+                  </div>
 
-            <div className="card-footer-action">
-              <button
-                className="open-full-brief-btn mono"
-                onClick={() => onOpenFullDetail?.(activeInc)}
-              >
-                <span>OPEN FULL FORENSIC BRIEF &rarr;</span>
-              </button>
-            </div>
+                  <div className="brief-segment">
+                    <span className="segment-label mono">EVIDENCE OBSERVABLES</span>
+                    <div className="evidence-chips-row mono">
+                      <span>USER: {activeInc.user || 'N/A'}</span>
+                      <span>IP: {activeInc.source_ip || activeInc.destination_ip || activeInc.observable || 'N/A'}</span>
+                      <span>SIGNALS: {activeInc.alert_count ?? 1} ALERTS</span>
+                    </div>
+                  </div>
+
+                  <div className="brief-segment">
+                    <span className="segment-label mono">RECOMMENDED ANALYST ATTENTION</span>
+                    {activeInc.shift_brief?.investigation_points && activeInc.shift_brief.investigation_points.length > 0 ? (
+                      <div className="segment-action-text mono">
+                        {activeInc.shift_brief.investigation_points.map((pt, i) => (
+                          <div key={i}>&bull; {pt}</div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="segment-action-text mono">
+                        &bull; Review authentication records for {activeInc.user || 'associated account'}<br />
+                        &bull; Check telemetry on target asset {activeInc.hostname || activeInc.asset_name || 'affected host'}<br />
+                        &bull; Validate network endpoints
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="card-footer-action">
+                  <button
+                    className="open-full-brief-btn mono"
+                    onClick={() => onOpenFullDetail?.(activeInc)}
+                  >
+                    <span>OPEN FULL FORENSIC BRIEF &rarr;</span>
+                  </button>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Human Review & Action Panel */}

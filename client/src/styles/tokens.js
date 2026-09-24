@@ -16,26 +16,30 @@
 
 export const tokens = {
   colors: {
-    base: '#F3F1EC',
-    surface: '#FFFFFF',
-    surfaceDark: '#111111',
-    textPrimary: '#111111',
-    textSecondary: '#6F6F6F',
-    textLight: '#F4F2ED',
-    line: '#D8D5CE',
-    lineDark: 'rgba(244, 242, 237, 0.12)',
-    accent: '#2563EB',
+    base: '#242321',
+    surface: 'rgba(255, 255, 255, 0.055)',
+    surfaceHighlight: 'rgba(255, 255, 255, 0.085)',
+    surfaceDark: '#2D2B28',
+    textPrimary: '#F3EFE8',
+    textSecondary: '#B9B3AA',
+    textMuted: '#817B73',
+    textLabel: '#A59F96',
+    line: 'rgba(255, 255, 255, 0.11)',
+    lineDark: 'rgba(255, 255, 255, 0.07)',
+    accent: '#C58A52',
+    accentBurgundy: '#B64A5F',
+    accentIvory: '#F3EFE8',
     
-    // Security Semantic Only
-    p1: '#C73B3B',
-    p2: '#B98621',
-    p3: '#3A83B8',
-    p4: '#777777'
+    // Security Semantic (Sophisticated & Muted)
+    p1: '#B64A5F',
+    p2: '#C58A52',
+    p3: '#5F9480',
+    p4: '#78828A'
   },
   typography: {
-    fontDisplay: "'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif",
-    fontBody: "'Inter', -apple-system, sans-serif",
-    fontMono: "'IBM Plex Mono', monospace"
+    fontDisplay: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    fontBody: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    fontMono: "'IBM Plex Mono', 'JetBrains Mono', monospace"
   },
   grid: {
     maxWidth: '1600px',

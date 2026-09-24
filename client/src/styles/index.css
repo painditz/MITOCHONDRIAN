@@ -1,29 +1,26 @@
+@import './master-theme.css';
+
 /* ==========================================================================
-   SentinelOps AI - Global Enterprise Typography & Dark Design System
+   SentinelOps AI - Global Enterprise Typography & Master Editorial Design System
    ========================================================================== */
 
 :root {
-  --color-base: #02070B;
-  --color-surface-dark: #030A10;
-  --color-text-primary: #F8FAFC;
-  --color-text-secondary: #94A3B8;
-  --color-text-muted: #64748B;
-  --color-line: rgba(110, 190, 220, 0.16);
-  --color-accent: #35CFFF;
+  --color-base: var(--bg-main);
+  --color-surface-dark: var(--bg-secondary);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-line: var(--border);
+  --color-accent: var(--accent-copper);
 
-  --color-p1: #FF4655;
-  --color-p2: #FFB52E;
-  --color-p3: #21D4FF;
-  --color-p4: #B7C5CF;
+  --color-p1: var(--p1);
+  --color-p2: var(--p2);
+  --color-p3: var(--p3);
+  --color-p4: var(--p4);
 
   --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
-
-  --glass-bg: rgba(3, 10, 16, 0.68);
-  --glass-border: 1px solid rgba(110, 190, 220, 0.16);
-  --glass-blur: blur(20px);
-  --glass-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
 
   --container-max: 1600px;
   --container-pad: clamp(24px, 5vw, 80px);
@@ -38,8 +35,8 @@
 
 html {
   scroll-behavior: smooth;
-  background-color: var(--color-base);
-  color: var(--color-text-primary);
+  background-color: var(--bg-main);
+  color: var(--text-primary);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -48,8 +45,8 @@ html {
 body {
   min-height: 100vh;
   overflow-x: hidden;
-  background-color: var(--color-base);
-  color: var(--color-text-primary);
+  background-color: var(--bg-main);
+  color: var(--text-primary);
   line-height: 1.5;
   font-family: var(--font-body);
 }
@@ -58,7 +55,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .mono {
@@ -85,4 +82,84 @@ h1, h2, h3, h4, h5, h6 {
 .align-center {
   display: flex;
   align-items: center;
+}
+
+/* Global Semantic Utilities */
+.text-primary { color: var(--text-primary) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+.text-muted { color: var(--text-muted) !important; }
+.text-copper { color: var(--accent-copper) !important; }
+.text-burgundy { color: var(--accent-burgundy) !important; }
+.text-p1 { color: var(--p1) !important; }
+.text-p2 { color: var(--p2) !important; }
+.text-p3 { color: var(--p3) !important; }
+.text-p4 { color: var(--p4) !important; }
+
+/* Master Layer Hierarchy */
+.sentinel-main-stage {
+  position: relative;
+  z-index: var(--z-content);
+}
+
+.sentinel-glass-card,
+.sentinel-card,
+.daq-card {
+  position: relative;
+  z-index: var(--z-glass);
+}
+
+/* Controlled Table Surfaces */
+.table-surface,
+.daq-table-surface,
+.incident-table-container,
+.telemetry-table-container,
+.daq-table-wrapper {
+  background: var(--table-surface) !important;
+  border: 1px solid var(--table-border) !important;
+  border-radius: var(--radius-sm);
+  position: relative;
+  z-index: var(--z-glass);
+}
+
+.table-row,
+.incident-row,
+.telemetry-row,
+.daq-table-row {
+  background: var(--table-row-bg);
+  transition: background var(--transition-fast);
+}
+
+.table-row:hover,
+.incident-row:hover,
+.telemetry-row:hover,
+.daq-table-row:hover {
+  background: var(--table-row-hover) !important;
+}
+
+/* Technical Label Hierarchy */
+.meta-tag,
+.technical-label,
+.editorial-meta-tag,
+.mono-label,
+.stat-label,
+.field-label {
+  color: var(--text-secondary) !important;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+/* Global Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.30);
 }

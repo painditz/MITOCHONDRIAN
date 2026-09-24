@@ -1,0 +1,151 @@
+/* client/src/styles/master-theme.css */
+/* ==========================================================================
+   SentinelOps AI - Unified Enterprise Master Design System
+   One coherent premium visual system across the ENTIRE application.
+   ========================================================================== */
+
+:root {
+  /* Global Layer Hierarchy */
+  --z-bg: 0;
+  --z-water: 0;
+  --z-scrim: 1;
+  --z-content: 10;
+  --z-glass: 20;
+  --z-controls: 30;
+  --z-text: 40;
+
+  /* Global Backgrounds */
+  --bg-main: #242321;
+  --bg-primary: #242321;
+  --bg-secondary: #2D2A27;
+  --bg-deep: #1D1C1A;
+  --bg-warm-graphite: #343230;
+
+  /* Global Surface Hierarchy - Controlled Opacity for Clean Separation */
+  --surface-1: rgba(255, 255, 255, 0.065);
+  --surface-2: rgba(255, 255, 255, 0.088);
+  --surface-3: rgba(255, 255, 255, 0.115);
+  --bg-surface: var(--surface-2);
+  --bg-surface-highlight: var(--surface-3);
+  --bg-card: var(--surface-1);
+  --bg-card-hover: var(--surface-2);
+
+  /* Controlled Table Surfaces */
+  --table-surface: rgba(30, 29, 27, 0.88);
+  --table-header-bg: rgba(24, 23, 22, 0.95);
+  --table-row-bg: rgba(255, 255, 255, 0.018);
+  --table-row-hover: rgba(255, 255, 255, 0.050);
+  --table-border: rgba(255, 255, 255, 0.12);
+
+  /* Global Borders */
+  --border: rgba(255, 255, 255, 0.12);
+  --border-hover: rgba(255, 255, 255, 0.20);
+  --border-selected: rgba(169, 107, 66, 0.60);
+  --glass-border: 1px solid var(--border);
+  --glass-border-hover: 1px solid var(--border-hover);
+
+  /* Global High-Contrast Typography Hierarchy */
+  --text-white: #F3EFE8;
+  --text-primary: #F3EFE8;
+  --text-secondary: #C8C2B9;
+  --text-tertiary: #A7A096;
+  --text-muted: #A7A096;
+  --text-disabled: #77716A;
+  --text-label: #C8C2B9;
+
+  /* Global Semantic Accents */
+  --accent-copper: #A96B42;
+  --accent-copper-bright: #C58A52;
+  --accent-burgundy: #6E3544;
+  --accent-slate: #394149;
+  --system-active: #5F9E88;
+
+  /* Global Priorities & Tiers */
+  --p1: #B84D61;
+  --p2: #C18A4A;
+  --p3: #5C9480;
+  --p4: #77818A;
+  --p1-red: #B84D61;
+  --p2-amber: #C18A4A;
+  --p3-cyan: #5C9480;
+  --p4-slate: #77818A;
+
+  /* Glass Effects */
+  --glass-bg: rgba(36, 35, 33, 0.75);
+  --glass-blur: blur(20px);
+  --glass-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  /* Transitions */
+  --transition-fast: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Fonts */
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-code: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
+}
+
+/* ==========================================================================
+   GLOBAL PAGE TRANSITION (280–380ms subtle opacity + translateY(10px))
+   ========================================================================== */
+.sentinel-view-transition-stage {
+  animation: pageViewEnter 320ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform;
+}
+
+@keyframes pageViewEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Micro-interaction standards */
+.sentinel-interactive-btn {
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+.sentinel-interactive-btn:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+.sentinel-interactive-btn:active {
+  transform: translateY(1px);
+}
+
+.sentinel-glass-card {
+  background: var(--surface-1);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.sentinel-glass-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+}
+
+/* Respect user's motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .sentinel-view-transition-stage,
+  .sentinel-interactive-btn,
+  .sentinel-glass-card {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

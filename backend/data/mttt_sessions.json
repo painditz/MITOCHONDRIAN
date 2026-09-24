@@ -79,5 +79,212 @@
     "end_timestamp": "2026-09-19T15:57:07.619859+00:00",
     "duration_seconds": 128.0,
     "analyst_decision": "Investigated"
+  },
+  {
+    "session_id": "SES-ASST-10",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-20T18:25:51.227742+00:00",
+    "end_timestamp": "2026-09-20T18:25:55.727742+00:00",
+    "duration_seconds": 4.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-11",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-21T04:40:58.614425+00:00",
+    "end_timestamp": "2026-09-21T04:41:01.614425+00:00",
+    "duration_seconds": 3.0,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-12",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-22T16:56:39.951116+00:00",
+    "end_timestamp": "2026-09-22T16:56:58.451116+00:00",
+    "duration_seconds": 18.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-13",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-22T16:57:10.973948+00:00",
+    "end_timestamp": "2026-09-22T16:57:29.473948+00:00",
+    "duration_seconds": 18.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-RAW_-14",
+    "session_type": "raw_alert",
+    "target_id": "ALT-SAMPLE-10042",
+    "start_timestamp": "2026-09-19T06:20:00Z",
+    "end_timestamp": "2026-09-19T06:21:40Z",
+    "duration_seconds": 100.0,
+    "analyst_decision": "Manual Inspection Completed (Ticket Filed)"
+  },
+  {
+    "session_id": "SES-ASST-15",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-22T16:57:35.665506+00:00",
+    "end_timestamp": "2026-09-22T16:57:54.165506+00:00",
+    "duration_seconds": 18.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-RAW_-16",
+    "session_type": "raw_alert",
+    "target_id": "ALT-SAMPLE-10042",
+    "start_timestamp": "2026-09-19T06:20:00Z",
+    "end_timestamp": "2026-09-19T06:21:40Z",
+    "duration_seconds": 100.0,
+    "analyst_decision": "Manual Inspection Completed (Ticket Filed)"
+  },
+  {
+    "session_id": "SES-ASST-17",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-22T17:07:12.703796+00:00",
+    "end_timestamp": "2026-09-22T17:07:31.203796+00:00",
+    "duration_seconds": 18.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-RAW_-18",
+    "session_type": "raw_alert",
+    "target_id": "ALT-SAMPLE-10042",
+    "start_timestamp": "2026-09-19T06:20:00Z",
+    "end_timestamp": "2026-09-19T06:21:40Z",
+    "duration_seconds": 100.0,
+    "analyst_decision": "Manual Inspection Completed (Ticket Filed)"
+  },
+  {
+    "session_id": "SES-ASST-19",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T05:57:29.878657+00:00",
+    "end_timestamp": "2026-09-24T05:57:41.878657+00:00",
+    "duration_seconds": 12.0,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-20",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T06:14:09.153515+00:00",
+    "end_timestamp": "2026-09-24T06:14:21.153515+00:00",
+    "duration_seconds": 12.0,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-21",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T06:22:01.579500+00:00",
+    "end_timestamp": "2026-09-24T06:22:14.079500+00:00",
+    "duration_seconds": 12.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-22",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T06:25:55.189877+00:00",
+    "end_timestamp": "2026-09-24T06:26:07.689877+00:00",
+    "duration_seconds": 12.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-23",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T06:27:18.042684+00:00",
+    "end_timestamp": "2026-09-24T06:27:30.542684+00:00",
+    "duration_seconds": 12.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-24",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T06:28:55.622365+00:00",
+    "end_timestamp": "2026-09-24T06:29:08.122365+00:00",
+    "duration_seconds": 12.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-25",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T06:30:50.105277+00:00",
+    "end_timestamp": "2026-09-24T06:31:02.605277+00:00",
+    "duration_seconds": 12.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-26",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T06:33:24.920002+00:00",
+    "end_timestamp": "2026-09-24T06:33:37.420002+00:00",
+    "duration_seconds": 12.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-27",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T06:34:45.035752+00:00",
+    "end_timestamp": "2026-09-24T06:34:57.535752+00:00",
+    "duration_seconds": 12.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-28",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T06:36:29.163843+00:00",
+    "end_timestamp": "2026-09-24T06:36:41.663843+00:00",
+    "duration_seconds": 12.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-29",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T06:37:49.043043+00:00",
+    "end_timestamp": "2026-09-24T06:38:01.543043+00:00",
+    "duration_seconds": 12.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-30",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T06:38:41.266928+00:00",
+    "end_timestamp": "2026-09-24T06:38:53.766928+00:00",
+    "duration_seconds": 12.5,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-31",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T09:10:30.502836+00:00",
+    "end_timestamp": "2026-09-24T09:10:42.502836+00:00",
+    "duration_seconds": 12.0,
+    "analyst_decision": "Confirm"
+  },
+  {
+    "session_id": "SES-ASST-32",
+    "session_type": "assisted_incident",
+    "target_id": "INC-102",
+    "start_timestamp": "2026-09-24T09:12:04.947746+00:00",
+    "end_timestamp": "2026-09-24T09:12:16.947746+00:00",
+    "duration_seconds": 12.0,
+    "analyst_decision": "Confirm"
   }
 ]

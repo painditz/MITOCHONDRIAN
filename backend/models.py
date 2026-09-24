@@ -122,11 +122,32 @@ class Incident(BaseModel):
     duration_minutes: float
     correlation_reason: str
     priority_reason: str
-    investigation_status: str = "New"  # New, Under Review, Confirmed, Rejected, Investigated
+    investigation_status: str = "NEEDS REVIEW"  # NEW, NEEDS REVIEW, IN REVIEW, CONFIRMED, REJECTED, NEEDS MORE EVIDENCE, ESCALATED, INVESTIGATED
     alerts: List[NormalizedAlert]
     mitre_mappings: List[MitreTechnique]
     shift_brief: ShiftBrief
     review_time_seconds: float = 0.0
+    # Human-in-the-Loop 2.0 Enterprise Analyst Decision & Review Fields
+    analyst_decision: Optional[str] = None  # CONFIRM, REJECT, ESCALATE, NEED MORE EVIDENCE, MODIFY
+    analyst_confidence: Optional[str] = None  # LOW, MEDIUM, HIGH
+    analyst_reason: Optional[str] = None
+    analyst_note: Optional[str] = None
+    analyst_priority_override: Optional[str] = None  # P1, P2, P3, P4
+    analyst_priority_reason: Optional[str] = None
+    ai_brief_review: Optional[Dict[str, Any]] = None
+    evidence_reviews: List[Dict[str, Any]] = Field(default_factory=list)
+    correlation_reviews: List[Dict[str, Any]] = Field(default_factory=list)
+    review_history: List[Dict[str, Any]] = Field(default_factory=list)
+    structured_notes: List[Dict[str, Any]] = Field(default_factory=list)
+    merge_proposals: List[Dict[str, Any]] = Field(default_factory=list)
+    split_proposals: List[Dict[str, Any]] = Field(default_factory=list)
+    investigation_checklist: Dict[str, bool] = Field(default_factory=lambda: {
+        "evidence_review": False,
+        "correlation_review": False,
+        "mitre_review": False,
+        "ai_brief_review": False,
+        "human_decision": False
+    })
 
 class TriageSessionRecord(BaseModel):
     session_id: str

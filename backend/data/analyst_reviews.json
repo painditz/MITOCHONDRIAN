@@ -1,18 +1,870 @@
 {
   "INC-102": {
     "incident_id": "INC-102",
-    "investigation_status": "Confirmed",
+    "investigation_status": "CONFIRMED",
     "analyst_status": "Confirmed by Analyst",
     "analyst_notes": [
       "Shift-1 note: Validated outbound network telemetry.",
       "[AI Brief Feedback - Agreed]: Forensic timeline and indicators are highly accurate.",
-      "Test empirical triage on incident"
+      "Test empirical triage on incident",
+      "Analyst verified via console",
+      "Automated review check",
+      "[AI Brief Feedback - Agreed]: Verified test",
+      "Shift 1 analyst verified and confirmed incident against EDR telemetry.",
+      "Shift 1 analyst verified and confirmed incident against EDR telemetry.",
+      "Shift 1 analyst verified and confirmed incident against EDR telemetry.",
+      "Shift 1 analyst verified and confirmed incident against EDR telemetry.",
+      "Verified against telemetry stream",
+      "Verified against telemetry stream",
+      "Analyst verified forensic evidence. High confidence confirmation.",
+      "Analyst verified forensic evidence. High confidence confirmation.",
+      "Analyst verified forensic evidence. High confidence confirmation.",
+      "Analyst verified forensic evidence. High confidence confirmation.",
+      "Analyst verified forensic evidence. High confidence confirmation.",
+      "[AI Brief Review - Modified]: Added perimeter egress firewall blocking confirmation.",
+      "Host isolated from internal VLAN 12.",
+      "Credential revocation completed via Azure AD admin.",
+      "Analyst verified forensic evidence. High confidence confirmation.",
+      "[AI Brief Review - Modified]: Added perimeter egress firewall blocking confirmation.",
+      "Host isolated from internal VLAN 12.",
+      "Credential revocation completed via Azure AD admin.",
+      "Analyst verified forensic evidence. High confidence confirmation.",
+      "[AI Brief Review - Modified]: Added perimeter egress firewall blocking confirmation.",
+      "Host isolated from internal VLAN 12.",
+      "Credential revocation completed via Azure AD admin.",
+      "Analyst verified forensic evidence. High confidence confirmation.",
+      "[AI Brief Review - Modified]: Added perimeter egress firewall blocking confirmation.",
+      "Host isolated from internal VLAN 12.",
+      "Credential revocation completed via Azure AD admin.",
+      "Analyst verified forensic evidence. High confidence confirmation.",
+      "[AI Brief Review - Modified]: Added perimeter egress firewall blocking confirmation.",
+      "Host isolated from internal VLAN 12.",
+      "Credential revocation completed via Azure AD admin.",
+      "Analyst verified forensic evidence. High confidence confirmation.",
+      "[AI Brief Review - Modified]: Added perimeter egress firewall blocking confirmation.",
+      "Host isolated from internal VLAN 12.",
+      "Credential revocation completed via Azure AD admin.",
+      "Verified against telemetry stream",
+      "Verified against telemetry stream"
     ],
-    "custom_brief_text": "Analyst verified: Host compromised via credential stuffing.",
+    "custom_brief_text": "AI Synthesis (google/flan-t5-small): Security alerts: mega.nz (5153960755 bytes). Telemetry confirms 10 alerts targeting asset [CORP-EXCHANGE-ONLINE] (Critical Criticality) involving user account [marcus.vance.cfo@contoso.com]. Key evidence: Outbound transfer to: `mega.nz (5153960755 bytes)`\n[Analyst Note: Outbound exfiltration to 185.220.101.5 confirmed blocked at edge firewall.]",
     "analyst_agreement": "Agreed",
-    "analyst_feedback_notes": "Forensic timeline and indicators are highly accurate.",
-    "review_time_seconds": 45.0,
-    "last_updated": "2026-09-19T06:17:10.642245+00:00"
+    "analyst_feedback_notes": "Verified test",
+    "review_time_seconds": 299.5,
+    "last_updated": "2026-09-24T09:12:16.947746+00:00",
+    "analyst_decision": "CONFIRM",
+    "analyst_confidence": "HIGH",
+    "analyst_reason": "Evidence supports system assessment",
+    "analyst_note": "Verified against telemetry stream",
+    "analyst_priority_override": "P1",
+    "analyst_priority_reason": "Executive asset tier",
+    "ai_brief_review": {
+      "rating": "Requires modification",
+      "status": "Modified",
+      "original_ai_brief": "AI Synthesis (google/flan-t5-small): Security alerts: mega.nz (5153960755 bytes). Telemetry confirms 10 alerts targeting asset [CORP-EXCHANGE-ONLINE] (Critical Criticality) involving user account [marcus.vance.cfo@contoso.com]. Key evidence: Outbound transfer to: `mega.nz (5153960755 bytes)`",
+      "analyst_modified_brief": "AI Synthesis (google/flan-t5-small): Security alerts: mega.nz (5153960755 bytes). Telemetry confirms 10 alerts targeting asset [CORP-EXCHANGE-ONLINE] (Critical Criticality) involving user account [marcus.vance.cfo@contoso.com]. Key evidence: Outbound transfer to: `mega.nz (5153960755 bytes)`\n[Analyst Note: Outbound exfiltration to 185.220.101.5 confirmed blocked at edge firewall.]",
+      "reviewed_at": "2026-09-24T06:38:53.798891+00:00",
+      "note": "Added perimeter egress firewall blocking confirmation."
+    },
+    "evidence_reviews": [
+      {
+        "evidence_key": "Temporal Proximity",
+        "value": "Within correlation window",
+        "status": "CHALLENGED",
+        "challenge_reason": "Coincidental timing",
+        "note": "Time delta of 42 min is coincidental background noise.",
+        "reviewed_at": "2026-09-24T06:38:53.830807+00:00"
+      }
+    ],
+    "correlation_reviews": [
+      {
+        "target_incident_id": "INC-103",
+        "status": "CHALLENGED",
+        "challenge_reason": "Shared infrastructure",
+        "note": "IP address corresponds to shared carrier-grade NAT gateway.",
+        "evidence_types": [
+          "Shared External IP"
+        ],
+        "reviewed_at": "2026-09-24T06:38:53.814755+00:00"
+      }
+    ],
+    "review_history": [
+      {
+        "timestamp": "2026-09-18T07:08:26+00:00",
+        "actor": "SYSTEM",
+        "action": "Incident created",
+        "previous_state": null,
+        "new_state": "P1-Critical / Risk 96.4",
+        "details": "Correlated 10 alerts on host CORP-EXCHANGE-ONLINE."
+      },
+      {
+        "timestamp": "2026-09-24T05:57:32.597540+00:00",
+        "actor": "AI",
+        "action": "Shift brief generated",
+        "previous_state": null,
+        "new_state": "Brief Available",
+        "details": "Generated via local google/flan-t5-small model with zero data egress."
+      },
+      {
+        "timestamp": "2026-09-24T05:57:41.878657+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Priority overridden",
+        "previous_state": "System Priority P1-Critical",
+        "new_state": "Analyst Priority P1",
+        "details": "Executive asset tier"
+      },
+      {
+        "timestamp": "2026-09-24T05:57:41.878657+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Incident confirm",
+        "previous_state": "Confirmed",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Verified against telemetry stream"
+      },
+      {
+        "timestamp": "2026-09-24T06:14:21.153515+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Priority overridden",
+        "previous_state": "System Priority P1-Critical",
+        "new_state": "Analyst Priority P1",
+        "details": "Executive asset tier"
+      },
+      {
+        "timestamp": "2026-09-24T06:14:21.153515+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Incident confirm",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Verified against telemetry stream"
+      },
+      {
+        "timestamp": "2026-09-24T06:22:14.079500+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirm",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:26:07.689877+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:27:30.542684+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:27:30.586026+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Priority overridden",
+        "previous_state": "System Priority P1-Critical",
+        "new_state": "Analyst Priority P1",
+        "details": "Critical production asset requires immediate investigation."
+      },
+      {
+        "timestamp": "2026-09-24T06:27:30.586026+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: None"
+      },
+      {
+        "timestamp": "2026-09-24T06:29:08.122365+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:29:08.160373+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Priority overridden",
+        "previous_state": "System Priority P1-Critical",
+        "new_state": "Analyst Priority P1",
+        "details": "Critical production asset requires immediate investigation."
+      },
+      {
+        "timestamp": "2026-09-24T06:29:08.160373+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: None"
+      },
+      {
+        "timestamp": "2026-09-24T06:31:02.605277+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:31:02.643689+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Priority overridden",
+        "previous_state": "System Priority P1-Critical",
+        "new_state": "Analyst Priority P1",
+        "details": "Critical production asset requires immediate investigation."
+      },
+      {
+        "timestamp": "2026-09-24T06:31:02.643689+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: None"
+      },
+      {
+        "timestamp": "2026-09-24T06:31:02.700933+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "AI brief modified",
+        "previous_state": "Pending Review",
+        "new_state": "AI Brief Modified (Requires modification)",
+        "details": "Added perimeter egress firewall blocking confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:31:02.748772+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Correlation challenged",
+        "previous_state": "System Correlation Detected",
+        "new_state": "CHALLENGED vs INC-103",
+        "details": "Reason: Shared infrastructure | Note: IP address corresponds to shared carrier-grade NAT gateway."
+      },
+      {
+        "timestamp": "2026-09-24T06:31:02.828581+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Evidence challenged: Temporal Proximity",
+        "previous_state": "System Detected",
+        "new_state": "CHALLENGED",
+        "details": "Reason: Coincidental timing | Note: Time delta of 42 min is coincidental background noise."
+      },
+      {
+        "timestamp": "2026-09-24T06:31:02.876862+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Analyst note added",
+        "previous_state": null,
+        "new_state": null,
+        "details": "Host isolated from internal VLAN 12."
+      },
+      {
+        "timestamp": "2026-09-24T06:31:02.925650+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Analyst note added",
+        "previous_state": null,
+        "new_state": null,
+        "details": "Credential revocation completed via Azure AD admin."
+      },
+      {
+        "timestamp": "2026-09-24T06:33:37.420002+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:33:37.462056+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Priority overridden",
+        "previous_state": "System Priority P1-Critical",
+        "new_state": "Analyst Priority P1",
+        "details": "Critical production asset requires immediate investigation."
+      },
+      {
+        "timestamp": "2026-09-24T06:33:37.462056+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: None"
+      },
+      {
+        "timestamp": "2026-09-24T06:33:37.515687+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "AI brief modified",
+        "previous_state": "Pending Review",
+        "new_state": "AI Brief Modified (Requires modification)",
+        "details": "Added perimeter egress firewall blocking confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:33:37.563357+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Correlation challenged",
+        "previous_state": "System Correlation Detected",
+        "new_state": "CHALLENGED vs INC-103",
+        "details": "Reason: Shared infrastructure | Note: IP address corresponds to shared carrier-grade NAT gateway."
+      },
+      {
+        "timestamp": "2026-09-24T06:33:37.659048+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Evidence challenged: Temporal Proximity",
+        "previous_state": "System Detected",
+        "new_state": "CHALLENGED",
+        "details": "Reason: Coincidental timing | Note: Time delta of 42 min is coincidental background noise."
+      },
+      {
+        "timestamp": "2026-09-24T06:33:37.690617+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Analyst note added",
+        "previous_state": null,
+        "new_state": null,
+        "details": "Host isolated from internal VLAN 12."
+      },
+      {
+        "timestamp": "2026-09-24T06:33:37.738809+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Analyst note added",
+        "previous_state": null,
+        "new_state": null,
+        "details": "Credential revocation completed via Azure AD admin."
+      },
+      {
+        "timestamp": "2026-09-24T06:34:57.535752+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:34:57.577357+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Priority overridden",
+        "previous_state": "System Priority P1-Critical",
+        "new_state": "Analyst Priority P1",
+        "details": "Critical production asset requires immediate investigation."
+      },
+      {
+        "timestamp": "2026-09-24T06:34:57.577357+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: None"
+      },
+      {
+        "timestamp": "2026-09-24T06:34:57.641378+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "AI brief modified",
+        "previous_state": "Pending Review",
+        "new_state": "AI Brief Modified (Requires modification)",
+        "details": "Added perimeter egress firewall blocking confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:34:57.689140+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Correlation challenged",
+        "previous_state": "System Correlation Detected",
+        "new_state": "CHALLENGED vs INC-103",
+        "details": "Reason: Shared infrastructure | Note: IP address corresponds to shared carrier-grade NAT gateway."
+      },
+      {
+        "timestamp": "2026-09-24T06:34:57.784131+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Evidence challenged: Temporal Proximity",
+        "previous_state": "System Detected",
+        "new_state": "CHALLENGED",
+        "details": "Reason: Coincidental timing | Note: Time delta of 42 min is coincidental background noise."
+      },
+      {
+        "timestamp": "2026-09-24T06:34:57.831615+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Analyst note added",
+        "previous_state": null,
+        "new_state": null,
+        "details": "Host isolated from internal VLAN 12."
+      },
+      {
+        "timestamp": "2026-09-24T06:34:57.881419+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Analyst note added",
+        "previous_state": null,
+        "new_state": null,
+        "details": "Credential revocation completed via Azure AD admin."
+      },
+      {
+        "timestamp": "2026-09-24T06:36:41.663843+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:36:41.714586+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Priority overridden",
+        "previous_state": "System Priority P1-Critical",
+        "new_state": "Analyst Priority P1",
+        "details": "Critical production asset requires immediate investigation."
+      },
+      {
+        "timestamp": "2026-09-24T06:36:41.714586+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: None"
+      },
+      {
+        "timestamp": "2026-09-24T06:36:41.767193+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "AI brief modified",
+        "previous_state": "Pending Review",
+        "new_state": "AI Brief Modified (Requires modification)",
+        "details": "Added perimeter egress firewall blocking confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:36:41.814632+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Correlation challenged",
+        "previous_state": "System Correlation Detected",
+        "new_state": "CHALLENGED vs INC-103",
+        "details": "Reason: Shared infrastructure | Note: IP address corresponds to shared carrier-grade NAT gateway."
+      },
+      {
+        "timestamp": "2026-09-24T06:36:41.894717+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Evidence challenged: Temporal Proximity",
+        "previous_state": "System Detected",
+        "new_state": "CHALLENGED",
+        "details": "Reason: Coincidental timing | Note: Time delta of 42 min is coincidental background noise."
+      },
+      {
+        "timestamp": "2026-09-24T06:36:41.942396+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Analyst note added",
+        "previous_state": null,
+        "new_state": null,
+        "details": "Host isolated from internal VLAN 12."
+      },
+      {
+        "timestamp": "2026-09-24T06:36:41.974351+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Analyst note added",
+        "previous_state": null,
+        "new_state": null,
+        "details": "Credential revocation completed via Azure AD admin."
+      },
+      {
+        "timestamp": "2026-09-24T06:38:01.543043+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:38:01.558718+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Priority overridden",
+        "previous_state": "System Priority P1-Critical",
+        "new_state": "Analyst Priority P1",
+        "details": "Critical production asset requires immediate investigation."
+      },
+      {
+        "timestamp": "2026-09-24T06:38:01.558718+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: None"
+      },
+      {
+        "timestamp": "2026-09-24T06:38:01.576336+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "AI brief modified",
+        "previous_state": "Pending Review",
+        "new_state": "AI Brief Modified (Requires modification)",
+        "details": "Added perimeter egress firewall blocking confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:38:01.590097+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Correlation challenged",
+        "previous_state": "System Correlation Detected",
+        "new_state": "CHALLENGED vs INC-103",
+        "details": "Reason: Shared infrastructure | Note: IP address corresponds to shared carrier-grade NAT gateway."
+      },
+      {
+        "timestamp": "2026-09-24T06:38:01.621429+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Evidence challenged: Temporal Proximity",
+        "previous_state": "System Detected",
+        "new_state": "CHALLENGED",
+        "details": "Reason: Coincidental timing | Note: Time delta of 42 min is coincidental background noise."
+      },
+      {
+        "timestamp": "2026-09-24T06:38:01.637107+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Analyst note added",
+        "previous_state": null,
+        "new_state": null,
+        "details": "Host isolated from internal VLAN 12."
+      },
+      {
+        "timestamp": "2026-09-24T06:38:01.652751+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Analyst note added",
+        "previous_state": null,
+        "new_state": null,
+        "details": "Credential revocation completed via Azure AD admin."
+      },
+      {
+        "timestamp": "2026-09-24T06:38:53.766928+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:38:53.766928+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Priority overridden",
+        "previous_state": "System Priority P1-Critical",
+        "new_state": "Analyst Priority P1",
+        "details": "Critical production asset requires immediate investigation."
+      },
+      {
+        "timestamp": "2026-09-24T06:38:53.766928+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: None"
+      },
+      {
+        "timestamp": "2026-09-24T06:38:53.798891+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "AI brief modified",
+        "previous_state": "Pending Review",
+        "new_state": "AI Brief Modified (Requires modification)",
+        "details": "Added perimeter egress firewall blocking confirmation."
+      },
+      {
+        "timestamp": "2026-09-24T06:38:53.814755+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Correlation challenged",
+        "previous_state": "System Correlation Detected",
+        "new_state": "CHALLENGED vs INC-103",
+        "details": "Reason: Shared infrastructure | Note: IP address corresponds to shared carrier-grade NAT gateway."
+      },
+      {
+        "timestamp": "2026-09-24T06:38:53.830807+00:00",
+        "actor": "SOC Lead Marcus",
+        "action": "Evidence challenged: Temporal Proximity",
+        "previous_state": "System Detected",
+        "new_state": "CHALLENGED",
+        "details": "Reason: Coincidental timing | Note: Time delta of 42 min is coincidental background noise."
+      },
+      {
+        "timestamp": "2026-09-24T06:38:53.853975+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Analyst note added",
+        "previous_state": null,
+        "new_state": null,
+        "details": "Host isolated from internal VLAN 12."
+      },
+      {
+        "timestamp": "2026-09-24T06:38:53.862565+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Analyst note added",
+        "previous_state": null,
+        "new_state": null,
+        "details": "Credential revocation completed via Azure AD admin."
+      },
+      {
+        "timestamp": "2026-09-24T09:10:42.502836+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Priority overridden",
+        "previous_state": "System Priority P1-Critical",
+        "new_state": "Analyst Priority P1",
+        "details": "Executive asset tier"
+      },
+      {
+        "timestamp": "2026-09-24T09:10:42.502836+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Incident confirmed",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Verified against telemetry stream"
+      },
+      {
+        "timestamp": "2026-09-24T09:12:16.947746+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Priority overridden",
+        "previous_state": "System Priority P1-Critical",
+        "new_state": "Analyst Priority P1",
+        "details": "Executive asset tier"
+      },
+      {
+        "timestamp": "2026-09-24T09:12:16.947746+00:00",
+        "actor": "Analyst (SOC Tier-1)",
+        "action": "Incident confirm",
+        "previous_state": "CONFIRMED",
+        "new_state": "CONFIRMED",
+        "details": "Confidence: HIGH | Reason: Evidence supports system assessment | Note: Verified against telemetry stream"
+      }
+    ],
+    "structured_notes": [
+      {
+        "id": "NOT-1",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T05:57:41.878657+00:00",
+        "text": "Verified against telemetry stream"
+      },
+      {
+        "id": "NOT-2",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T06:14:21.153515+00:00",
+        "text": "Verified against telemetry stream"
+      },
+      {
+        "id": "NOT-3",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:22:14.079500+00:00",
+        "text": "Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "id": "NOT-4",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:26:07.689877+00:00",
+        "text": "Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "id": "NOT-5",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:27:30.542684+00:00",
+        "text": "Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "id": "NOT-6",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:29:08.122365+00:00",
+        "text": "Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "id": "NOT-7",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:31:02.605277+00:00",
+        "text": "Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "id": "NOT-8",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:31:02.700933+00:00",
+        "text": "[AI Brief - Modified]: Added perimeter egress firewall blocking confirmation."
+      },
+      {
+        "id": "NOT-9",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:31:02.828581+00:00",
+        "text": "[Evidence Temporal Proximity - CHALLENGED]: Coincidental timing - Time delta of 42 min is coincidental background noise."
+      },
+      {
+        "id": "NOT-10",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T06:31:02.876862+00:00",
+        "text": "Host isolated from internal VLAN 12."
+      },
+      {
+        "id": "NOT-11",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T06:31:02.925650+00:00",
+        "text": "Credential revocation completed via Azure AD admin."
+      },
+      {
+        "id": "NOT-12",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:33:37.420002+00:00",
+        "text": "Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "id": "NOT-13",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:33:37.515687+00:00",
+        "text": "[AI Brief - Modified]: Added perimeter egress firewall blocking confirmation."
+      },
+      {
+        "id": "NOT-14",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:33:37.659048+00:00",
+        "text": "[Evidence Temporal Proximity - CHALLENGED]: Coincidental timing - Time delta of 42 min is coincidental background noise."
+      },
+      {
+        "id": "NOT-15",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T06:33:37.690617+00:00",
+        "text": "Host isolated from internal VLAN 12."
+      },
+      {
+        "id": "NOT-16",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T06:33:37.738809+00:00",
+        "text": "Credential revocation completed via Azure AD admin."
+      },
+      {
+        "id": "NOT-17",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:34:57.535752+00:00",
+        "text": "Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "id": "NOT-18",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:34:57.641378+00:00",
+        "text": "[AI Brief - Modified]: Added perimeter egress firewall blocking confirmation."
+      },
+      {
+        "id": "NOT-19",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:34:57.784131+00:00",
+        "text": "[Evidence Temporal Proximity - CHALLENGED]: Coincidental timing - Time delta of 42 min is coincidental background noise."
+      },
+      {
+        "id": "NOT-20",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T06:34:57.831615+00:00",
+        "text": "Host isolated from internal VLAN 12.",
+        "note": "Host isolated from internal VLAN 12."
+      },
+      {
+        "id": "NOT-21",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T06:34:57.881419+00:00",
+        "text": "Credential revocation completed via Azure AD admin.",
+        "note": "Credential revocation completed via Azure AD admin."
+      },
+      {
+        "id": "NOT-22",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:36:41.663843+00:00",
+        "text": "Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "id": "NOT-23",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:36:41.767193+00:00",
+        "text": "[AI Brief - Modified]: Added perimeter egress firewall blocking confirmation."
+      },
+      {
+        "id": "NOT-24",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:36:41.894717+00:00",
+        "text": "[Evidence Temporal Proximity - CHALLENGED]: Coincidental timing - Time delta of 42 min is coincidental background noise."
+      },
+      {
+        "id": "NOT-25",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T06:36:41.942396+00:00",
+        "text": "Host isolated from internal VLAN 12.",
+        "note": "Host isolated from internal VLAN 12."
+      },
+      {
+        "id": "NOT-26",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T06:36:41.974351+00:00",
+        "text": "Credential revocation completed via Azure AD admin.",
+        "note": "Credential revocation completed via Azure AD admin."
+      },
+      {
+        "id": "NOT-27",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:38:01.543043+00:00",
+        "text": "Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "id": "NOT-28",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:38:01.576336+00:00",
+        "text": "[AI Brief - Modified]: Added perimeter egress firewall blocking confirmation."
+      },
+      {
+        "id": "NOT-29",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:38:01.621429+00:00",
+        "text": "[Evidence Temporal Proximity - CHALLENGED]: Coincidental timing - Time delta of 42 min is coincidental background noise."
+      },
+      {
+        "id": "NOT-30",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T06:38:01.637107+00:00",
+        "text": "Host isolated from internal VLAN 12.",
+        "note": "Host isolated from internal VLAN 12."
+      },
+      {
+        "id": "NOT-31",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T06:38:01.652751+00:00",
+        "text": "Credential revocation completed via Azure AD admin.",
+        "note": "Credential revocation completed via Azure AD admin."
+      },
+      {
+        "id": "NOT-32",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:38:53.766928+00:00",
+        "text": "Analyst verified forensic evidence. High confidence confirmation."
+      },
+      {
+        "id": "NOT-33",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:38:53.798891+00:00",
+        "text": "[AI Brief - Modified]: Added perimeter egress firewall blocking confirmation."
+      },
+      {
+        "id": "NOT-34",
+        "author": "SOC Lead Marcus",
+        "timestamp": "2026-09-24T06:38:53.830807+00:00",
+        "text": "[Evidence Temporal Proximity - CHALLENGED]: Coincidental timing - Time delta of 42 min is coincidental background noise."
+      },
+      {
+        "id": "NOT-35",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T06:38:53.853975+00:00",
+        "text": "Host isolated from internal VLAN 12.",
+        "note": "Host isolated from internal VLAN 12."
+      },
+      {
+        "id": "NOT-36",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T06:38:53.862565+00:00",
+        "text": "Credential revocation completed via Azure AD admin.",
+        "note": "Credential revocation completed via Azure AD admin."
+      },
+      {
+        "id": "NOT-37",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T09:10:42.502836+00:00",
+        "text": "Verified against telemetry stream"
+      },
+      {
+        "id": "NOT-38",
+        "author": "Analyst (SOC Tier-1)",
+        "timestamp": "2026-09-24T09:12:16.947746+00:00",
+        "text": "Verified against telemetry stream"
+      }
+    ],
+    "merge_proposals": [],
+    "split_proposals": [],
+    "investigation_checklist": {
+      "evidence_review": true,
+      "correlation_review": true,
+      "mitre_review": false,
+      "ai_brief_review": true,
+      "human_decision": true
+    }
   },
   "INC-103": {
     "incident_id": "INC-103",
@@ -23,6 +875,54 @@
     "analyst_agreement": "Pending Review",
     "analyst_feedback_notes": null,
     "review_time_seconds": 701.0,
-    "last_updated": "2026-09-19T15:57:07.660694+00:00"
+    "last_updated": "2026-09-24T06:38:53.830807+00:00",
+    "analyst_decision": null,
+    "analyst_confidence": null,
+    "analyst_reason": null,
+    "analyst_note": null,
+    "analyst_priority_override": null,
+    "analyst_priority_reason": null,
+    "ai_brief_review": null,
+    "evidence_reviews": [],
+    "correlation_reviews": [
+      {
+        "target_incident_id": "INC-102",
+        "status": "CHALLENGED",
+        "challenge_reason": "Shared infrastructure",
+        "note": "IP address corresponds to shared carrier-grade NAT gateway.",
+        "evidence_types": [
+          "Shared External IP"
+        ],
+        "reviewed_at": "2026-09-24T06:38:53.814755+00:00"
+      }
+    ],
+    "review_history": [
+      {
+        "timestamp": "2026-09-18T07:22:13+00:00",
+        "actor": "SYSTEM",
+        "action": "Incident created",
+        "previous_state": null,
+        "new_state": "P1-Critical / Risk 93.7",
+        "details": "Correlated 4 alerts on host DC-PROD-01."
+      },
+      {
+        "timestamp": "2026-09-24T06:30:48.119003+00:00",
+        "actor": "AI",
+        "action": "Shift brief generated",
+        "previous_state": null,
+        "new_state": "Brief Available",
+        "details": "Generated via local google/flan-t5-small model with zero data egress."
+      }
+    ],
+    "structured_notes": [],
+    "merge_proposals": [],
+    "split_proposals": [],
+    "investigation_checklist": {
+      "evidence_review": false,
+      "correlation_review": true,
+      "mitre_review": false,
+      "ai_brief_review": false,
+      "human_decision": false
+    }
   }
 }

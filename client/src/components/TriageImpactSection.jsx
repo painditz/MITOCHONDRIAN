@@ -10,18 +10,22 @@ export function TriageImpactSection({ telemetry = {} }) {
   const [stopwatchTime, setStopwatchTime] = useState(0);
   const [isTiming, setIsTiming] = useState(false);
   const [sessionType, setSessionType] = useState('assisted_incident');
-  const [recordedSessions, setRecordedSessions] = useState([
-    { id: 'SES-RAW-1', type: 'raw_alert', duration: 94.2, decision: 'escalated' },
-    { id: 'SES-RAW-2', type: 'raw_alert', duration: 96.1, decision: 'benign' },
-    { id: 'SES-ASST-1', type: 'assisted_incident', duration: 18.2, decision: 'confirmed' },
-    { id: 'SES-ASST-2', type: 'assisted_incident', duration: 18.8, decision: 'confirmed' },
-  ]);
+  const [recordedSessions, setRecordedSessions] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetch('http://127.0.0.1:8000/api/mttt')
       .then((r) => (r.ok ? r.json() : Promise.reject(r)))
-      .then((d) => setMtttData(d))
-      .catch(() => {});
+      .then((d) => {
+        setMtttData(d);
+        if (d?.measured_analyst_test?.sessions) {
+          setRecordedSessions(d.measured_analyst_test.sessions);
+        }
+      })
+      .catch((err) => {
+        console.error('[TriageImpactSection] API error:', err);
+        setError('DATA UNAVAILABLE');
+      });
   }, []);
 
   useEffect(() => {
@@ -66,13 +70,15 @@ export function TriageImpactSection({ telemetry = {} }) {
     setStopwatchTime(0);
   };
 
-  const simBaseHours = mtttData?.simulation?.simulated_baseline_hours ?? 500.0;
-  const simAsstHours = mtttData?.simulation?.simulated_assisted_hours ?? 0.75;
-  const simSaved = mtttData?.simulation?.simulated_hours_saved ?? 499.25;
+  const sim = mtttData?.simulation_estimate || mtttData?.simulation;
+  const simBaseHours = sim?.simulated_baseline_hours ?? 0;
+  const simAsstHours = sim?.simulated_assisted_hours ?? 0;
+  const simSaved = sim?.simulated_hours_saved ?? 0;
 
-  const measuredBaseSec = mtttData?.measured_analyst_test?.measured_baseline_mttt_seconds ?? 95.0;
-  const measuredAsstSec = mtttData?.measured_analyst_test?.measured_assisted_mttt_seconds ?? 18.5;
-  const measuredReduction = mtttData?.measured_analyst_test?.measured_percentage_reduction ?? 80.5;
+  const measured = mtttData?.measured_analyst_test;
+  const measuredBaseSec = measured?.measured_baseline_mttt_seconds ?? 0;
+  const measuredAsstSec = measured?.measured_assisted_mttt_seconds ?? 0;
+  const measuredReduction = measured?.measured_percentage_reduction ?? 0;
 
   return (
     <section className="sentinel-section triage-impact-section" id="triage-impact">

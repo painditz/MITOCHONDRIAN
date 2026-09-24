@@ -39,7 +39,7 @@ export function AppLayout({
           width: 100vw;
           height: 100vh;
           overflow: hidden;
-          background: #F8F9FA;
+          background: var(--bg-main);
           position: relative;
         }
 
@@ -49,9 +49,9 @@ export function AppLayout({
           max-width: 220px;
           height: 100vh;
           flex-shrink: 0;
-          border-right: 1px solid rgba(10, 13, 18, 0.08);
+          border-right: 1px solid var(--border);
           z-index: 30;
-          background: #FFFFFF;
+          background: var(--surface-1);
         }
 
         .shell-main-zone {
@@ -61,7 +61,7 @@ export function AppLayout({
           min-width: 0;
           height: 100vh;
           overflow: hidden;
-          background: #F8F9FA;
+          background: transparent;
         }
 
         .shell-header-zone {
@@ -70,9 +70,9 @@ export function AppLayout({
           max-height: 52px;
           width: 100%;
           flex-shrink: 0;
-          border-bottom: 1px solid rgba(10, 13, 18, 0.08);
+          border-bottom: 1px solid var(--border);
           z-index: 20;
-          background: #FFFFFF;
+          background: var(--surface-1);
         }
 
         .shell-workspace-zone {
@@ -84,7 +84,7 @@ export function AppLayout({
           display: flex;
           flex-direction: column;
           position: relative;
-          background: #F8F9FA;
+          background: transparent;
         }
 
         .shell-status-zone {
@@ -93,9 +93,9 @@ export function AppLayout({
           max-height: 26px;
           width: 100%;
           flex-shrink: 0;
-          border-top: 1px solid rgba(10, 13, 18, 0.08);
+          border-top: 1px solid var(--border);
           z-index: 20;
-          background: #FFFFFF;
+          background: var(--surface-1);
         }
       `}</style>
     </div>
