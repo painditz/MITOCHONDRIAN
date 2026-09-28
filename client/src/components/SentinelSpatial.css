@@ -46,7 +46,7 @@
   left: 0;
   width: 58vw;
   height: 100vh;
-  background: radial-gradient(ellipse at 15% 45%, rgba(14, 13, 13, 0.50) 0%, rgba(14, 13, 13, 0.15) 65%, transparent 100%);
+  background: radial-gradient(ellipse at 15% 45%, rgba(5, 10, 14, 0.06) 0%, transparent 70%);
   pointer-events: none;
   z-index: 1;
 }

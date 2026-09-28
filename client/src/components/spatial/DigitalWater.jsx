@@ -47,11 +47,6 @@ const waterVertexShader = /* glsl */ `
       time * 0.28
     ) * 0.18;
 
-    w += sin(
-      length(p) * 0.85 -
-      time * 0.48
-    ) * 0.10;
-
     return w;
   }
 
@@ -61,14 +56,7 @@ const waterVertexShader = /* glsl */ `
 
     float baseWave = wave(pos.xy, uTime);
 
-    /* Mouse creates a localized water disturbance */
-    vec2 mousePosition = uMouse * 10.0;
-    float mouseDistance = distance(pos.xy, mousePosition);
-
-    float ripple = exp(-mouseDistance * 0.45);
-    ripple *= sin(mouseDistance * 5.0 - uTime * 3.0) * 0.28;
-
-    /* Click creates a stronger expanding ripple shockwave */
+    /* Click creates a localized shockwave at outer coordinates if triggered */
     float clickAge = uTime - uClickTime;
     float clickRipple = 0.0;
     if (clickAge > 0.0 && clickAge < 3.2) {
@@ -79,7 +67,11 @@ const waterVertexShader = /* glsl */ `
       clickRipple = sin(clickDist * 5.5 - clickAge * 9.0) * ring * uClickStrength * 0.42;
     }
 
-    pos.z = baseWave + ripple + clickRipple;
+    /* Spatial center falloff: leaves center clean, flat, and calm while preserving outer waves */
+    float centerDist = length(pos.xy);
+    float centerFactor = smoothstep(3.5, 9.5, centerDist);
+
+    pos.z = (baseWave + clickRipple) * centerFactor;
 
     vec4 worldPosition = modelMatrix * vec4(pos, 1.0);
     vWorldPosition = worldPosition.xyz;
@@ -117,35 +109,31 @@ const waterFragmentShader = /* glsl */ `
 
     // Deep water to blue water elevation
     float waveElevation = smoothstep(-0.15, 0.35, vWave);
-    vec3 color = mix(deepWater, blueWater, waveElevation * 0.7);
+    vec3 outerWater = mix(deepWater, blueWater, waveElevation * 0.7);
 
-    // Spatial center dampening factor: keeps outer edges active while calming the middle zone
-    float centerDist = length(vWorldPosition.xz);
-    float centerFactor = smoothstep(2.0, 10.0, centerDist);
+    // Water continues naturally through center (deep blue/teal water tone)
+    vec3 color = outerWater;
 
-    // Moving cyan wave crests (softened in center)
+    // Moving cyan wave crests
     float crest = smoothstep(0.12, 0.40, vWave);
-    float crestIntensity = mix(0.12, 0.40, centerFactor);
-    color = mix(color, cyanWater, crest * crestIntensity);
+    color = mix(color, cyanWater, crest * 0.35);
 
-    // Moving moonlight telemetry streaks (cool cyan #62DFFF, softened in center)
+    // Moving moonlight telemetry streaks (cool cyan #62DFFF)
     float highlight = sin(
       vWorldPosition.x * 1.35 +
       vWorldPosition.z * 0.75 +
       uTime * 0.65
     );
     highlight = smoothstep(0.85, 1.0, highlight);
-    float highlightIntensity = mix(0.06, 0.24, centerFactor);
-    color += highlightCyan * (highlight * highlightIntensity);
+    color += highlightCyan * (highlight * 0.22);
 
-    // Crisp specular sheen (white #DCEFF5, softened in center)
+    // Crisp specular sheen (white #DCEFF5)
     float sheen = sin(
       (vWorldPosition.x - vWorldPosition.z) * 1.5 +
       uTime * 0.48
     );
     sheen = smoothstep(0.94, 1.0, sheen);
-    float sheenIntensity = mix(0.06, 0.32, centerFactor);
-    color += specularWhite * (sheen * sheenIntensity);
+    color += specularWhite * (sheen * 0.28);
 
     // Strictly localized pinpoint incident reflections:
     // Bounded to radius < 1.0 with steep falloff to ensure ZERO global bleed
@@ -187,11 +175,9 @@ const reflectionLayerFragmentShader = /* glsl */ `
     float streak2 = sin((vUv.x * 2.0 - vUv.y) * 12.0 + uTime * 0.45) * 0.5 + 0.5;
     float combined = smoothstep(0.88, 1.0, streak * streak2);
 
-    // Subtle cool cyan highlight (#62DFFF) softened in center
+    // Subtle cool cyan highlight (#62DFFF) across water
     vec3 sheenColor = vec3(0.384, 0.875, 1.0);
-    float centerDist = length(vWorldPosition.xz);
-    float centerFactor = smoothstep(2.5, 9.5, centerDist);
-    gl_FragColor = vec4(sheenColor, combined * 0.05 * centerFactor);
+    gl_FragColor = vec4(sheenColor, combined * 0.05);
   }
 `;
 
@@ -389,11 +375,8 @@ export function DigitalWater({ incidents = [] }) {
         <WaterCameraController />
       </Canvas>
 
-      {/* Soft Center Readability Mask: Calms middle ripple, preserves atmospheric edges */}
-      <div className="sentinel-center-soften" />
-
-      {/* Dark Readability Overlay between 3D water and application UI */}
-      <div className="water-readability-overlay" />
+      {/* Very light readability layer: Center opacity <= 0.10, NO black center */}
+      <div className="sentinel-atmosphere-vignette" />
 
       <style>{`
         .digital-water-container {
@@ -412,30 +395,18 @@ export function DigitalWater({ incidents = [] }) {
           pointer-events: none;
         }
 
-        .sentinel-center-soften {
+        .sentinel-atmosphere-vignette {
           position: absolute;
           inset: 0;
           pointer-events: none;
           background: radial-gradient(
-            ellipse 55% 48% at 50% 50%,
-            rgba(8, 12, 15, 0.78) 0%,
-            rgba(8, 12, 15, 0.58) 32%,
-            rgba(8, 12, 15, 0.25) 58%,
+            ellipse 70% 65% at 50% 50%,
+            rgba(8, 14, 18, 0.10) 0%,
+            rgba(8, 14, 18, 0.06) 35%,
+            rgba(8, 14, 18, 0.025) 58%,
             transparent 78%
           );
           z-index: 2;
-        }
-
-        .water-readability-overlay {
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(
-            ellipse 85% 70% at 50% 40%,
-            rgba(2, 7, 11, 0.15) 0%,
-            rgba(2, 7, 11, 0.50) 100%
-          );
-          pointer-events: none;
-          z-index: 1;
         }
       `}</style>
     </div>

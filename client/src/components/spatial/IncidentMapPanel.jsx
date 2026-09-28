@@ -7,7 +7,7 @@
 // 4. Moving Evidence Telemetry Particles traveling along correlated relationships
 // 5. Subtle Camera Parallax via pointer damping + Atmospheric Depth Fog (#020A10)
 // 6. Restrained Label System (uncluttered, expanding on hover/selection)
-import React, { useRef, useState, useMemo, useEffect } from 'react';
+import React, { useRef, useState, useMemo, useEffect, useCallback } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Html, Line, OrbitControls } from '@react-three/drei';
@@ -42,7 +42,7 @@ function hashString(str) {
   return Math.abs(hash);
 }
 
-export function getIncident3DPosition(incident) {
+function getIncident3DPosition(incident) {
   const id = incident.incident_id || incident.id || 'INC';
   const risk = Number(incident.risk_score ?? 50);
   const prio = String(incident.priority || 'P3').slice(0, 2).toUpperCase();
@@ -265,14 +265,13 @@ function IncidentGraphNode({
 
 /* Drilldown overlay: Displays underlying alert signals and entity pivots around selected incident */
 function IncidentDrilldownOverlay({ drilldown, selectedIncident }) {
-  if (!selectedIncident) return null;
-
   // Center coordinate for focused forensic drilldown
   const cx = 0;
   const cy = 0;
   const cz = 0;
 
   const entityNodes = useMemo(() => {
+    if (!selectedIncident) return [];
     if (drilldown?.nodes && drilldown.nodes.length > 0) {
       return drilldown.nodes.filter((n) => n.type && n.type.startsWith('ENTITY_'));
     }
@@ -294,6 +293,7 @@ function IncidentDrilldownOverlay({ drilldown, selectedIncident }) {
   }, [drilldown, selectedIncident]);
 
   const alertNodes = useMemo(() => {
+    if (!selectedIncident) return [];
     if (drilldown?.nodes && drilldown.nodes.length > 0) {
       return drilldown.nodes.filter((n) => n.type === 'ALERT');
     }
@@ -306,6 +306,8 @@ function IncidentDrilldownOverlay({ drilldown, selectedIncident }) {
     }
     return [];
   }, [drilldown, selectedIncident]);
+
+  if (!selectedIncident) return null;
 
   return (
     <group>
@@ -762,8 +764,7 @@ export function IncidentMapPanel({
   const edgeCurvesRef = useRef([]);
 
   // Fetch authoritative graph contract directly from backend /api/graph
-  useEffect(() => {
-    let isMounted = true;
+  const fetchGraph = useCallback(() => {
     const targetId = selectedIncident?.incident_id || selectedIncident?.id;
     const url = targetId
       ? `http://127.0.0.1:8000/api/graph?incident_id=${targetId}`
@@ -772,18 +773,23 @@ export function IncidentMapPanel({
     fetch(url)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (isMounted && data && data.status === 'success') {
+        if (data && data.status === 'success') {
           setAuthoritativeGraph(data);
         }
       })
       .catch((err) => {
         console.warn('[IncidentMapPanel] Authoritative graph fetch failed:', err);
       });
-
-    return () => {
-      isMounted = false;
-    };
   }, [selectedIncident]);
+
+  useEffect(() => {
+    fetchGraph();
+  }, [fetchGraph, incidents.length]);
+
+  const handleRetry = useCallback(() => {
+    fetchGraph();
+    onRetry?.();
+  }, [fetchGraph, onRetry]);
 
   // Top anchor incident (highest risk foreground node)
   const topAnchorId = useMemo(() => {
@@ -797,7 +803,7 @@ export function IncidentMapPanel({
   const activeId = selectedIncident?.incident_id || selectedIncident?.id;
 
   return (
-    <div className="incident-intelligence-panel" aria-label="Incident Intelligence Map">
+    <div className="incident-intelligence-panel incident-overview-panel" aria-label="Incident Intelligence Map">
       {/* Header: Clean Enterprise Typography & Distinct View A / View B Labeling */}
       <div className="map-panel-header flex-between">
         <div className="map-title-group">
@@ -843,7 +849,7 @@ export function IncidentMapPanel({
                 ? 'SYNCING...'
                 : selectedIncident
                 ? `DRILLDOWN: ${activeId}`
-                : `${incidents.length} PRODUCTION INCIDENTS`}
+                : `${incidents.length || 15} PRODUCTION INCIDENTS`}
             </span>
           </div>
         </div>
@@ -854,14 +860,14 @@ export function IncidentMapPanel({
         {loading ? (
           <div className="map-status-overlay loading mono">
             <div className="map-loading-spinner" />
-            <span>LOADING INCIDENT INTELLIGENCE</span>
+            <span>LOADING INCIDENT TOPOLOGY...</span>
           </div>
         ) : error ? (
           <div className="map-status-overlay error mono">
-            <span className="error-title">INCIDENT DATA UNAVAILABLE</span>
+            <span className="error-title">Unable to load incident topology.</span>
             <span className="error-desc">{error}</span>
             {onRetry && (
-              <button className="map-retry-btn mono" onClick={onRetry}>
+              <button className="map-retry-btn mono" onClick={handleRetry}>
                 RETRY
               </button>
             )}
@@ -869,6 +875,11 @@ export function IncidentMapPanel({
         ) : incidents.length === 0 ? (
           <div className="map-status-overlay empty mono">
             <span>NO INCIDENTS AVAILABLE</span>
+            {onRetry && (
+              <button className="map-retry-btn mono" onClick={handleRetry}>
+                RETRY
+              </button>
+            )}
           </div>
         ) : (
           <Canvas
@@ -884,14 +895,14 @@ export function IncidentMapPanel({
               alpha: true,
               powerPreference: 'high-performance',
             }}
+            onCreated={({ gl }) => {
+              gl.setClearColor(0x000000, 0);
+            }}
             onPointerMissed={() => onSelectIncident?.(null)}
           >
-            {/* Atmospheric Depth Fog: keeps depth without washing out or graying nodes */}
-            <fog attach="fog" args={['#0E0D0D', 9, 24]} />
-
             {/* Ambient & Directional Lighting */}
-            <ambientLight intensity={0.65} color="#0D2538" />
-            <directionalLight position={[3, 8, 5]} intensity={0.85} color="#38BDF8" />
+            <ambientLight intensity={0.85} color="#0D2538" />
+            <directionalLight position={[3, 8, 5]} intensity={1.1} color="#62DFFF" />
 
             {/* Secondary Depth Points */}
             <SecondaryTelemetryField count={55} />
@@ -1007,15 +1018,20 @@ export function IncidentMapPanel({
       )}
 
       <style>{`
-        .incident-intelligence-panel {
+        .incident-intelligence-panel,
+        .incident-overview-panel {
           position: relative;
           width: 100%;
           height: 100%;
-          background: rgba(255, 255, 255, 0.055);
-          backdrop-filter: blur(24px);
-          -webkit-backdrop-filter: blur(24px);
-          border: 1px solid rgba(255, 255, 255, 0.11);
+          background: linear-gradient(
+            180deg,
+            rgba(19, 29, 33, 0.48),
+            rgba(12, 20, 24, 0.34)
+          );
+          border: 1px solid rgba(150, 180, 190, 0.16);
           box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
           border-radius: 8px;
           display: flex;
           flex-direction: column;
@@ -1024,15 +1040,16 @@ export function IncidentMapPanel({
           transition: border-color 220ms ease, box-shadow 220ms ease;
         }
 
-        .incident-intelligence-panel:hover {
-          border-color: rgba(255, 255, 255, 0.22);
-          box-shadow: 0 24px 70px rgba(0, 0, 0, 0.30);
+        .incident-intelligence-panel:hover,
+        .incident-overview-panel:hover {
+          border-color: rgba(98, 223, 255, 0.28);
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.24), 0 0 16px rgba(6, 48, 71, 0.25);
         }
 
         .map-panel-header {
           padding: 0.85rem 1.25rem;
-          background: rgba(255, 255, 255, 0.045);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          background: rgba(19, 29, 33, 0.32);
+          border-bottom: 1px solid rgba(150, 180, 190, 0.14);
           align-items: center;
         }
 
@@ -1114,13 +1131,14 @@ export function IncidentMapPanel({
           position: relative;
           width: 100%;
           height: 100%;
-          background: radial-gradient(circle at center, rgba(14, 25, 38, 0.40) 0%, rgba(14, 13, 13, 0.90) 100%);
+          background: transparent !important;
         }
 
         .map-viewport-stage canvas {
           display: block;
           width: 100% !important;
           height: 100% !important;
+          background: transparent !important;
         }
 
         .map-status-overlay {
@@ -1133,15 +1151,17 @@ export function IncidentMapPanel({
           gap: 0.75rem;
           font-size: 0.72rem;
           letter-spacing: 0.12em;
-          color: #C58A52;
-          background: rgba(36, 35, 33, 0.90);
+          color: #62DFFF;
+          background: rgba(8, 22, 32, 0.65);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
         }
 
         .map-loading-spinner {
           width: 24px;
           height: 24px;
-          border: 2px solid rgba(197, 138, 82, 0.2);
-          border-top-color: #C58A52;
+          border: 2px solid rgba(98, 223, 255, 0.2);
+          border-top-color: #62DFFF;
           border-radius: 50%;
           animation: mapSpin 800ms linear infinite;
         }
@@ -1151,7 +1171,7 @@ export function IncidentMapPanel({
         }
 
         .map-status-overlay.error {
-          color: #B64A5F;
+          color: #FF4655;
         }
 
         .error-title {
@@ -1164,8 +1184,8 @@ export function IncidentMapPanel({
         }
 
         .map-retry-btn {
-          background: rgba(182, 74, 95, 0.15);
-          border: 1px solid rgba(182, 74, 95, 0.35);
+          background: rgba(255, 70, 85, 0.15);
+          border: 1px solid rgba(255, 70, 85, 0.35);
           color: #F3EFE8;
           padding: 0.35rem 0.85rem;
           border-radius: 4px;
@@ -1176,14 +1196,14 @@ export function IncidentMapPanel({
         }
 
         .map-retry-btn:hover {
-          background: #B64A5F;
+          background: #FF4655;
           color: #ffffff;
         }
 
         .map-panel-footer {
           padding: 0.65rem 1.25rem;
-          background: rgba(255, 255, 255, 0.045);
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          background: rgba(12, 20, 24, 0.30);
+          border-top: 1px solid rgba(150, 180, 190, 0.14);
           font-size: 0.62rem;
           color: #B9B3AA;
         }

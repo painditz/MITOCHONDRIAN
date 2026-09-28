@@ -2,7 +2,7 @@
 // SentinelOps AI - Unified Enterprise Security Operations Console
 // Authoritative architecture: Operations is the master visual language across all workspaces.
 // Backend /api/incidents, /api/overview, /api/mttt, /api/ml/metrics, /api/alerts are the SINGLE sources of truth.
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Navigation } from './components/Navigation';
 import SentinelSpatial from './components/SentinelSpatial';
 import { IncidentIntelligence } from './components/incidents/IncidentIntelligence';
@@ -24,33 +24,7 @@ export function App() {
   const [selectedIncident, setSelectedIncident] = useState(null);
   const [showRawAlertsModal, setShowRawAlertsModal] = useState(false);
 
-  // Authoritative fetch from Backend /api/incidents
-  const fetchIncidents = useCallback(() => {
-    setLoadingIncidents(true);
-    setIncidentsError(null);
-    fetch('http://127.0.0.1:8000/api/incidents')
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
-        if (data?.incidents && Array.isArray(data.incidents)) {
-          setIncidents(data.incidents);
-          setIncidentsError(null);
-        } else {
-          setIncidents([]);
-          setIncidentsError('DATA UNAVAILABLE');
-        }
-      })
-      .catch((err) => {
-        console.error('[SentinelOps] Incident API fetch error:', err);
-        setIncidents([]);
-        setIncidentsError('INCIDENT DATA UNAVAILABLE');
-      })
-      .finally(() => {
-        setLoadingIncidents(false);
-      });
-  }, []);
+  const retryTimeoutRef = useRef(null);
 
   // Live overview telemetry metrics
   const fetchOverview = useCallback(() => {
@@ -70,13 +44,49 @@ export function App() {
         }
       })
       .catch((err) => {
-        console.error('[SentinelOps] Overview API fetch error:', err);
+        console.warn('[SentinelOps] Overview API fetch error:', err.message);
       });
   }, []);
+
+  // Authoritative fetch from Backend /api/incidents
+  const fetchIncidents = useCallback((retryCount = 0) => {
+    setLoadingIncidents(true);
+    setIncidentsError(null);
+    fetch('http://127.0.0.1:8000/api/incidents')
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (data?.incidents && Array.isArray(data.incidents) && data.incidents.length > 0) {
+          setIncidents(data.incidents);
+          setIncidentsError(null);
+          setLoadingIncidents(false);
+        } else {
+          throw new Error('Empty incident array received');
+        }
+      })
+      .catch((err) => {
+        console.warn(`[SentinelOps] Incident API fetch attempt ${retryCount + 1} failed:`, err.message);
+        if (retryCount < 5) {
+          retryTimeoutRef.current = setTimeout(() => {
+            fetchIncidents(retryCount + 1);
+            fetchOverview();
+          }, 2000);
+        } else {
+          setIncidents([]);
+          setIncidentsError('Unable to load incident topology.');
+          setLoadingIncidents(false);
+        }
+      });
+  }, [fetchOverview]);
 
   useEffect(() => {
     fetchIncidents();
     fetchOverview();
+    return () => {
+      if (retryTimeoutRef.current) clearTimeout(retryTimeoutRef.current);
+    };
   }, [fetchIncidents, fetchOverview]);
 
   const handleIncidentSelect = useCallback((incident) => {

@@ -1800,7 +1800,7 @@
       "file_type": "code",
       "norm_label": "digitalwater()",
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L347"
+      "source_location": "L353"
     },
     {
       "id": "client_src_components_spatial_digitalwater_watercameracontroller",
@@ -1812,7 +1812,7 @@
       "file_type": "code",
       "norm_label": "watercameracontroller()",
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L324"
+      "source_location": "L330"
     },
     {
       "id": "client_src_components_spatial_digitalwater_watersurfacemesh",
@@ -1824,7 +1824,7 @@
       "file_type": "code",
       "norm_label": "watersurfacemesh()",
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L188"
+      "source_location": "L194"
     },
     {
       "id": "client_src_components_triage_triageimpactworkspace_triageimpactworkspace",
@@ -8332,7 +8332,7 @@
       "file_type": "code",
       "norm_label": "sentinelatmosphere",
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L416"
+      "source_location": "L437"
     },
     {
       "id": "client_src_main",
@@ -49755,7 +49755,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L188",
+      "source_location": "L194",
       "weight": 1.0
     },
     {
@@ -49766,7 +49766,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L324",
+      "source_location": "L330",
       "weight": 1.0
     },
     {
@@ -49777,7 +49777,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L347",
+      "source_location": "L353",
       "weight": 1.0
     },
     {
@@ -49788,7 +49788,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "client/src/components/spatial/DigitalWater.jsx",
-      "source_location": "L416",
+      "source_location": "L437",
       "weight": 1.0
     },
     {

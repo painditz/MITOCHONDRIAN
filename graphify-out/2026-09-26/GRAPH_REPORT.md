@@ -1,7 +1,7 @@
-# Graph Report - MICROSOFT WINNER  (2026-09-27)
+# Graph Report - MICROSOFT WINNER  (2026-09-26)
 
 ## Corpus Check
-- 270 files · ~534,599 words
+- 270 files · ~534,714 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 30 file(s) not represented in the graph (top: .toml 18, (none) 6, .css 3)
 

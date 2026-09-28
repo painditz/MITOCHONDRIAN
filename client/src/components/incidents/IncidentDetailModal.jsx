@@ -125,37 +125,12 @@ export function IncidentDetailModal({ incident, onClose, onReviewAction }) {
     }
   };
 
-  if (!activeIncident) return null;
-
-  const id = activeIncident.incident_id || activeIncident.id || 'INC-000';
-  const prio = String(activeIncident.priority || 'P1').slice(0, 2).toUpperCase();
-  const risk = Number(activeIncident.risk_score ?? activeIncident.riskScore ?? 0);
-  const assetName = activeIncident.hostname || activeIncident.asset_name || activeIncident.asset || 'UNKNOWN-HOST';
-  const criticality = (activeIncident.asset_criticality || activeIncident.criticality || 'MEDIUM').toUpperCase();
-  const alertCount = activeIncident.alert_count ?? activeIncident.signalsCount ?? (activeIncident.alerts?.length || 1);
-
-  const riskFactors = parseRiskFactors(activeIncident);
-
-  const mitreList = activeIncident.mitre_mappings || activeIncident.mitre_techniques || [];
-
-  // What-If Dynamic Recalculation (Phase 5)
-  const currentCriticality = criticality.toLowerCase();
-  const currentCritPts = currentCriticality === 'critical' ? 45.0 : currentCriticality === 'high' ? 30.0 : currentCriticality === 'medium' ? 15.0 : 0.0;
-  const whatIfCritPts = whatIfTier.toLowerCase() === 'critical' ? 45.0 : whatIfTier.toLowerCase() === 'high' ? 30.0 : whatIfTier.toLowerCase() === 'medium' ? 15.0 : 0.0;
-  const whatIfDelta = whatIfCritPts - currentCritPts;
-  const simulatedScore = Math.max(0, Math.min(100, Math.round((risk + whatIfDelta) * 10) / 10));
-  const simulatedPrio = simulatedScore >= 75 ? 'P1' : simulatedScore >= 55 ? 'P2' : simulatedScore >= 35 ? 'P3' : 'P4';
-
-  const aiBriefText =
-    activeIncident.shift_brief?.custom_brief_text ||
-    activeIncident.shift_brief?.what_happened ||
-    (typeof activeIncident.ai_brief === 'string' ? activeIncident.ai_brief : activeIncident.ai_brief?.brief) ||
-    '';
-
-  const investigationPoints = activeIncident.shift_brief?.investigation_points || [];
-
   // Build timeline events from actual incident.alerts (Phase 8 & 12)
   const timelineEvents = useMemo(() => {
+    if (!activeIncident) return [];
+    const prioShort = String(activeIncident.priority || 'P1').slice(0, 2).toUpperCase();
+    const mitres = activeIncident.mitre_mappings || activeIncident.mitre_techniques || [];
+
     if (activeIncident.alerts && Array.isArray(activeIncident.alerts) && activeIncident.alerts.length > 0) {
       const sorted = [...activeIncident.alerts].sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0));
       return sorted.map((al, idx) => {
@@ -189,7 +164,7 @@ export function IncidentDetailModal({ incident, onClose, onReviewAction }) {
         source: 'Normalized Pipeline',
         evidence: evt,
         mitre: null,
-        severity: prio === 'P1' ? 'Critical' : 'High',
+        severity: prioShort === 'P1' ? 'Critical' : 'High',
         rawAlert: null,
       }));
     }
@@ -201,12 +176,41 @@ export function IncidentDetailModal({ incident, onClose, onReviewAction }) {
         alertType: activeIncident.title || 'Anomalous Activity',
         source: 'Security Pipeline',
         evidence: activeIncident.correlation_reason || 'Pairwise correlation match',
-        mitre: mitreList[0]?.technique_id || null,
-        severity: prio === 'P1' ? 'Critical' : 'High',
+        mitre: mitres[0]?.technique_id || null,
+        severity: prioShort === 'P1' ? 'Critical' : 'High',
         rawAlert: null,
       },
     ];
-  }, [activeIncident, mitreList, prio]);
+  }, [activeIncident]);
+
+  if (!activeIncident) return null;
+
+  const id = activeIncident.incident_id || activeIncident.id || 'INC-000';
+  const prio = String(activeIncident.priority || 'P1').slice(0, 2).toUpperCase();
+  const risk = Number(activeIncident.risk_score ?? activeIncident.riskScore ?? 0);
+  const assetName = activeIncident.hostname || activeIncident.asset_name || activeIncident.asset || 'UNKNOWN-HOST';
+  const criticality = (activeIncident.asset_criticality || activeIncident.criticality || 'MEDIUM').toUpperCase();
+  const alertCount = activeIncident.alert_count ?? activeIncident.signalsCount ?? (activeIncident.alerts?.length || 1);
+
+  const riskFactors = parseRiskFactors(activeIncident);
+
+  const mitreList = activeIncident.mitre_mappings || activeIncident.mitre_techniques || [];
+
+  // What-If Dynamic Recalculation (Phase 5)
+  const currentCriticality = criticality.toLowerCase();
+  const currentCritPts = currentCriticality === 'critical' ? 45.0 : currentCriticality === 'high' ? 30.0 : currentCriticality === 'medium' ? 15.0 : 0.0;
+  const whatIfCritPts = whatIfTier.toLowerCase() === 'critical' ? 45.0 : whatIfTier.toLowerCase() === 'high' ? 30.0 : whatIfTier.toLowerCase() === 'medium' ? 15.0 : 0.0;
+  const whatIfDelta = whatIfCritPts - currentCritPts;
+  const simulatedScore = Math.max(0, Math.min(100, Math.round((risk + whatIfDelta) * 10) / 10));
+  const simulatedPrio = simulatedScore >= 75 ? 'P1' : simulatedScore >= 55 ? 'P2' : simulatedScore >= 35 ? 'P3' : 'P4';
+
+  const aiBriefText =
+    activeIncident.shift_brief?.custom_brief_text ||
+    activeIncident.shift_brief?.what_happened ||
+    (typeof activeIncident.ai_brief === 'string' ? activeIncident.ai_brief : activeIncident.ai_brief?.brief) ||
+    '';
+
+  const investigationPoints = activeIncident.shift_brief?.investigation_points || [];
 
   const handleAction = async (action) => {
     setIsSubmitting(true);
